@@ -1,0 +1,13 @@
+import { type SchemaTypeDefinition } from 'sanity'
+import { projectType } from './project'
+import { postType } from './post'
+import { pageType } from './page'
+import event from './event'
+import developer from './developer'
+import seo from './seo'
+import author from './author'
+import siteConfig from './siteConfig'
+
+export const schema: { types: SchemaTypeDefinition[] } = {
+  types: [projectType, postType, pageType, event, developer, seo, author, siteConfig],
+}

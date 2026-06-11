@@ -1,0 +1,386 @@
+import type { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
+import { client } from '../../../../../sanity/lib/client';
+import HtmlRenderer from '@/components/HtmlRenderer';
+import ProjectGallery from '@/components/ProjectGallery';
+import ProjectTabs from '@/components/ProjectTabs';
+import ConsultantSidebar from '@/components/ConsultantSidebar';
+import ConsultantCardMobile from '@/components/ConsultantCardMobile';
+import MobileBottomNav from '@/components/MobileBottomNav';
+import MortgageCalculator from '@/components/MortgageCalculator';
+import { PortableText } from '@portabletext/react';
+import urlBuilder from '@sanity/image-url';
+
+const builder = urlBuilder(client);
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+const portableTextComponents = {
+  types: {
+    image: ({ value }: any) => {
+      if (!value?.asset?._ref) {
+        return null;
+      }
+      return (
+        <img
+          alt={value.alt || 'Hình ảnh dự án'}
+          loading="lazy"
+          src={urlFor(value).width(800).fit('max').auto('format').url()}
+          style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
+        />
+      );
+    },
+  },
+};
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await client.fetch(`*[_type == "project" && slug.current == $slug][0]{
+    ...,
+    "imageUrl": imageUrl.asset->url,
+    "floorPlans": floorPlans[].asset->url,
+    "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
+    "developer": developer->{
+      name, seoDescription, seoKeywords, "seoImageUrl": seoImage.asset->url }
+  }`, { slug });
+
+  if (!project) return {};
+
+  const title = project.seo?.seoTitle || project.title || 'Dự Án';
+  const description = project.seo?.seoDescription || `Khám phá thông tin chi tiết về dự án ${project.title}.`;
+  const image = project.seo?.seoImageUrl || project.imageUrl;
+
+  return {
+    title,
+    description,
+    keywords: project.seo?.seoKeywords,
+    openGraph: {
+      title,
+      description,
+      images: image ? [image] : [],
+    },
+  };
+}
+
+export const revalidate = 60;
+
+export default async function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const query = `*[_type == "project" && slug.current == $slug][0] {
+    ...,
+    "imageUrl": imageUrl.asset->url + "?auto=format",
+    "galleryUrls": gallery[].asset->url,
+    "floorPlans": floorPlans[].asset->url,
+    "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
+    developer->{name, "logoUrl": logo.asset->url + "?auto=format"},
+    consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
+  }`;
+  
+  const project = await client.fetch(query, { slug });
+
+  if (!project) {
+    notFound();
+  }
+
+  if (project.customLandingPage) {
+    return (
+      <>
+        {project.hideLayoutComponents && (
+          <style>{`header, nav, footer, [class*="floatingContainer"] { display: none !important; } main { padding-top: 0 !important; }`}</style>
+        )}
+        <HtmlRenderer html={project.customLandingPage} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <style>{`
+        .project-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 3rem; align-items: start; }
+        .desktop-only { display: block; }
+        .mobile-only { display: none !important; }
+        .mobile-flex { display: none !important; }
+        
+        @media (max-width: 900px) {
+          .project-grid, .project-grid-top { grid-template-columns: 1fr !important; }
+          .desktop-only { display: none !important; }
+          .mobile-only { display: block !important; }
+          .mobile-flex { display: flex !important; }
+        }
+      `}</style>
+      <article style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
+        <div className="container-wide" style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+            <span>Trang chủ</span> &gt; <span>Dự án</span> &gt; <span style={{ color: 'var(--foreground)' }}>{project.title}</span>
+          </div>
+        </div>
+
+        {/* KHU VỰC TOP: Slider + Summary Card */}
+        <div className="container-wide" style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: '2rem', alignItems: 'start' }} className="project-grid-top">
+            
+            {/* CỘT TRÁI (Top): Slider Hình Ảnh */}
+            <div style={{ width: '100%', overflow: 'hidden' }}>
+              {project.galleryUrls && project.galleryUrls.length > 0 ? (
+                <ProjectGallery images={project.imageUrl ? [project.imageUrl, ...project.galleryUrls] : project.galleryUrls} />
+              ) : (
+                <div style={{ width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden' }}>
+                  <img 
+                    src={project.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750'} 
+                    alt={project.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* CỘT PHẢI (Top): Summary Card */}
+            <div style={{ background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+              
+              {/* Logo & Tên dự án */}
+              <div style={{ textAlign: 'center' }}>
+                {project.developer && project.developer.logoUrl && (
+                  <div style={{ width: '80px', height: '80px', margin: '0 auto 1rem', background: 'var(--color-dark)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  </div>
+                )}
+                <h1 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', color: 'var(--foreground)' }}>{project.title}</h1>
+                <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                  <span>📍</span> {project.location || 'Đang cập nhật'}
+                </div>
+              </div>
+              
+              {/* Giá */}
+              <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '1.2rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+                <div style={{ color: '#3b82f6', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Mức giá chính thức</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#3b82f6' }}>{project.price || 'Đang cập nhật'}</div>
+              </div>
+
+              {/* Nút Liên hệ */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <button style={{ background: '#3b82f6', color: 'white', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'background 0.3s' }}>
+                  📞 Liên hệ tư vấn
+                </button>
+                <button style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--foreground)', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'border-color 0.3s' }}>
+                  📅 Đặt lịch xem
+                </button>
+              </div>
+
+              {/* Thống kê Mini */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ background: 'var(--background)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid var(--border-color)' }}>
+                  <div style={{ color: '#3b82f6', marginBottom: '0.5rem' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  </div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.2rem' }}>{project.productCount || '--'}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Tổng số sản phẩm</div>
+                </div>
+                <div style={{ background: 'var(--background)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid var(--border-color)' }}>
+                  <div style={{ color: '#3b82f6', marginBottom: '0.5rem' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.2rem' }}>{project.viewCount || '367'}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Lượt xem</div>
+                </div>
+              </div>
+
+              {/* Khởi công & Tiến độ */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Ngày khởi công
+                  </div>
+                  <div style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '0.9rem' }}>{project.startDate ? new Date(project.startDate).toLocaleDateString('vi-VN') : 'Đang cập nhật'}</div>
+                </div>
+                
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                      Tiến độ xây dựng
+                    </div>
+                    <div style={{ fontWeight: 700, color: '#3b82f6', fontSize: '0.9rem' }}>{project.progressPercentage || 0}%</div>
+                  </div>
+                  <div style={{ width: '100%', height: '6px', background: 'var(--background)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ width: `${project.progressPercentage || 0}%`, height: '100%', background: '#3b82f6', borderRadius: '3px' }}></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Nhãn CĐT */}
+              {project.developer && (
+                <div style={{ marginTop: '0.5rem', background: 'var(--background)', padding: '0.8rem 1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '1rem', border: '1px solid var(--border-color)' }}>
+                  <div style={{ width: '30px', height: '30px', background: 'white', borderRadius: '50%', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <img src={project.developer.logoUrl} alt="Logo CĐT" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Chủ đầu tư</div>
+                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#3b82f6' }}>{project.developer.name}</div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        </div>
+
+        <ProjectTabs project={project} />
+
+        <div className="container project-grid" style={{ paddingTop: '2rem' }}>
+        {/* CỘT TRÁI: Nội dung chính */}
+        <div style={{ position: 'relative' }}>
+          
+          {/* Tiêu đề & Tổng quan */}
+          <div style={{ marginBottom: '3rem' }}>
+            <span style={{ display: 'inline-block', padding: '0.4rem 1rem', background: 'rgba(212,175,55,0.1)', color: 'var(--color-primary)', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '1rem' }}>
+              {project.category} • {project.status || 'Đang mở bán'}
+            </span>
+            <h1 style={{ fontSize: '3rem', marginBottom: '1rem', lineHeight: 1.2 }}>{project.title}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
+              <span>📍 {project.location || 'Đang cập nhật vị trí'}</span>
+            </div>
+
+            <div id="tong-quan" style={{ background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tổng quan dự án</h2>
+              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                {project.description ? (
+                   <PortableText value={project.description} components={portableTextComponents} />
+                ) : (
+                   <p>Thông tin chi tiết đang được cập nhật...</p>
+                )}
+              </div>
+            </div>
+            
+            {/* Vị trí */}
+            {project.mapHtml && (
+              <div id="vi-tri" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Vị trí dự án</h2>
+                <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
+              </div>
+            )}
+
+            {/* Bảng giá */}
+            {project.pricingContent && (
+              <div id="bang-gia" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Bảng giá & Thanh toán</h2>
+                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                  <PortableText value={project.pricingContent} components={portableTextComponents} />
+                </div>
+              </div>
+            )}
+
+            {/* Pháp lý */}
+            {project.legalDocuments && project.legalDocuments.length > 0 && (
+              <div id="phap-ly" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tài liệu pháp lý</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {project.legalDocuments.map((doc: any, index: number) => (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--color-dark-light)', padding: '1rem', borderRadius: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span style={{ fontWeight: 600 }}>{doc.title || `Tài liệu ${index + 1}`}</span>
+                      </div>
+                      <a href={doc.fileUrl} target="_blank" rel="noreferrer" style={{ background: '#1877F2', color: 'white', padding: '0.4rem 1rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Xem PDF</a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Consultant Card */}
+            <div style={{ marginTop: '2rem' }}>
+              <ConsultantCardMobile consultant={project.consultant} />
+            </div>
+          </div>
+
+          {/* Tiện Ích */}
+          {project.features && project.features.length > 0 && (
+            <div id="tien-ich" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tiện ích nội khu</h2>
+              <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', listStyle: 'none', padding: 0 }}>
+                {project.features.map((feature: string, index: number) => (
+                  <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)' }}>
+                    <span style={{ color: '#E5C158' }}>✓</span> {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Mặt bằng */}
+          {project.floorPlans && project.floorPlans.length > 0 && (
+            <div id="mat-bang" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Mặt bằng dự án</h2>
+              <ProjectGallery images={project.floorPlans} />
+            </div>
+          )}
+
+          {/* Tour 360 */}
+          {project.tour360Url && (
+            <div id="tour-360" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360°</h2>
+              <iframe src={project.tour360Url} width="100%" height="500px" frameBorder="0" allowFullScreen style={{ borderRadius: '8px' }}></iframe>
+            </div>
+          )}
+
+          {/* Tiến độ */}
+          {project.progressContent && (
+            <div id="tien-do" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tiến độ xây dựng</h2>
+              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                <PortableText value={project.progressContent} components={portableTextComponents} />
+              </div>
+            </div>
+          )}
+
+          {/* Chủ Đầu Tư */}
+          {project.developer && (
+            <div id="chu-dau-tu" style={{ background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '3rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+              <div style={{ background: 'white', padding: '1rem', borderRadius: '8px', width: '120px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Chủ Đầu Tư: {project.developer.name}</h3>
+                <p style={{ color: 'var(--color-text-muted)' }}>Đơn vị phát triển bất động sản uy tín, đảm bảo tiến độ và chất lượng cho dự án {project.title}.</p>
+              </div>
+            </div>
+          )}
+
+          {/* Mortgage Calculator */}
+          <MortgageCalculator />
+
+        </div>
+
+        {/* CỘT PHẢI: Consultant Sidebar Sticky (Ẩn trên Mobile) */}
+        <div className="desktop-only" style={{ position: 'sticky', top: '90px', alignSelf: 'start', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {project.consultant ? (
+            <ConsultantSidebar consultant={project.consultant} />
+          ) : (
+            <div style={{ background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              Chưa có thông tin chuyên viên.
+            </div>
+          )}
+
+          {/* Form Đăng ký */}
+          <div style={{ background: 'var(--color-secondary)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--color-primary)', marginBottom: '1.5rem', textAlign: 'center' }}>Đăng Ký Nhận Bảng Giá</h3>
+            <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <input type="text" placeholder="Họ và tên" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
+              <input type="tel" placeholder="Số điện thoại" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
+              <button type="button" className="btn" style={{ padding: '0.8rem', fontSize: '1rem', marginTop: '0.5rem' }}>Gửi Yêu Cầu</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav consultant={project.consultant} />
+    </article>
+    </>
+  );
+}

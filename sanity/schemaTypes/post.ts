@@ -1,0 +1,89 @@
+import { defineField, defineType } from 'sanity'
+
+export const postType = defineType({
+  name: 'post',
+  title: 'Tin Tức',
+  type: 'document',
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Tiêu Đề (Title)',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'isMarketAnalysis',
+      title: 'Đây là bài Phân tích thị trường?',
+      description: 'Đánh dấu tích nếu bạn muốn bài này xuất hiện ở khu vực "Phân tích thị trường" trên trang chủ thay vì "Tin tức mới nhất".',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'slug',
+      title: 'Đường Dẫn (Slug)',
+      type: 'slug',
+      options: { source: 'title' },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'excerpt',
+      title: 'Tóm Tắt',
+      type: 'text',
+    }),
+    defineField({
+      name: 'content',
+      title: 'Nội Dung Chi Tiết',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { 
+          type: 'image',
+          title: 'Chèn Hình Ảnh',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Chú thích ảnh (Alt text)',
+              description: 'Quan trọng cho SEO và người khiếm thị',
+            }
+          ]
+        }
+      ],
+    }),
+    defineField({
+      name: 'date',
+      title: 'Ngày Đăng',
+      type: 'datetime',
+    }),
+    defineField({
+      name: 'imageUrl',
+      title: 'Hình Ảnh Bìa',
+      type: 'image',
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: 'author',
+      title: 'Tác Giả',
+      type: 'reference',
+      to: { type: 'author' },
+    }),
+    defineField({
+      name: 'relatedPosts',
+      title: 'Bài Viết Liên Quan',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'post' } }],
+      description: 'Chọn tối đa 3 bài viết liên quan để hiển thị ở cuối bài.',
+      validation: (Rule) => Rule.max(3),
+    }),
+    defineField({
+      name: 'seo',
+      title: 'Cấu Hình SEO',
+      type: 'seo',
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+    }),
+  ],
+})
