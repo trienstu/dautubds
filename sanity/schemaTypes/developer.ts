@@ -25,5 +25,31 @@ export default defineType({
       title: 'Thứ tự hiển thị (Tùy chọn)',
       type: 'number',
     }),
+    defineField({
+      name: 'slug',
+      title: 'Đường Dẫn (Slug)',
+      type: 'slug',
+      options: { source: 'name' },
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Bài Viết Giới Thiệu',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { type: 'image', options: { hotspot: true } },
+        { type: 'youtube' }
+      ],
+    }),
+    defineField({
+      name: 'seo',
+      title: 'Cấu Hình SEO',
+      type: 'seo',
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+    }),
   ],
 })

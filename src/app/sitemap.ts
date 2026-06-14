@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await client.fetch(`*[_type == "project" && defined(slug.current)] { "slug": slug.current, _updatedAt }`)
   const news = await client.fetch(`*[_type == "post" && defined(slug.current)] { "slug": slug.current, _updatedAt }`)
   const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] { "slug": slug.current, _updatedAt }`)
+  const developers = await client.fetch(`*[_type == "developer" && defined(slug.current)] { "slug": slug.current, _updatedAt }`)
 
   const projectUrls = projects.map((project: any) => ({
     url: `${baseUrl}/du-an/${project.slug}`,
@@ -28,6 +29,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(page._updatedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
+  }))
+
+  const developerUrls = developers.map((dev: any) => ({
+    url: `${baseUrl}/chu-dau-tu/${dev.slug}`,
+    lastModified: new Date(dev._updatedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
   }))
 
   return [
@@ -52,5 +60,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...projectUrls,
     ...newsUrls,
     ...pageUrls,
+    ...developerUrls,
   ]
 }
