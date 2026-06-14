@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
 import ThemeProvider from "@/components/ThemeProvider";
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { client } from "../../../sanity/lib/client";
 
 const inter = Inter({
@@ -18,8 +19,31 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Website BĐS",
-  description: "Trang web bất động sản cao cấp",
+  title: {
+    template: '%s | Trien BDS Luxury',
+    default: 'Website Bất Động Sản Hạng Sang | Trien BDS',
+  },
+  description: 'Khám phá bộ sưu tập bất động sản hạng sang bậc nhất dành riêng cho giới tinh hoa.',
+  metadataBase: new URL('https://dautubds.io.vn'),
+  openGraph: {
+    title: 'Trien BDS Luxury Real Estate',
+    description: 'Định Chuẩn Sống Đẳng Cấp - Bộ sưu tập bất động sản hạng sang.',
+    url: 'https://dautubds.io.vn',
+    siteName: 'Trien BDS',
+    locale: 'vi_VN',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default async function SiteLayout({
@@ -43,6 +67,7 @@ export default async function SiteLayout({
           <FloatingContact />
         </ThemeProvider>
       </body>
+      <GoogleAnalytics gaId="G-XXXXXXXXXX" />
     </html>
   );
 }
