@@ -8,7 +8,7 @@ export default function ProjectTabs({ project }: { project: any }) {
   // Logic kiểm tra xem phần nào có dữ liệu
   const tabs = [
     { id: 'tong-quan', label: 'Tổng quan', hasData: !!project.description },
-    { id: 'vi-tri', label: 'Vị trí', hasData: !!project.mapHtml },
+    { id: 'vi-tri', label: 'Vị trí', hasData: !!project.mapHtml || !!project.locationContent },
     { id: 'bang-gia', label: 'Bảng giá', hasData: !!project.pricingContent },
     { id: 'phap-ly', label: 'Pháp lý', hasData: project.legalDocuments && project.legalDocuments.length > 0 },
     { id: 'tien-ich', label: 'Tiện ích', hasData: project.features && project.features.length > 0 },

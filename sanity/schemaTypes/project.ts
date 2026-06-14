@@ -131,7 +131,18 @@ export const projectType = defineType({
       name: 'mapHtml',
       title: 'Bản Đồ Vị Trí (Google Maps Iframe)',
       type: 'text',
-      description: 'Dán mã nhúng <iframe> lấy từ Google Maps vào đây.',
+      description: 'Dán mã nhúng <iframe> lấy từ Google Maps vào đây. (Hiển thị phía trên)',
+    }),
+    defineField({
+      name: 'locationContent',
+      title: 'Bài Viết Vị Trí (Text/Hình/Video)',
+      type: 'array',
+      description: 'Nhập mô tả, chèn hình ảnh, hoặc nhúng video YouTube (Hiển thị bên dưới Bản đồ)',
+      of: [
+        { type: 'block' }, 
+        { type: 'image', options: { hotspot: true } },
+        { type: 'youtube' }
+      ],
     }),
     defineField({
       name: 'pricingContent',

@@ -31,6 +31,22 @@ const portableTextComponents = {
         />
       );
     },
+    youtube: ({ value }: any) => {
+      const { url } = value;
+      const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+      if (!id) return null;
+      return (
+        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '2rem 0', borderRadius: '8px' }}>
+          <iframe 
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+            src={`https://www.youtube.com/embed/${id}`} 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen
+          />
+        </div>
+      );
+    }
   },
 };
 
@@ -79,6 +95,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     "galleryUrls": gallery[].asset->url,
     "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
+    locationContent,
     developer->{name, "logoUrl": logo.asset->url + "?auto=format"},
     consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
@@ -292,10 +309,17 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </div>
             
             {/* Vị trí */}
-            {project.mapHtml && (
+            {(project.mapHtml || project.locationContent) && (
               <div id="vi-tri" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Vị trí dự án</h2>
-                <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
+                {project.mapHtml && (
+                  <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
+                )}
+                {project.locationContent && (
+                  <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                    <PortableText value={project.locationContent} components={portableTextComponents} />
+                  </div>
+                )}
               </div>
             )}
 
