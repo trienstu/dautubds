@@ -63,6 +63,9 @@ export async function generateMetadata(
       description,
       images: image ? [image] : [],
     },
+    alternates: {
+      canonical: `https://dautubds.io.vn/du-an/${slug}`,
+    },
   };
 }
 
@@ -97,8 +100,40 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     );
   }
 
+  // Khai báo Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://dautubds.io.vn' },
+      { '@type': 'ListItem', position: 2, name: 'Dự án', item: 'https://dautubds.io.vn/du-an' },
+      { '@type': 'ListItem', position: 3, name: project.title, item: `https://dautubds.io.vn/du-an/${slug}` },
+    ],
+  };
+
+  const realEstateSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateListing',
+    name: project.title,
+    description: project.description ? project.description.map((block: any) => block.children?.map((child: any) => child.text).join('')).join(' ') : '',
+    image: project.imageUrl,
+    url: `https://dautubds.io.vn/du-an/${slug}`,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'VND',
+      price: project.price ? project.price.replace(/[^0-9]/g, '') : '0', // Chỉ lấy số nếu có
+      availability: 'https://schema.org/InStock'
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: project.location || 'Đang cập nhật'
+    }
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
       <style>{`
         .project-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 3rem; align-items: start; }
         .desktop-only { display: block; }

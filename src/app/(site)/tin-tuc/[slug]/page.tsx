@@ -63,6 +63,9 @@ export async function generateMetadata(
       description,
       images: image ? [image] : [],
     },
+    alternates: {
+      canonical: `https://dautubds.io.vn/tin-tuc/${slug}`,
+    },
   };
 }
 
@@ -88,8 +91,34 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
     day: 'numeric'
   }) : '';
 
+  // Khai báo Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://dautubds.io.vn' },
+      { '@type': 'ListItem', position: 2, name: 'Tin tức', item: 'https://dautubds.io.vn/tin-tuc' },
+      { '@type': 'ListItem', position: 3, name: article.title, item: `https://dautubds.io.vn/tin-tuc/${slug}` },
+    ],
+  };
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title,
+    image: article.imageUrl ? [article.imageUrl] : [],
+    datePublished: article.date ? new Date(article.date).toISOString() : new Date().toISOString(),
+    author: [{
+        '@type': 'Person',
+        name: article.author?.name || 'Trien BDS',
+        url: 'https://dautubds.io.vn'
+      }]
+  };
+
   return (
     <article className="container section" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1.5rem' }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <Link href="/tin-tuc" style={{ color: 'var(--color-primary)', display: 'inline-block', marginBottom: '3rem', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
         &larr; Trở về
       </Link>
