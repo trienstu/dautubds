@@ -70,7 +70,7 @@ export default async function Home() {
       {/* 2. ABOUT TRIEN BDS (Overlapping Image) */}
       <section className="section container">
         <div className={styles.aboutWrapper}>
-          <div className={styles.aboutContent} style={{ paddingRight: '2rem' }}>
+          <div className={styles.aboutContent}>
             <span className={styles.sectionLabel}>Về Chúng Tôi</span>
             <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '2rem' }}>Dẫn Đầu Xu Hướng<br/><span>Bất Động Sản Hàng Hiệu</span></h2>
             <p style={{ color: 'var(--color-text-muted)', lineHeight: '1.9', fontSize: '1.1rem', marginBottom: '2.5rem' }}>

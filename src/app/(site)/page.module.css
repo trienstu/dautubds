@@ -152,6 +152,10 @@
   align-items: center;
 }
 
+.aboutContent {
+  padding-right: 2rem;
+}
+
 .aboutImageContainer {
   position: relative;
   width: 100%;
@@ -470,6 +474,7 @@
 
 @media (max-width: 768px) {
   .heroTitle { font-size: 2.5rem; }
+  .aboutContent { padding: 0 1rem; }
   .eventRow { grid-template-columns: 1fr; text-align: center; gap: 1rem; }
   .eventRowDate { border-right: none; border-bottom: 2px solid var(--color-primary); padding-right: 0; padding-bottom: 1rem; display: flex; align-items: baseline; justify-content: center; gap: 0.5rem; }
   .asymmetricGrid { grid-template-columns: 1fr; }
