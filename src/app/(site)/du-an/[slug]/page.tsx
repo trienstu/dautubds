@@ -9,6 +9,7 @@ import ConsultantSidebar from '@/components/ConsultantSidebar';
 import ConsultantCardMobile from '@/components/ConsultantCardMobile';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import MortgageCalculator from '@/components/MortgageCalculator';
+import ProjectActionButtons from '@/components/ProjectActionButtons';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 
@@ -45,6 +46,34 @@ const portableTextComponents = {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowFullScreen
           />
+        </div>
+      );
+    },
+    table: ({ value }: any) => {
+      if (!value || !value.rows || value.rows.length === 0) return null;
+      const [head, ...rows] = value.rows;
+      return (
+        <div style={{ overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
+            {head && head.cells && (
+              <thead style={{ background: 'var(--color-dark-light)' }}>
+                <tr>
+                  {head.cells.map((cell: string, i: number) => (
+                    <th key={i} style={{ borderBottom: '2px solid var(--border-color)', padding: '12px 16px', fontWeight: 600, color: 'var(--foreground)' }}>{cell}</th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {rows.map((row: any, i: number) => (
+                <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--color-secondary)' }}>
+                  {row.cells.map((cell: string, j: number) => (
+                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)' }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       );
     }
@@ -219,14 +248,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               </div>
 
               {/* Nút Liên hệ */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <button style={{ background: '#3b82f6', color: 'white', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'background 0.3s' }}>
-                  📞 Liên hệ tư vấn
-                </button>
-                <button style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--foreground)', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'border-color 0.3s' }}>
-                  📅 Đặt lịch xem
-                </button>
-              </div>
+              <ProjectActionButtons projectTitle={project.title} />
 
               {/* Thống kê Mini */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -451,7 +473,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
       </div>
       
       {/* Mobile Bottom Navigation */}
-      <MobileBottomNav consultant={project.consultant} />
+      <MobileBottomNav consultant={project.consultant} projectName={project.title} />
     </article>
     </>
   );

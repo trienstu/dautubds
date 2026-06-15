@@ -3,6 +3,7 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schema } from './sanity/schemaTypes'
 import { projectId, dataset } from './sanity/env'
+import { table } from '@sanity/table'
 
 export default defineConfig({
   basePath: '/admin',
@@ -10,5 +11,5 @@ export default defineConfig({
   dataset,
   title: 'Quản Trị Bất Động Sản',
   schema,
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool(), visionTool(), table()],
 })

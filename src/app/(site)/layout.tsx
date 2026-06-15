@@ -4,6 +4,7 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
+import GlobalBookingModal from "@/components/GlobalBookingModal";
 import ThemeProvider from "@/components/ThemeProvider";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { client } from "../../../sanity/lib/client";
@@ -65,6 +66,7 @@ export default async function SiteLayout({
           </main>
           <Footer config={config} />
           <FloatingContact />
+          <GlobalBookingModal />
         </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-XXXXXXXXXX" />

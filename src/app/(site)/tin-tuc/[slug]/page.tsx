@@ -46,6 +46,34 @@ const portableTextComponents = {
         />
       );
     },
+    table: ({ value }: any) => {
+      if (!value || !value.rows || value.rows.length === 0) return null;
+      const [head, ...rows] = value.rows;
+      return (
+        <div style={{ overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
+            {head && head.cells && (
+              <thead style={{ background: 'var(--color-dark-light)' }}>
+                <tr>
+                  {head.cells.map((cell: string, i: number) => (
+                    <th key={i} style={{ borderBottom: '2px solid var(--border-color)', padding: '12px 16px', fontWeight: 600, color: 'var(--foreground)' }}>{cell}</th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {rows.map((row: any, i: number) => (
+                <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--color-secondary)' }}>
+                  {row.cells.map((cell: string, j: number) => (
+                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)' }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    },
   },
   block: {
     normal: ({ children }: any) => <p style={{ marginBottom: '1.2rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,

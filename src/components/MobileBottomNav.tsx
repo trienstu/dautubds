@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function MobileBottomNav({ consultant }: { consultant: any }) {
+export default function MobileBottomNav({ consultant, projectName }: { consultant: any, projectName?: string }) {
   if (!consultant) return null;
 
   return (
@@ -34,7 +34,10 @@ export default function MobileBottomNav({ consultant }: { consultant: any }) {
         <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Zalo</span>
       </a>
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: '#F44336', flex: 1, cursor: 'pointer' }}>
+      <div 
+        onClick={() => window.dispatchEvent(new CustomEvent('open-booking', { detail: projectName || 'Dự án' }))}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: '#F44336', flex: 1, cursor: 'pointer' }}
+      >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>

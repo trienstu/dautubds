@@ -68,6 +68,7 @@ export const projectType = defineType({
       type: 'array',
       of: [
         { type: 'block' },
+        { type: 'table' },
         { 
           type: 'image',
           title: 'Chèn Hình Ảnh',
@@ -134,6 +135,7 @@ export const projectType = defineType({
       type: 'array',
       of: [
         { type: 'block' },
+        { type: 'table' },
         { type: 'image', options: { hotspot: true } },
         { type: 'youtube' }
       ],
@@ -153,6 +155,7 @@ export const projectType = defineType({
       description: 'Nhập mô tả, chèn hình ảnh, hoặc nhúng video YouTube (Hiển thị bên dưới Bản đồ)',
       of: [
         { type: 'block' }, 
+        { type: 'table' },
         { type: 'image', options: { hotspot: true } },
         { type: 'youtube' }
       ],
@@ -161,7 +164,7 @@ export const projectType = defineType({
       name: 'pricingContent',
       title: 'Bảng Giá & Chính Sách Thanh Toán',
       type: 'array',
-      of: [{ type: 'block' }, { type: 'image' }],
+      of: [{ type: 'block' }, { type: 'table' }, { type: 'image' }],
     }),
     defineField({
       name: 'legalDocuments',
@@ -196,7 +199,7 @@ export const projectType = defineType({
       name: 'progressContent',
       title: 'Tiến Độ Xây Dựng',
       type: 'array',
-      of: [{ type: 'block' }, { type: 'image' }],
+      of: [{ type: 'block' }, { type: 'table' }, { type: 'image' }],
     }),
     defineField({
       name: 'status',

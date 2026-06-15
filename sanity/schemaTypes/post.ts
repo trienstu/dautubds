@@ -36,6 +36,7 @@ export const postType = defineType({
       type: 'array',
       of: [
         { type: 'block' },
+        { type: 'table' },
         { 
           type: 'image',
           title: 'Chèn Hình Ảnh',
