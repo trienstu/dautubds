@@ -63,6 +63,13 @@ export const postType = defineType({
       options: { hotspot: true },
     }),
     defineField({
+      name: 'viewCount',
+      title: 'Lượt Xem Ban Đầu',
+      type: 'number',
+      description: 'Nhập số lượt xem ảo ban đầu cho bài viết.',
+      initialValue: 0,
+    }),
+    defineField({
       name: 'author',
       title: 'Tác Giả',
       type: 'reference',

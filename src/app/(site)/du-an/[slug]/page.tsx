@@ -153,7 +153,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
       <style>{`
-        .project-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 3rem; align-items: start; }
+        .project-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 2rem; align-items: start; }
         .desktop-only { display: block; }
         .mobile-only { display: none !important; }
         .mobile-flex { display: none !important; }
@@ -284,7 +284,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
         <ProjectTabs project={project} />
 
-        <div className="container project-grid" style={{ paddingTop: '2rem' }}>
+        <div className="container-wide project-grid" style={{ paddingTop: '2rem' }}>
         {/* CỘT TRÁI: Nội dung chính */}
         <div style={{ position: 'relative' }}>
           

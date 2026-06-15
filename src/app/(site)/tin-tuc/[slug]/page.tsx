@@ -11,6 +11,24 @@ function urlFor(source: any) {
   return builder.image(source);
 }
 
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9 -]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+function getPlainText(block: any) {
+  if (!block || !block.children) return '';
+  return block.children.map((child: any) => child.text).join('');
+}
+
 const portableTextComponents = {
   types: {
     image: ({ value }: any) => {
@@ -21,20 +39,26 @@ const portableTextComponents = {
         <img
           alt={value.alt || 'Hình ảnh minh họa'}
           loading="lazy"
-          src={urlFor(value).width(800).fit('max').auto('format').url()}
+          src={urlFor(value).width(900).fit('max').auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
     },
   },
   block: {
-    normal: ({ children }: any) => <p style={{ marginBottom: '1.2rem', lineHeight: '1.6', fontSize: '1.15rem', color: '#d1d1d1', textAlign: 'justify' }}>{children}</p>,
-    h2: ({ children }: any) => <h2 style={{ fontSize: '2.2rem', marginTop: '3.5rem', marginBottom: '1.5rem', color: 'var(--color-primary)', fontWeight: 600, letterSpacing: '-0.5px' }}>{children}</h2>,
-    h3: ({ children }: any) => <h3 style={{ fontSize: '1.6rem', marginTop: '2.5rem', marginBottom: '1.2rem', color: 'var(--color-white)', fontWeight: 600 }}>{children}</h3>,
-    blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6' }}>{children}</blockquote>,
+    normal: ({ children }: any) => <p style={{ marginBottom: '1.2rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,
+    h2: ({ children, value }: any) => {
+      const id = slugify(getPlainText(value));
+      return <h2 id={id} style={{ fontSize: '2.2rem', marginTop: '3.5rem', marginBottom: '1.5rem', color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
+    },
+    h3: ({ children, value }: any) => {
+      const id = slugify(getPlainText(value));
+      return <h3 id={id} style={{ fontSize: '1.6rem', marginTop: '2.5rem', marginBottom: '1.2rem', color: 'var(--foreground)', fontWeight: 600 }}>{children}</h3>;
+    },
+    blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6', background: 'rgba(212,175,55,0.05)', padding: '1.5rem 1.5rem 1.5rem 2rem', borderRadius: '0 8px 8px 0' }}>{children}</blockquote>,
   },
   marks: {
-    strong: ({ children }: any) => <strong style={{ color: 'var(--color-white)', fontWeight: 700 }}>{children}</strong>,
+    strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
     link: ({ children, value }: any) => <a href={value.href} style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}>{children}</a>,
   },
 };
@@ -74,7 +98,7 @@ export const revalidate = 60;
 export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "post" && slug.current == $slug][0] {
-    _id, title, excerpt, content, date, "imageUrl": imageUrl.asset->url + "?auto=format",
+    _id, title, excerpt, content, date, viewCount, "imageUrl": imageUrl.asset->url + "?auto=format",
     author->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified},
     relatedPosts[]->{_id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?auto=format"}
   }`;
@@ -90,6 +114,22 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
     month: 'long',
     day: 'numeric'
   }) : '';
+
+  // Tính toán thời gian đọc (khoảng 250 từ/phút)
+  const fullText = article.content?.map(getPlainText).join(' ') || '';
+  const wordCount = fullText.split(/\s+/).filter((w: string) => w.length > 0).length;
+  const readTime = Math.max(1, Math.ceil(wordCount / 250));
+
+  // Trích xuất Mục lục (TOC)
+  const headings = article.content?.filter((block: any) => block._type === 'block' && (block.style === 'h2' || block.style === 'h3')) || [];
+  const toc = headings.map((heading: any) => {
+    const text = getPlainText(heading);
+    return {
+      text,
+      id: slugify(text),
+      level: heading.style === 'h2' ? 2 : 3
+    };
+  });
 
   // Khai báo Schema
   const breadcrumbSchema = {
@@ -116,24 +156,46 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
   };
 
   return (
-    <article className="container section" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1.5rem' }}>
+    <article className="container section" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem', background: 'var(--background)' }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <Link href="/tin-tuc" style={{ color: 'var(--color-primary)', display: 'inline-block', marginBottom: '3rem', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-        &larr; Trở về
-      </Link>
       
-      <header style={{ marginBottom: '4rem', textAlign: 'center' }}>
-        <span style={{ color: 'var(--color-primary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600 }}>
-          {formattedDate}
-        </span>
-        <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', marginTop: '1.5rem', marginBottom: '2rem', lineHeight: '1.2', letterSpacing: '-1px' }}>
+      <div style={{ marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <Link href="/" style={{ color: 'var(--color-primary)', textDecoration: 'none', transition: 'color 0.2s' }}>Trang chủ</Link>
+        <span style={{ color: 'var(--color-text-muted)' }}>/</span>
+        <Link href="/tin-tuc" style={{ color: 'var(--color-primary)', textDecoration: 'none', transition: 'color 0.2s' }}>Tin tức</Link>
+        <span style={{ color: 'var(--color-text-muted)' }}>/</span>
+        <span style={{ color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px' }} title={article.title}>{article.title}</span>
+      </div>
+      
+      <header style={{ marginBottom: '3rem', textAlign: 'left' }}>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', marginBottom: '1.5rem', lineHeight: '1.3', letterSpacing: '-0.5px', fontWeight: 700, color: 'var(--foreground)' }}>
           {article.title}
         </h1>
+        
+        {/* Meta Info Row */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.5rem', fontSize: '0.95rem', color: 'var(--color-text-muted)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ color: 'var(--color-primary)' }}>👤</span>
+            <span style={{ fontWeight: 600, color: 'var(--foreground)' }}>{article.author?.name || 'Ban biên tập'}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>📅</span>
+            <span>{formattedDate}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>⏱️</span>
+            <span>{readTime} phút đọc</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>👁️</span>
+            <span>{article.viewCount || Math.floor(Math.random() * 50 + 50)} lượt xem</span>
+          </div>
+        </div>
       </header>
 
       {article.imageUrl && (
-        <div style={{ height: '400px', borderRadius: '12px', overflow: 'hidden', marginBottom: '3rem' }}>
+        <div style={{ height: 'clamp(300px, 50vh, 500px)', borderRadius: '12px', overflow: 'hidden', marginBottom: '3rem' }}>
           <img 
             src={article.imageUrl} 
             alt={article.title} 
@@ -142,9 +204,29 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
         </div>
       )}
 
+      {/* Table of Contents */}
+      {toc.length > 0 && (
+        <details style={{ background: '#f0f4f8', padding: '1.5rem', borderRadius: '8px', marginBottom: '3rem', border: '1px solid #dce4ec' }} open>
+          <summary style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a365d', cursor: 'pointer', listStyle: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>📑</span> Mục lục bài viết ({toc.length} mục)
+            </div>
+          </summary>
+          <ul style={{ marginTop: '1.5rem', listStyle: 'none', paddingLeft: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {toc.map((item: any, idx: number) => (
+              <li key={idx} style={{ paddingLeft: item.level === 3 ? '1.5rem' : '0' }}>
+                <a href={`#${item.id}`} style={{ color: item.level === 2 ? '#2b6cb0' : '#4a5568', textDecoration: 'none', fontSize: item.level === 2 ? '1.05rem' : '0.95rem', fontWeight: item.level === 2 ? 600 : 400, transition: 'color 0.2s' }}>
+                  {item.level === 2 ? `${idx + 1}. ` : '› '} {item.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
       <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
         {article.excerpt && (
-          <p style={{ fontSize: '1.4rem', fontStyle: 'italic', color: '#e0e0e0', borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', marginBottom: '3.5rem', lineHeight: '1.8' }}>
+          <p style={{ fontSize: '1.3rem', fontStyle: 'italic', color: 'var(--color-text-muted)', borderLeft: '4px solid var(--color-primary)', paddingLeft: '1.5rem', marginBottom: '3rem', lineHeight: '1.8' }}>
             {article.excerpt}
           </p>
         )}
@@ -162,7 +244,7 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
         <div style={{ 
           marginTop: '4rem', 
           padding: '2rem', 
-          background: 'var(--color-dark-light)', 
+          background: 'var(--color-secondary)', 
           borderRadius: '12px',
           display: 'flex',
           gap: '1.5rem',
@@ -182,7 +264,7 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
           )}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-              <h4 style={{ fontSize: '1.2rem', margin: 0, color: 'white' }}>{article.author.name}</h4>
+              <h4 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--foreground)' }}>{article.author.name}</h4>
               {article.author.isVerified && (
                 <span title="Tác giả đã xác thực" style={{ color: '#1877F2', display: 'flex' }}>
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -201,18 +283,18 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
       )}
 
       <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <h3 style={{ marginBottom: '1.5rem' }}>Chia sẻ bài viết:</h3>
+        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.4rem' }}>Chia sẻ bài viết:</h3>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>Facebook</button>
-          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>Zalo</button>
-          <button className="btn btn-outline" style={{ padding: '0.5rem 1rem' }}>Copy Link</button>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1.5rem', borderRadius: '6px' }}>Facebook</button>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1.5rem', borderRadius: '6px' }}>Zalo</button>
+          <button className="btn btn-outline" style={{ padding: '0.5rem 1.5rem', borderRadius: '6px' }}>Copy Link</button>
         </div>
       </div>
 
       {article.relatedPosts && article.relatedPosts.length > 0 && (
         <div style={{ marginTop: '5rem', paddingTop: '4rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <h3 style={{ marginBottom: '2.5rem', fontSize: '2rem', textAlign: 'center' }}>Bài Viết <span>Liên Quan</span></h3>
-          <div className="grid-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+          <h3 style={{ marginBottom: '2.5rem', fontSize: '2.2rem', textAlign: 'left', fontWeight: 700 }}>Bài Viết <span style={{ color: 'var(--color-primary)' }}>Liên Quan</span></h3>
+          <div className="grid-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             {article.relatedPosts.map((relatedPost: any) => (
               <NewsCard key={relatedPost._id} article={relatedPost} />
             ))}
