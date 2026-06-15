@@ -11,7 +11,7 @@ export default function ProjectTabs({ project }: { project: any }) {
     { id: 'vi-tri', label: 'Vị trí', hasData: !!project.mapHtml || !!project.locationContent },
     { id: 'bang-gia', label: 'Bảng giá', hasData: !!project.pricingContent },
     { id: 'phap-ly', label: 'Pháp lý', hasData: project.legalDocuments && project.legalDocuments.length > 0 },
-    { id: 'tien-ich', label: 'Tiện ích', hasData: project.features && project.features.length > 0 },
+    { id: 'tien-ich', label: 'Tiện ích', hasData: (project.features && project.features.length > 0) || !!project.featuresContent },
     { id: 'mat-bang', label: 'Mặt bằng', hasData: project.floorPlans && project.floorPlans.length > 0 },
     { id: 'tour-360', label: 'Tour 360°', hasData: !!project.tour360Url },
     { id: 'tien-do', label: 'Tiến độ', hasData: !!project.progressContent },

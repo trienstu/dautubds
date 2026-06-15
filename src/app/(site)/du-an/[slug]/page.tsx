@@ -96,6 +96,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
+    featuresContent,
     developer->{name, "logoUrl": logo.asset->url + "?auto=format"},
     consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
@@ -358,16 +359,23 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           </div>
 
           {/* Tiện Ích */}
-          {project.features && project.features.length > 0 && (
+          {((project.features && project.features.length > 0) || project.featuresContent) && (
             <div id="tien-ich" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: '2rem', border: '1px solid var(--border-color)' }}>
               <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tiện ích nội khu</h2>
-              <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', listStyle: 'none', padding: 0 }}>
-                {project.features.map((feature: string, index: number) => (
-                  <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)' }}>
-                    <span style={{ color: '#E5C158' }}>✓</span> {feature}
-                  </li>
-                ))}
-              </ul>
+              {project.featuresContent && (
+                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
+                  <PortableText value={project.featuresContent} components={portableTextComponents} />
+                </div>
+              )}
+              {project.features && project.features.length > 0 && (
+                <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', listStyle: 'none', padding: 0 }}>
+                  {project.features.map((feature: string, index: number) => (
+                    <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)' }}>
+                      <span style={{ color: '#E5C158' }}>✓</span> {feature}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 

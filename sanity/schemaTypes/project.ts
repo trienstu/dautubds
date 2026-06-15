@@ -123,9 +123,21 @@ export const projectType = defineType({
     }),
     defineField({
       name: 'features',
-      title: 'Tiện Ích Nổi Bật',
+      title: 'Tiện Ích Ngắn (Dạng List)',
       type: 'array',
       of: [{ type: 'string' }],
+      description: 'Nhập các gạch đầu dòng ngắn (Tuỳ chọn)',
+    }),
+    defineField({
+      name: 'featuresContent',
+      title: 'Bài Viết Tiện Ích (Text/Hình/Video)',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { type: 'image', options: { hotspot: true } },
+        { type: 'youtube' }
+      ],
+      description: 'Mô tả chi tiết tiện ích, chèn hình ảnh...',
     }),
     defineField({
       name: 'mapHtml',
