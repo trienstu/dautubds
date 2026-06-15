@@ -143,9 +143,7 @@ export const projectType = defineType({
       name: 'mapHtml',
       title: 'Bản Đồ Vị Trí (Google Maps Iframe)',
       type: 'text',
-      options: {
-        rows: 3
-      },
+      rows: 3,
       description: 'Dán mã nhúng <iframe> lấy từ Google Maps vào đây. (Hiển thị phía trên)',
     }),
     defineField({
