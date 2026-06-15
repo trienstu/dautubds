@@ -18,7 +18,7 @@ export default function ProjectGallery({ images }: { images: string[] }) {
         .gallery-thumbs::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
         .gallery-thumbs::-webkit-scrollbar-thumb:hover { background: #6b7280; }
       `}</style>
-      <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#121212' }}>
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', maxHeight: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#121212' }}>
         <img 
           src={images[currentIndex]} 
           alt={`Gallery ${currentIndex + 1}`} 

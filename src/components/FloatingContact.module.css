@@ -33,16 +33,15 @@
 }
 
 .zaloBtn {
-  background: linear-gradient(135deg, #0068ff, #004bba);
+  background: white;
   animation: pulse-blue 2s infinite;
   animation-delay: 1s;
 }
 
 .zaloBtn img {
-  width: 35px;
-  height: 35px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
 }
 
 /* Hiệu ứng gợn sóng lan tỏa */
@@ -90,4 +89,10 @@
   opacity: 1;
   visibility: visible;
   right: 75px;
+}
+
+@media (max-width: 768px) {
+  .hideOnMobile {
+    display: none !important;
+  }
 }

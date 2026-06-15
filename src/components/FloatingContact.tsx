@@ -1,12 +1,15 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import styles from './FloatingContact.module.css';
 
 export default function FloatingContact() {
   const phoneNumber = '0919741414';
+  const pathname = usePathname();
+  const isProjectDetail = pathname?.startsWith('/du-an/');
 
   return (
-    <div className={styles.floatingContainer}>
+    <div className={`${styles.floatingContainer} ${isProjectDetail ? styles.hideOnMobile : ''}`}>
       {/* Nút Zalo */}
       <a 
         href={`https://zalo.me/${phoneNumber}`} 

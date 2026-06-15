@@ -84,6 +84,13 @@ export const postType = defineType({
       validation: (Rule) => Rule.max(3),
     }),
     defineField({
+      name: 'relatedProjects',
+      title: 'Dự Án Liên Quan',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'project' } }],
+      description: 'Chọn các dự án liên quan đến bài viết này để hiển thị.',
+    }),
+    defineField({
       name: 'seo',
       title: 'Cấu Hình SEO',
       type: 'seo',
