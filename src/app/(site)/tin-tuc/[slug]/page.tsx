@@ -4,6 +4,7 @@ import Link from 'next/link';
 import NewsCard from '@/components/NewsCard';
 import ProjectCard from '@/components/ProjectCard';
 import ShareButtons from '@/components/ShareButtons';
+import ArticleTranslator from '@/components/ArticleTranslator';
 import { client } from '../../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
@@ -202,8 +203,8 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <article className="container section" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem', background: 'var(--background)' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} suppressHydrationWarning />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} suppressHydrationWarning />
       
       <div style={{ marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
         <Link href="/" style={{ color: 'var(--color-primary)', textDecoration: 'none', transition: 'color 0.2s' }}>Trang chủ</Link>
@@ -212,6 +213,8 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
         <span style={{ margin: '0 0.5rem', color: 'var(--color-text-muted)' }}>/</span>
         <span style={{ color: 'var(--foreground)' }} title={article.title}>{article.title}</span>
       </div>
+      
+      <ArticleTranslator />
       
       <header style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
         <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', marginBottom: '1.5rem', lineHeight: '1.3', letterSpacing: '-0.5px', fontWeight: 700, color: 'var(--foreground)' }}>

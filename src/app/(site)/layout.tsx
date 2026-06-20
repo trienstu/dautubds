@@ -60,13 +60,17 @@ export default async function SiteLayout({
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} suppressHydrationWarning>
         <ThemeProvider>
-          <Navbar config={config} />
+          <div className="notranslate">
+            <Navbar config={config} />
+          </div>
           <main style={{ flex: 1 }}>
             {children}
           </main>
-          <Footer config={config} />
-          <FloatingContact />
-          <GlobalBookingModal />
+          <div className="notranslate">
+            <Footer config={config} />
+            <FloatingContact />
+            <GlobalBookingModal />
+          </div>
         </ThemeProvider>
       </body>
       <GoogleAnalytics gaId="G-XXXXXXXXXX" />

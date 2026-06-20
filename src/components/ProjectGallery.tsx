@@ -11,14 +11,14 @@ export default function ProjectGallery({ images }: { images: string[] }) {
   const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
 
   return (
-    <div style={{ marginBottom: '2rem' }}>
+    <div>
       <style>{`
         .gallery-thumbs::-webkit-scrollbar { height: 6px; }
         .gallery-thumbs::-webkit-scrollbar-track { background: var(--color-dark-light); border-radius: 4px; }
         .gallery-thumbs::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
         .gallery-thumbs::-webkit-scrollbar-thumb:hover { background: #6b7280; }
       `}</style>
-      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', maxHeight: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#121212' }}>
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', maxHeight: '700px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#121212' }}>
         <img 
           src={images[currentIndex]} 
           alt={`Gallery ${currentIndex + 1}`} 

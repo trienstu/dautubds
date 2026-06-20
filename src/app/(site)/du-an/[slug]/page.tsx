@@ -183,7 +183,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
       <style>{`
-        .project-grid { display: grid; grid-template-columns: 8fr 4fr; gap: 2rem; align-items: start; }
+        .project-grid { display: grid; grid-template-columns: 9fr 3fr; gap: 2.5rem; align-items: start; }
         .desktop-only { display: block; }
         .mobile-only { display: none !important; }
         .mobile-flex { display: none !important; }
@@ -208,14 +208,14 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
         {/* KHU VỰC TOP: Slider + Summary Card */}
         <div className="container-wide" style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: '2rem', alignItems: 'start' }} className="project-grid-top">
+          <div style={{ display: 'grid', gridTemplateColumns: '9fr 3fr', gap: '2.5rem', alignItems: 'start' }} className="project-grid-top">
             
             {/* CỘT TRÁI (Top): Slider Hình Ảnh */}
             <div style={{ width: '100%', overflow: 'hidden' }}>
               {project.galleryUrls && project.galleryUrls.length > 0 ? (
                 <ProjectGallery images={project.imageUrl ? [project.imageUrl, ...project.galleryUrls] : project.galleryUrls} />
               ) : (
-                <div style={{ width: '100%', aspectRatio: '16/9', maxHeight: '500px', borderRadius: '12px', overflow: 'hidden' }}>
+              <div style={{ width: '100%', aspectRatio: '16/9', maxHeight: '700px', borderRadius: '12px', overflow: 'hidden' }}>
                   <img 
                     src={project.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750'} 
                     alt={project.title} 
@@ -226,7 +226,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </div>
 
             {/* CỘT PHẢI (Top): Summary Card */}
-            <div style={{ background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: 'var(--color-secondary)', padding: '1.5rem 2rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
               
               {/* Logo & Tên dự án */}
               <div style={{ textAlign: 'center' }}>
