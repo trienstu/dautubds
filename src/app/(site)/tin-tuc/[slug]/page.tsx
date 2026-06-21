@@ -51,7 +51,7 @@ const portableTextComponents = {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
       return (
-        <div style={{ overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
@@ -91,6 +91,11 @@ const portableTextComponents = {
   marks: {
     strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
     link: ({ children, value }: any) => <a href={value.href} style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}>{children}</a>,
+    textAlign: ({ children, value }: any) => (
+      <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
+        {children}
+      </span>
+    ),
   },
 };
 

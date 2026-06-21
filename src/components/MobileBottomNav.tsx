@@ -11,8 +11,8 @@ export default function MobileBottomNav({ consultant, projectName }: { consultan
       bottom: 0,
       left: 0,
       right: 0,
-      background: 'white',
-      borderTop: '1px solid #eaeaea',
+      background: 'var(--color-secondary)',
+      borderTop: '1px solid var(--border-color)',
       zIndex: 9999,
       display: 'none', // Sẽ được override bởi Media Query
       justifyContent: 'space-around',
@@ -27,7 +27,7 @@ export default function MobileBottomNav({ consultant, projectName }: { consultan
         <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Gọi điện</span>
       </a>
 
-      <a href={consultant.zaloUrl || '#'} target="_blank" rel="noreferrer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textDecoration: 'none', color: '#0088FF', flex: 1, borderLeft: '1px solid #eee', borderRight: '1px solid #eee' }}>
+      <a href={consultant.zaloUrl || '#'} target="_blank" rel="noreferrer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textDecoration: 'none', color: '#0088FF', flex: 1, borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)' }}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
         </svg>

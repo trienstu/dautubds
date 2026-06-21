@@ -10,9 +10,11 @@ export default function ProjectTabs({ project }: { project: any }) {
     { id: 'tong-quan', label: 'Tổng quan', hasData: !!project.description },
     { id: 'vi-tri', label: 'Vị trí', hasData: !!project.mapHtml || !!project.locationContent },
     { id: 'bang-gia', label: 'Bảng giá', hasData: !!project.pricingContent },
-    { id: 'phap-ly', label: 'Pháp lý', hasData: project.legalDocuments && project.legalDocuments.length > 0 },
+    { id: 'phap-ly', label: 'Pháp lý', hasData: (project.legalDocuments && project.legalDocuments.length > 0) || !!project.legalContent },
     { id: 'tien-ich', label: 'Tiện ích', hasData: (project.features && project.features.length > 0) || !!project.featuresContent },
-    { id: 'mat-bang', label: 'Mặt bằng', hasData: project.floorPlans && project.floorPlans.length > 0 },
+    { id: 'mat-bang', label: 'Mặt bằng', hasData: (project.floorPlans && project.floorPlans.length > 0) || !!project.floorPlanContent },
+    { id: 'thiet-ke', label: 'Thiết kế', hasData: !!project.designContent },
+    { id: 'nha-mau', label: 'Nhà mẫu', hasData: !!project.showroomContent },
     { id: 'tour-360', label: 'Tour 360°', hasData: !!project.tour360Url },
     { id: 'tien-do', label: 'Tiến độ', hasData: !!project.progressContent },
     { id: 'chu-dau-tu', label: 'Chủ đầu tư', hasData: !!project.developer },
@@ -36,6 +38,26 @@ export default function ProjectTabs({ project }: { project: any }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [tabs]);
 
+  // Tự động cuộn thanh menu ngang (tabs) đến tab đang active
+  useEffect(() => {
+    const activeElement = document.getElementById(`tab-${activeTab}`);
+    const container = document.getElementById('project-tabs-container');
+    
+    if (activeElement && container) {
+      const containerWidth = container.offsetWidth;
+      const elementOffset = activeElement.offsetLeft;
+      const elementWidth = activeElement.offsetWidth;
+      
+      // Tính toán vị trí cuộn để đưa tab ra giữa màn hình
+      const scrollPos = elementOffset - (containerWidth / 2) + (elementWidth / 2);
+      
+      container.scrollTo({
+        left: scrollPos,
+        behavior: 'smooth'
+      });
+    }
+  }, [activeTab]);
+
   if (tabs.length === 0) return null;
 
   return (
@@ -49,12 +71,15 @@ export default function ProjectTabs({ project }: { project: any }) {
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
       width: '100%'
     }}>
-      <div className="container" style={{
+      <div id="project-tabs-container" className="container" style={{
         display: 'flex',
         overflowX: 'auto',
         whiteSpace: 'nowrap',
         WebkitOverflowScrolling: 'touch',
-        scrollbarWidth: 'none', // Ẩn thanh cuộn trên Firefox
+        scrollbarWidth: 'none',
+        width: '100%',
+        maxWidth: '100%',
+        position: 'relative'
       }}>
         <style>{`
           .project-tabs::-webkit-scrollbar { display: none; }
@@ -62,6 +87,7 @@ export default function ProjectTabs({ project }: { project: any }) {
         <div className="project-tabs" style={{ display: 'flex', gap: '2rem', padding: '0 1rem' }}>
           {tabs.map(tab => (
             <a
+              id={`tab-${tab.id}`}
               key={tab.id}
               href={`#${tab.id}`}
               onClick={(e) => {

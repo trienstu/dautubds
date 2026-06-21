@@ -53,7 +53,7 @@ const portableTextComponents = {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
       return (
-        <div style={{ overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
@@ -77,6 +77,13 @@ const portableTextComponents = {
         </div>
       );
     }
+  },
+  marks: {
+    textAlign: ({ children, value }: any) => (
+      <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
+        {children}
+      </span>
+    ),
   },
 };
 
@@ -313,10 +320,10 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
         <div className="container-wide project-grid" style={{ paddingTop: '2rem' }}>
         {/* CỘT TRÁI: Nội dung chính */}
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', minWidth: 0 }}>
           
           {/* Tiêu đề & Tổng quan */}
-          <div style={{ marginBottom: '3rem' }}>
+          <div style={{ marginBottom: '1.5rem' }}>
             <span style={{ display: 'inline-block', padding: '0.4rem 1rem', background: 'rgba(212,175,55,0.1)', color: 'var(--color-primary)', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '1rem' }}>
               {project.category} • {project.status || 'Đang mở bán'}
             </span>
@@ -326,7 +333,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </div>
 
             <div id="tong-quan" style={{ background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tổng quan dự án</h2>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tổng quan dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 {project.description ? (
                    <PortableText value={project.description} components={portableTextComponents} />
@@ -338,8 +345,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             
             {/* Vị trí */}
             {(project.mapHtml || project.locationContent) && (
-              <div id="vi-tri" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Vị trí dự án</h2>
+              <div id="vi-tri" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Vị trí dự án {project.title}</h2>
                 {project.mapHtml && (
                   <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
                 )}
@@ -353,8 +360,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
             {/* Bảng giá */}
             {project.pricingContent && (
-              <div id="bang-gia" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Bảng giá & Thanh toán</h2>
+              <div id="bang-gia" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Bảng giá & Thanh toán dự án {project.title}</h2>
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                   <PortableText value={project.pricingContent} components={portableTextComponents} />
                 </div>
@@ -362,20 +369,29 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             )}
 
             {/* Pháp lý */}
-            {project.legalDocuments && project.legalDocuments.length > 0 && (
-              <div id="phap-ly" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tài liệu pháp lý</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {project.legalDocuments.map((doc: any, index: number) => (
-                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--color-dark-light)', padding: '1rem', borderRadius: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        <span style={{ fontWeight: 600 }}>{doc.title || `Tài liệu ${index + 1}`}</span>
+            {((project.legalDocuments && project.legalDocuments.length > 0) || project.legalContent) && (
+              <div id="phap-ly" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+                <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tài liệu pháp lý dự án {project.title}</h2>
+                
+                {project.legalContent && (
+                  <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.legalDocuments && project.legalDocuments.length > 0) ? '2rem' : '0' }}>
+                    <PortableText value={project.legalContent} components={portableTextComponents} />
+                  </div>
+                )}
+
+                {project.legalDocuments && project.legalDocuments.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {project.legalDocuments.map((doc: any, index: number) => (
+                      <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--color-dark-light)', padding: '1rem', borderRadius: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                          <span style={{ fontWeight: 600 }}>{doc.title || `Tài liệu ${index + 1}`}</span>
+                        </div>
+                        <a href={doc.fileUrl} target="_blank" rel="noreferrer" style={{ background: '#1877F2', color: 'white', padding: '0.4rem 1rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Xem PDF</a>
                       </div>
-                      <a href={doc.fileUrl} target="_blank" rel="noreferrer" style={{ background: '#1877F2', color: 'white', padding: '0.4rem 1rem', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>Xem PDF</a>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -387,8 +403,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Tiện Ích */}
           {((project.features && project.features.length > 0) || project.featuresContent) && (
-            <div id="tien-ich" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tiện ích nội khu</h2>
+            <div id="tien-ich" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiện ích nội khu dự án {project.title}</h2>
               {project.featuresContent && (
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
                   <PortableText value={project.featuresContent} components={portableTextComponents} />
@@ -407,25 +423,54 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           )}
 
           {/* Mặt bằng */}
-          {project.floorPlans && project.floorPlans.length > 0 && (
-            <div id="mat-bang" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Mặt bằng dự án</h2>
-              <ProjectGallery images={project.floorPlans} />
+          {((project.floorPlans && project.floorPlans.length > 0) || project.floorPlanContent) && (
+            <div id="mat-bang" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Mặt bằng dự án {project.title}</h2>
+              
+              {project.floorPlanContent && (
+                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.floorPlans && project.floorPlans.length > 0) ? '2rem' : '0' }}>
+                  <PortableText value={project.floorPlanContent} components={portableTextComponents} />
+                </div>
+              )}
+
+              {project.floorPlans && project.floorPlans.length > 0 && (
+                <ProjectGallery images={project.floorPlans} />
+              )}
+            </div>
+          )}
+
+          {/* Thiết kế */}
+          {project.designContent && (
+            <div id="thiet-ke" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Thiết kế dự án {project.title}</h2>
+              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                <PortableText value={project.designContent} components={portableTextComponents} />
+              </div>
+            </div>
+          )}
+
+          {/* Nhà mẫu */}
+          {project.showroomContent && (
+            <div id="nha-mau" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Nhà mẫu dự án {project.title}</h2>
+              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                <PortableText value={project.showroomContent} components={portableTextComponents} />
+              </div>
             </div>
           )}
 
           {/* Tour 360 */}
           {project.tour360Url && (
-            <div id="tour-360" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360°</h2>
-              <iframe src={project.tour360Url} width="100%" height="500px" frameBorder="0" allowFullScreen style={{ borderRadius: '8px' }}></iframe>
+            <div id="tour-360" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
+              <iframe src={project.tour360Url} allowFullScreen style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: '8px', border: 'none' }}></iframe>
             </div>
           )}
 
           {/* Tiến độ */}
           {project.progressContent && (
-            <div id="tien-do" style={{ marginTop: '3rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Tiến độ xây dựng</h2>
+            <div id="tien-do" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiến độ xây dựng dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.progressContent} components={portableTextComponents} />
               </div>
@@ -434,7 +479,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Chủ Đầu Tư */}
           {project.developer && (
-            <div id="chu-dau-tu" style={{ background: 'var(--color-secondary)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '3rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            <div id="chu-dau-tu" style={{ background: 'var(--color-secondary)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '1.5rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
               <div style={{ background: 'white', padding: '1rem', borderRadius: '8px', width: '120px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
               </div>

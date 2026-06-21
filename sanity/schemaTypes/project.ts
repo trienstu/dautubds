@@ -1,15 +1,84 @@
+import { TextAlignIcon, TextAlignRender } from '../components/TextAlignAnnotation';
 import { defineField, defineType } from 'sanity'
+
+const blockContent = [
+  { type: 'block', marks: {
+      decorators: [
+        { title: 'Đậm (Bold)', value: 'strong' },
+        { title: 'Nghiêng (Italic)', value: 'em' },
+        { title: 'Gạch dưới (Underline)', value: 'underline' },
+        { title: 'Gạch ngang (Strike)', value: 'strike-through' },
+      ],
+      annotations: [
+        {
+          name: 'textAlign',
+          type: 'object',
+          title: 'Canh lề',
+          icon: TextAlignIcon,
+          components: {
+            annotation: TextAlignRender
+          },
+          fields: [
+            {
+              name: 'align',
+              type: 'string',
+              title: 'Chọn kiểu canh lề',
+              options: {
+                list: [
+                  { title: 'Trái', value: 'left' },
+                  { title: 'Giữa', value: 'center' },
+                  { title: 'Phải', value: 'right' },
+                  { title: 'Đều 2 bên', value: 'justify' }
+                ],
+                layout: 'radio'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  { type: 'table' },
+  { 
+    type: 'image',
+    title: 'Chèn Hình Ảnh',
+    options: { hotspot: true },
+    fields: [
+      {
+        name: 'alt',
+        type: 'string',
+        title: 'Chú thích ảnh (Alt text)',
+      }
+    ]
+  },
+  { type: 'youtube' }
+];
 
 export const projectType = defineType({
   name: 'project',
   title: 'Dự Án',
   type: 'document',
+  fieldsets: [
+    { name: 'basicInfo', title: 'Thông Tin Cơ Bản', options: { columns: 2 } },
+    { name: 'landingPageGroup', title: 'Tùy Chỉnh Landing Page', options: { collapsible: true, collapsed: true } },
+    { name: 'mediaGroup', title: 'Hình Ảnh Bìa & Thư Viện', options: { collapsible: true, collapsed: true } },
+    { name: 'contentGroup', title: 'Nội Dung Tổng Quan', options: { collapsible: true, collapsed: true } },
+    { name: 'featuresGroup', title: 'Tiện Ích', options: { collapsible: true, collapsed: true } },
+    { name: 'locationGroup', title: 'Vị Trí & Bản Đồ', options: { collapsible: true, collapsed: true } },
+    { name: 'pricingGroup', title: 'Bảng Giá & Thanh Toán', options: { collapsible: true, collapsed: true } },
+    { name: 'legalGroup', title: 'Pháp Lý', options: { collapsible: true, collapsed: true } },
+    { name: 'floorPlanGroup', title: 'Mặt Bằng', options: { collapsible: true, collapsed: true } },
+    { name: 'designGroup', title: 'Thiết Kế', options: { collapsible: true, collapsed: true } },
+    { name: 'showroomGroup', title: 'Nhà Mẫu', options: { collapsible: true, collapsed: true } },
+    { name: 'progressGroup', title: 'Tiến Độ & Tour 360', options: { collapsible: true, collapsed: true } },
+  ],
   fields: [
     defineField({
       name: 'title',
       title: 'Tên Dự Án',
       type: 'string',
       validation: (rule) => rule.required(),
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'slug',
@@ -17,6 +86,7 @@ export const projectType = defineType({
       type: 'slug',
       options: { source: 'title' },
       validation: (rule) => rule.required(),
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'category',
@@ -26,94 +96,55 @@ export const projectType = defineType({
         list: ['Biệt thự', 'Nhà phố', 'Căn hộ', 'Đất nền'],
       },
       validation: (rule) => rule.required(),
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'price',
       title: 'Mức Giá Chính Thức',
       type: 'string',
       description: 'Ví dụ: 4 tỷ - 21 tỷ',
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'productCount',
       title: 'Tổng Số Sản Phẩm',
       type: 'string',
       description: 'Ví dụ: 2000 căn',
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'viewCount',
       title: 'Lượt Xem',
       type: 'number',
       description: 'Lượt xem ảo ban đầu',
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'startDate',
       title: 'Ngày Khởi Công',
       type: 'date',
       options: { dateFormat: 'DD/MM/YYYY' },
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'progressPercentage',
       title: 'Tiến Độ Hiện Tại (%)',
       type: 'number',
       validation: (rule) => rule.min(0).max(100),
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'location',
       title: 'Vị Trí',
       type: 'string',
-    }),
-    defineField({
-      name: 'description',
-      title: 'Nội Dung Chi Tiết Dự Án',
-      type: 'array',
-      of: [
-        { type: 'block' },
-        { type: 'table' },
-        { 
-          type: 'image',
-          title: 'Chèn Hình Ảnh',
-          options: { hotspot: true },
-          fields: [
-            {
-              name: 'alt',
-              type: 'string',
-              title: 'Chú thích ảnh (Alt text)',
-            }
-          ]
-        }
-      ],
-    }),
-    defineField({
-      name: 'customLandingPage',
-      title: 'Mã HTML Custom Landing Page (Nâng cao)',
-      description: 'Nếu bạn có mã HTML của một Landing Page thiết kế riêng, hãy dán toàn bộ vào đây. Hệ thống sẽ hiển thị nó thay cho giao diện cơ bản.',
-      type: 'text',
-    }),
-    defineField({
-      name: 'hideLayoutComponents',
-      title: 'Ẩn Menu & Chân trang?',
-      description: 'Đánh dấu tích nếu Landing Page của bạn đã có Menu/Chân trang riêng và bạn muốn ẩn thanh Menu/Chân trang mặc định của website đi.',
-      type: 'boolean',
-      initialValue: false,
-    }),
-    defineField({
-      name: 'imageUrl',
-      title: 'Hình Ảnh Bìa',
-      type: 'image',
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: 'gallery',
-      title: 'Thư Viện Ảnh (Gallery)',
-      type: 'array',
-      of: [{ type: 'image', options: { hotspot: true } }],
-      description: 'Thêm nhiều hình ảnh để tạo Slider trình chiếu.',
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'developer',
       title: 'Chủ Đầu Tư',
       type: 'reference',
       to: { type: 'developer' },
+      fieldset: 'basicInfo',
     }),
     defineField({
       name: 'consultant',
@@ -121,6 +152,38 @@ export const projectType = defineType({
       type: 'reference',
       to: { type: 'author' },
       description: 'Chọn chuyên gia tư vấn cho dự án này.',
+      fieldset: 'basicInfo',
+    }),
+    defineField({
+      name: 'status',
+      title: 'Trạng Thái',
+      type: 'string',
+      options: {
+        list: ['Đang mở bán', 'Sắp ra mắt', 'Đã bàn giao'],
+      },
+      fieldset: 'basicInfo',
+    }),
+    defineField({
+      name: 'imageUrl',
+      title: 'Hình Ảnh Bìa',
+      type: 'image',
+      options: { hotspot: true },
+      fieldset: 'mediaGroup',
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Thư Viện Ảnh (Gallery)',
+      type: 'array',
+      of: [{ type: 'image', options: { hotspot: true } }],
+      description: 'Thêm nhiều hình ảnh để tạo Slider trình chiếu.',
+      fieldset: 'mediaGroup',
+    }),
+    defineField({
+      name: 'description',
+      title: 'Nội Dung Tổng Quan Dự Án',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'contentGroup',
     }),
     defineField({
       name: 'features',
@@ -128,47 +191,42 @@ export const projectType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Nhập các gạch đầu dòng ngắn (Tuỳ chọn)',
+      fieldset: 'featuresGroup',
     }),
     defineField({
       name: 'featuresContent',
       title: 'Bài Viết Tiện Ích (Text/Hình/Video)',
       type: 'array',
-      of: [
-        { type: 'block' },
-        { type: 'table' },
-        { type: 'image', options: { hotspot: true } },
-        { type: 'youtube' }
-      ],
+      of: blockContent,
       description: 'Mô tả chi tiết tiện ích, chèn hình ảnh...',
+      fieldset: 'featuresGroup',
     }),
     defineField({
       name: 'mapHtml',
       title: 'Bản Đồ Vị Trí (Google Maps Iframe)',
       type: 'text',
       rows: 3,
-      description: 'Dán mã nhúng <iframe> lấy từ Google Maps vào đây. (Hiển thị phía trên)',
+      description: 'Dán mã nhúng <iframe> lấy từ Google Maps vào đây.',
+      fieldset: 'locationGroup',
     }),
     defineField({
       name: 'locationContent',
       title: 'Bài Viết Vị Trí (Text/Hình/Video)',
       type: 'array',
-      description: 'Nhập mô tả, chèn hình ảnh, hoặc nhúng video YouTube (Hiển thị bên dưới Bản đồ)',
-      of: [
-        { type: 'block' }, 
-        { type: 'table' },
-        { type: 'image', options: { hotspot: true } },
-        { type: 'youtube' }
-      ],
+      description: 'Nhập mô tả, chèn hình ảnh, hoặc nhúng video YouTube',
+      of: blockContent,
+      fieldset: 'locationGroup',
     }),
     defineField({
       name: 'pricingContent',
       title: 'Bảng Giá & Chính Sách Thanh Toán',
       type: 'array',
-      of: [{ type: 'block' }, { type: 'table' }, { type: 'image' }],
+      of: blockContent,
+      fieldset: 'pricingGroup',
     }),
     defineField({
       name: 'legalDocuments',
-      title: 'Tài Liệu Pháp Lý',
+      title: 'Tài Liệu Pháp Lý (PDF)',
       type: 'array',
       of: [
         {
@@ -182,32 +240,71 @@ export const projectType = defineType({
             }
           ]
         }
-      ]
+      ],
+      fieldset: 'legalGroup',
+    }),
+    defineField({
+      name: 'legalContent',
+      title: 'Bài Viết Pháp Lý (Editor)',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'legalGroup',
     }),
     defineField({
       name: 'floorPlans',
       title: 'Hình Ảnh Mặt Bằng',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
+      fieldset: 'floorPlanGroup',
+    }),
+    defineField({
+      name: 'floorPlanContent',
+      title: 'Bài Viết Mặt Bằng (Editor)',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'floorPlanGroup',
+    }),
+    defineField({
+      name: 'designContent',
+      title: 'Nội Dung Thiết Kế (Editor)',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'designGroup',
+    }),
+    defineField({
+      name: 'showroomContent',
+      title: 'Nội Dung Nhà Mẫu (Editor)',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'showroomGroup',
     }),
     defineField({
       name: 'tour360Url',
       title: 'Link Tour 360°',
       type: 'url',
+      fieldset: 'progressGroup',
     }),
     defineField({
       name: 'progressContent',
-      title: 'Tiến Độ Xây Dựng',
+      title: 'Bài Viết Tiến Độ Xây Dựng',
       type: 'array',
-      of: [{ type: 'block' }, { type: 'table' }, { type: 'image' }],
+      of: blockContent,
+      fieldset: 'progressGroup',
     }),
     defineField({
-      name: 'status',
-      title: 'Trạng Thái',
-      type: 'string',
-      options: {
-        list: ['Đang mở bán', 'Sắp ra mắt', 'Đã bàn giao'],
-      },
+      name: 'customLandingPage',
+      title: 'Mã HTML Custom Landing Page (Nâng cao)',
+      description: 'Nếu bạn có mã HTML của một Landing Page thiết kế riêng, hãy dán toàn bộ vào đây. Hệ thống sẽ hiển thị nó thay cho giao diện cơ bản.',
+      type: 'text',
+      fieldset: 'landingPageGroup',
+    }),
+    defineField({
+      name: 'hideLayoutComponents',
+      title: 'Ẩn Menu & Chân trang?',
+      description: 'Đánh dấu tích nếu Landing Page của bạn đã có Menu/Chân trang riêng và bạn muốn ẩn thanh Menu/Chân trang mặc định của website đi.',
+      type: 'boolean',
+      initialValue: false,
+      fieldset: 'landingPageGroup',
     }),
     defineField({
       name: 'seo',

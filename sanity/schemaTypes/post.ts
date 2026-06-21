@@ -1,3 +1,4 @@
+import { TextAlignIcon, TextAlignRender } from '../components/TextAlignAnnotation';
 import { defineField, defineType } from 'sanity'
 
 export const postType = defineType({
@@ -35,7 +36,44 @@ export const postType = defineType({
       title: 'Nội Dung Chi Tiết',
       type: 'array',
       of: [
-        { type: 'block' },
+        { 
+          type: 'block',
+          marks: {
+            decorators: [
+              { title: 'Đậm (Bold)', value: 'strong' },
+              { title: 'Nghiêng (Italic)', value: 'em' },
+              { title: 'Gạch dưới (Underline)', value: 'underline' },
+              { title: 'Gạch ngang (Strike)', value: 'strike-through' },
+            ],
+            annotations: [
+              {
+                name: 'textAlign',
+                type: 'object',
+                title: 'Canh lề',
+                icon: TextAlignIcon,
+                components: {
+                  annotation: TextAlignRender
+                },
+                fields: [
+                  {
+                    name: 'align',
+                    type: 'string',
+                    title: 'Chọn kiểu canh lề',
+                    options: {
+                      list: [
+                        { title: 'Trái', value: 'left' },
+                        { title: 'Giữa', value: 'center' },
+                        { title: 'Phải', value: 'right' },
+                        { title: 'Đều 2 bên', value: 'justify' }
+                      ],
+                      layout: 'radio'
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
         { type: 'table' },
         { 
           type: 'image',

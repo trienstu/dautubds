@@ -1,32 +1,12 @@
-import { TextAlignIcon, TextAlignRender } from '../components/TextAlignAnnotation'
-import { defineField, defineType } from 'sanity'
+const fs = require('fs');
+const files = [
+  'sanity/schemaTypes/post.ts',
+  'sanity/schemaTypes/project.ts',
+  'sanity/schemaTypes/page.ts',
+  'sanity/schemaTypes/developer.ts'
+];
 
-export const pageType = defineType({
-  name: 'page',
-  title: 'Trang (Pages)',
-  type: 'document',
-  fields: [
-    defineField({
-      name: 'title',
-      title: 'Tiêu Đề Trang',
-      type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Đường Dẫn (URL)',
-      type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'content',
-      title: 'Nội Dung',
-      type: 'array',
-      of: [{ type: 'block', marks: {
+const newMarks = `marks: {
             decorators: [
               { title: 'Đậm (Bold)', value: 'strong' },
               { title: 'Nghiêng (Italic)', value: 'em' },
@@ -60,8 +40,24 @@ export const pageType = defineType({
                 ]
               }
             ]
-          }
-          }, { type: 'image' }],
-    }),
-  ],
-})
+          }`;
+
+files.forEach(file => {
+  let content = fs.readFileSync(file, 'utf8');
+  
+  // Clean up old imports
+  content = content.replace(
+    /import \{ AlignLeftIcon.*?TextAlignDecorators'.*?\n/g,
+    ""
+  );
+  if(!content.includes('TextAlignAnnotation')) {
+    content = "import { TextAlignIcon, TextAlignRender } from '../components/TextAlignAnnotation';\n" + content;
+  }
+
+  // Replace everything between marks: { ... } (non-greedy) until the closing }
+  // Since it's tricky, we'll replace the exact decorators block.
+  content = content.replace(/marks:\s*\{\s*decorators:\s*\[[\s\S]*?\]\s*\}/g, newMarks);
+  
+  fs.writeFileSync(file, content);
+});
+console.log('Done fixing');

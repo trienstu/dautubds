@@ -53,6 +53,48 @@ export default defineType({
       title: 'Link YouTube',
       type: 'url',
     }),
+    defineField({
+      name: 'footerProjects',
+      title: 'Menu Cột Dự Án (Footer)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Tên hiển thị', type: 'string' },
+            { name: 'url', title: 'Đường dẫn (URL)', type: 'string' }
+          ]
+        }
+      ]
+    }),
+    defineField({
+      name: 'footerRegions',
+      title: 'Menu Cột Khu Vực (Footer)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Tên hiển thị', type: 'string' },
+            { name: 'url', title: 'Đường dẫn (URL)', type: 'string' }
+          ]
+        }
+      ]
+    }),
+    defineField({
+      name: 'footerNews',
+      title: 'Menu Cột Tin Tức (Footer)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Tên hiển thị', type: 'string' },
+            { name: 'url', title: 'Đường dẫn (URL)', type: 'string' }
+          ]
+        }
+      ]
+    }),
   ],
   preview: {
     prepare() {

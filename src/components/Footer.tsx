@@ -67,11 +67,19 @@ export default async function Footer({ config }: { config?: any }) {
           <div style={{ flex: '1 1 120px' }}>
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 600 }}>Dự án</h4>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem' }}>
-              <li><Link href="/du-an" className="footer-link">Tất cả dự án</Link></li>
-              <li><Link href="/du-an?category=can-ho" className="footer-link">Căn hộ chung cư</Link></li>
-              <li><Link href="/du-an?category=nha-pho" className="footer-link">Nhà phố</Link></li>
-              <li><Link href="/du-an?category=biet-thu" className="footer-link">Biệt thự</Link></li>
-              <li><Link href="/du-an?category=dat-nen" className="footer-link">Đất nền</Link></li>
+              {config?.footerProjects && config.footerProjects.length > 0 ? (
+                config.footerProjects.map((link: any, idx: number) => (
+                  <li key={idx}><Link href={link.url || '#'} className="footer-link">{link.title}</Link></li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="/du-an" className="footer-link">Tất cả dự án</Link></li>
+                  <li><Link href="/du-an?category=can-ho" className="footer-link">Căn hộ chung cư</Link></li>
+                  <li><Link href="/du-an?category=nha-pho" className="footer-link">Nhà phố</Link></li>
+                  <li><Link href="/du-an?category=biet-thu" className="footer-link">Biệt thự</Link></li>
+                  <li><Link href="/du-an?category=dat-nen" className="footer-link">Đất nền</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -79,11 +87,19 @@ export default async function Footer({ config }: { config?: any }) {
           <div style={{ flex: '1 1 120px' }}>
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 600 }}>Khu vực</h4>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem' }}>
-              <li><Link href="#" className="footer-link">TP. Hồ Chí Minh</Link></li>
-              <li><Link href="#" className="footer-link">Hà Nội</Link></li>
-              <li><Link href="#" className="footer-link">Đà Nẵng</Link></li>
-              <li><Link href="#" className="footer-link">Nha Trang</Link></li>
-              <li><Link href="#" className="footer-link">Hải Phòng</Link></li>
+              {config?.footerRegions && config.footerRegions.length > 0 ? (
+                config.footerRegions.map((link: any, idx: number) => (
+                  <li key={idx}><Link href={link.url || '#'} className="footer-link">{link.title}</Link></li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="#" className="footer-link">TP. Hồ Chí Minh</Link></li>
+                  <li><Link href="#" className="footer-link">Hà Nội</Link></li>
+                  <li><Link href="#" className="footer-link">Đà Nẵng</Link></li>
+                  <li><Link href="#" className="footer-link">Nha Trang</Link></li>
+                  <li><Link href="#" className="footer-link">Hải Phòng</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -91,11 +107,19 @@ export default async function Footer({ config }: { config?: any }) {
           <div style={{ flex: '1 1 120px' }}>
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 600 }}>Tin tức</h4>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem' }}>
-              <li><Link href="/tin-tuc" className="footer-link">Phân tích thị trường</Link></li>
-              <li><Link href="/tin-tuc" className="footer-link">Quy hoạch</Link></li>
-              <li><Link href="/tin-tuc" className="footer-link">Kinh nghiệm đầu tư</Link></li>
-              <li><Link href="/tin-tuc" className="footer-link">Tư vấn pháp lý</Link></li>
-              <li><Link href="/tin-tuc" className="footer-link">Xu hướng BĐS</Link></li>
+              {config?.footerNews && config.footerNews.length > 0 ? (
+                config.footerNews.map((link: any, idx: number) => (
+                  <li key={idx}><Link href={link.url || '#'} className="footer-link">{link.title}</Link></li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="/tin-tuc" className="footer-link">Phân tích thị trường</Link></li>
+                  <li><Link href="/tin-tuc" className="footer-link">Quy hoạch</Link></li>
+                  <li><Link href="/tin-tuc" className="footer-link">Kinh nghiệm đầu tư</Link></li>
+                  <li><Link href="/tin-tuc" className="footer-link">Tư vấn pháp lý</Link></li>
+                  <li><Link href="/tin-tuc" className="footer-link">Xu hướng BĐS</Link></li>
+                </>
+              )}
             </ul>
           </div>
 

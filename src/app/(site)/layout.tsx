@@ -21,8 +21,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Trien BDS Luxury',
-    default: 'Website Bất Động Sản Hạng Sang | Trien BDS',
+    template: '%s | Đầu tư bất động sản',
+    default: 'Website Bất Động Sản Hạng Sang | Đầu tư bất động sản',
   },
   description: 'Khám phá bộ sưu tập bất động sản hạng sang bậc nhất dành riêng cho giới tinh hoa.',
   metadataBase: new URL('https://dautubds.io.vn'),
