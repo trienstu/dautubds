@@ -21,7 +21,7 @@ export default async function ProjectsPage({
   }
   
   const query = `*[${queryConditions.join(' && ')}] | order(_createdAt desc) {
-    "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?auto=format", status
+    "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format", status
   }`;
 
   const projects = await client.fetch(query, { category, q });

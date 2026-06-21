@@ -134,19 +134,19 @@ export const revalidate = 60;
 export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "post" && slug.current == $slug][0] {
-    _id, title, excerpt, content, date, viewCount, "imageUrl": imageUrl.asset->url + "?auto=format",
-    author->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified},
+    _id, title, excerpt, content, date, viewCount, "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
+    author->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified},
     "relatedPosts": relatedPosts[]->{
       title,
       "slug": slug.current,
-      "imageUrl": imageUrl.asset->url,
+      "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format",
       date,
       excerpt
     },
     "relatedProjects": relatedProjects[]->{
       title,
       "slug": slug.current,
-      "imageUrl": imageUrl.asset->url,
+      "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format",
       price,
       location,
       status,

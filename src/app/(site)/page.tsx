@@ -8,11 +8,11 @@ export const revalidate = 60;
 
 export default async function Home() {
   const featuredProjects = await client.fetch(`*[_type == "project"] | order(_createdAt desc)[0...6] {
-    "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?auto=format", status
+    "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format", status
   }`);
   
   const latestNews = await client.fetch(`*[_type == "post" && isMarketAnalysis != true] | order(date desc)[0...3] {
-    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?auto=format"
+    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
   }`);
 
   const marketStats = await client.fetch(`*[_type == "post" && isMarketAnalysis == true] | order(date desc)[0...3] {
@@ -20,11 +20,11 @@ export default async function Home() {
   }`);
 
   const events = await client.fetch(`*[_type == "event"] | order(date asc)[0...3] {
-    "id": _id, title, date, location, "imageUrl": image.asset->url + "?auto=format"
+    "id": _id, title, date, location, "imageUrl": image.asset->url + "?w=600&fit=max&auto=format"
   }`);
 
   const developers = await client.fetch(`*[_type == "developer"] | order(order asc) {
-    "id": _id, name, "logoUrl": logo.asset->url + "?auto=format"
+    "id": _id, name, "logoUrl": logo.asset->url + "?h=100&fit=max&auto=format"
   }`);
 
   return (

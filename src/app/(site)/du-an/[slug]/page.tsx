@@ -128,14 +128,14 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const query = `*[_type == "project" && slug.current == $slug][0] {
     ...,
-    "imageUrl": imageUrl.asset->url + "?auto=format",
-    "galleryUrls": gallery[].asset->url,
-    "floorPlans": floorPlans[].asset->url,
+    "imageUrl": imageUrl.asset->url + "?w=1600&fit=max&auto=format",
+    "galleryUrls": gallery[].asset->url + "?w=1200&fit=max&auto=format",
+    "floorPlans": floorPlans[].asset->url + "?w=1200&fit=max&auto=format",
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
-    developer->{name, "logoUrl": logo.asset->url + "?auto=format"},
-    consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
+    developer->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
   const project = await client.fetch(query, { slug });
@@ -468,7 +468,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.tour360Url && (
             <div id="tour-360" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
-              <iframe className="responsive-tour-iframe" src={project.tour360Url} allowFullScreen></iframe>
+              <iframe className="responsive-tour-iframe" src={project.tour360Url} allowFullScreen loading="lazy" title={`Tour 360 ${project.title}`}></iframe>
             </div>
           )}
 

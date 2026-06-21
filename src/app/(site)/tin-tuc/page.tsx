@@ -5,7 +5,7 @@ export const revalidate = 60;
 
 export default async function NewsPage() {
   const query = `*[_type == "post"] | order(date desc) {
-    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url
+    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
   }`;
   
   const news = await client.fetch(query);
