@@ -55,6 +55,7 @@ export default function GlobalBookingModal() {
         
         {/* Nút tắt */}
         <button 
+          aria-label="Đóng"
           onClick={() => setIsOpen(false)}
           style={{ position: 'absolute', top: '15px', right: '15px', background: 'transparent', border: 'none', color: 'var(--color-text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}
         >
@@ -76,15 +77,15 @@ export default function GlobalBookingModal() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text)' }}>Họ và tên *</label>
-              <input type="text" name="name" required placeholder="Nhập họ tên của bạn" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
+              <input aria-label="Họ và tên" type="text" name="name" required placeholder="Nhập họ tên của bạn" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text)' }}>Số điện thoại *</label>
-              <input type="tel" name="phone" required placeholder="Nhập số điện thoại" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
+              <input aria-label="Số điện thoại" type="tel" name="phone" required placeholder="Nhập số điện thoại" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text)' }}>Email</label>
-              <input type="email" name="email" placeholder="Nhập email (Không bắt buộc)" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
+              <input aria-label="Email" type="email" name="email" placeholder="Nhập email (Không bắt buộc)" style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }} />
             </div>
 
             {status === 'error' && (

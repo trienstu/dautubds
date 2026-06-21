@@ -515,8 +515,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           <div style={{ background: 'var(--color-secondary)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '1.3rem', color: 'var(--color-primary)', marginBottom: '1.5rem', textAlign: 'center' }}>Đăng Ký Nhận Bảng Giá</h3>
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <input type="text" placeholder="Họ và tên" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
-              <input type="tel" placeholder="Số điện thoại" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
+              <input aria-label="Họ và tên" type="text" placeholder="Họ và tên" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
+              <input aria-label="Số điện thoại" type="tel" placeholder="Số điện thoại" style={{ padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px' }} />
               <button type="button" className="btn" style={{ padding: '0.8rem', fontSize: '1rem', marginTop: '0.5rem' }}>Gửi Yêu Cầu</button>
             </form>
           </div>
