@@ -5,6 +5,7 @@ import { client } from '../../../../../sanity/lib/client';
 import HtmlRenderer from '@/components/HtmlRenderer';
 import ProjectGallery from '@/components/ProjectGallery';
 import ProjectTabs from '@/components/ProjectTabs';
+import Tour360Facade from '@/components/Tour360Facade';
 import ConsultantSidebar from '@/components/ConsultantSidebar';
 import ConsultantCardMobile from '@/components/ConsultantCardMobile';
 import MobileBottomNav from '@/components/MobileBottomNav';
@@ -468,7 +469,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.tour360Url && (
             <div id="tour-360" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
-              <iframe className="responsive-tour-iframe" src={project.tour360Url} allowFullScreen loading="lazy" title={`Tour 360 ${project.title}`}></iframe>
+              <Tour360Facade url={project.tour360Url} title={project.title} imageUrl={project.imageUrl} />
             </div>
           )}
 
