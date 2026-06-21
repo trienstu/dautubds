@@ -195,11 +195,16 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         .mobile-only { display: none !important; }
         .mobile-flex { display: none !important; }
         
+        .responsive-map-iframe iframe { width: 100% !important; aspect-ratio: 16 / 9; height: auto !important; }
+        .responsive-tour-iframe { width: 100% !important; aspect-ratio: 16 / 9; border-radius: 8px; border: none; }
+        
         @media (max-width: 900px) {
           .project-grid, .project-grid-top { grid-template-columns: 1fr !important; }
           .desktop-only { display: none !important; }
           .mobile-only { display: block !important; }
           .mobile-flex { display: flex !important; }
+          .responsive-map-iframe iframe { aspect-ratio: 4 / 3; }
+          .responsive-tour-iframe { aspect-ratio: 1 / 1; }
         }
       `}</style>
       <article style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
@@ -348,7 +353,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               <div id="vi-tri" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
                 <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Vị trí dự án {project.title}</h2>
                 {project.mapHtml && (
-                  <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
+                  <div className="responsive-map-iframe" style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
                 )}
                 {project.locationContent && (
                   <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
@@ -463,7 +468,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.tour360Url && (
             <div id="tour-360" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
-              <iframe src={project.tour360Url} allowFullScreen style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: '8px', border: 'none' }}></iframe>
+              <iframe className="responsive-tour-iframe" src={project.tour360Url} allowFullScreen></iframe>
             </div>
           )}
 
