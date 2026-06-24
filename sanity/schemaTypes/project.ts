@@ -71,6 +71,7 @@ export const projectType = defineType({
     { name: 'designGroup', title: 'Thiết Kế', options: { collapsible: true, collapsed: true } },
     { name: 'showroomGroup', title: 'Nhà Mẫu', options: { collapsible: true, collapsed: true } },
     { name: 'progressGroup', title: 'Tiến Độ & Tour 360', options: { collapsible: true, collapsed: true } },
+    { name: 'qaGroup', title: 'Hỏi Đáp (Q&A)', options: { collapsible: true, collapsed: false } },
   ],
   fields: [
     defineField({
@@ -314,6 +315,22 @@ export const projectType = defineType({
         collapsible: true,
         collapsed: true,
       },
+    }),
+    defineField({
+      name: 'faqs',
+      title: 'Danh sách Câu hỏi & Trả lời',
+      type: 'array',
+      fieldset: 'qaGroup',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'question', type: 'string', title: 'Câu hỏi' },
+          { name: 'answer', type: 'text', title: 'Câu trả lời (Dùng xuống dòng bình thường)', rows: 4 }
+        ],
+        preview: {
+          select: { title: 'question', subtitle: 'answer' }
+        }
+      }]
     }),
   ],
 })

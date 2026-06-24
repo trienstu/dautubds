@@ -8,7 +8,8 @@ import seo from './seo'
 import author from './author'
 import siteConfig from './siteConfig'
 import { youtubeType } from './youtube'
+import { imageGrid } from './imageGrid'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType],
+  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType, imageGrid],
 }

@@ -23,6 +23,25 @@ const portableTextComponents = {
         />
       );
     },
+    imageGrid: ({ value }: any) => {
+      if (!value?.images || value.images.length < 2) return null;
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '2rem 0' }}>
+          {value.images.map((img: any, idx: number) => {
+            if (!img?.asset?._ref) return null;
+            return (
+              <img
+                key={idx}
+                alt={img.alt || `Hình ảnh ${idx + 1}`}
+                loading="lazy"
+                src={urlFor(img).width(600).fit('max').auto('format').url()}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+              />
+            );
+          })}
+        </div>
+      );
+    },
     youtube: ({ value }: any) => {
       const { url } = value;
       const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
@@ -37,6 +56,14 @@ const portableTextComponents = {
         </div>
       );
     }
+  },
+  list: {
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
 };
 

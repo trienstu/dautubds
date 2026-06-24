@@ -17,6 +17,7 @@ export default function ProjectTabs({ project }: { project: any }) {
     { id: 'nha-mau', label: 'Nhà mẫu', hasData: !!project.showroomContent },
     { id: 'tour-360', label: 'Tour 360°', hasData: !!project.tour360Url },
     { id: 'tien-do', label: 'Tiến độ', hasData: !!project.progressContent },
+    { id: 'hoi-dap', label: 'Hỏi đáp', hasData: !!project.faqs && project.faqs.length > 0 },
     { id: 'chu-dau-tu', label: 'Chủ đầu tư', hasData: !!project.developer },
   ].filter(tab => tab.hasData); // Chỉ giữ lại các tab có dữ liệu
 
@@ -71,14 +72,13 @@ export default function ProjectTabs({ project }: { project: any }) {
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
       width: '100%'
     }}>
-      <div id="project-tabs-container" className="container" style={{
+      <div id="project-tabs-container" className="container-wide" style={{
         display: 'flex',
         overflowX: 'auto',
         whiteSpace: 'nowrap',
         WebkitOverflowScrolling: 'touch',
         scrollbarWidth: 'none',
         width: '100%',
-        maxWidth: '100%',
         position: 'relative'
       }}>
         <style>{`

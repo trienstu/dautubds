@@ -34,23 +34,23 @@ export default function ConsultantCardMobile({ consultant }: { consultant: any }
             )}
           </h3>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.7rem', background: '#F44336', color: 'white', padding: '0.2rem 0.4rem', borderRadius: '4px', fontWeight: 'bold' }}>Độc quyền</span>
-            <span style={{ fontSize: '0.8rem', color: '#666', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.7rem', background: '#D32F2F', color: 'white', padding: '0.2rem 0.4rem', borderRadius: '4px', fontWeight: 'bold' }}>Độc quyền</span>
+            <span style={{ fontSize: '0.8rem', color: '#555', display: 'flex', alignItems: 'center' }}>
               <span style={{ color: '#FFC107', marginRight: '2px' }}>★</span> 5.0 (124)
             </span>
           </div>
           {consultant.isVerified && (
-             <div style={{ fontSize: '0.75rem', color: '#4CAF50', border: '1px solid #4CAF50', padding: '0.1rem 0.4rem', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '0.4rem' }}>
+             <div style={{ fontSize: '0.75rem', color: '#2E7D32', border: '1px solid #2E7D32', padding: '0.1rem 0.4rem', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '0.4rem' }}>
                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Đã xác minh
              </div>
           )}
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <a href={consultant.zaloUrl || '#'} target="_blank" rel="noreferrer" style={{ width: '40px', height: '40px', background: '#0088FF', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+          <a aria-label="Liên hệ Zalo" href={consultant.zaloUrl || '#'} target="_blank" rel="noreferrer" style={{ width: '40px', height: '40px', background: '#0066CC', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
           </a>
-          <a href={`tel:${consultant.phone ? consultant.phone.replace(/[^0-9]/g, '') : '0909999888'}`} style={{ width: '40px', height: '40px', background: '#4CAF50', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+          <a aria-label="Gọi điện thoại" href={`tel:${consultant.phone ? consultant.phone.replace(/[^0-9]/g, '') : '0909999888'}`} style={{ width: '40px', height: '40px', background: '#2E7D32', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           </a>
         </div>

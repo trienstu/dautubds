@@ -49,6 +49,7 @@ export default function MortgageCalculator() {
             <span style={{ color: 'white', fontWeight: 'bold' }}>{formatCurrency(price)}</span>
           </label>
           <input 
+            aria-label="Giá trị nhà đất"
             type="range" min="500000000" max="50000000000" step="100000000" 
             value={price} onChange={(e) => setPrice(Number(e.target.value))} 
             style={{ width: '100%', accentColor: 'var(--color-primary)' }}
@@ -61,6 +62,7 @@ export default function MortgageCalculator() {
             <span style={{ color: 'white', fontWeight: 'bold' }}>{loanRatio}%</span>
           </label>
           <input 
+            aria-label="Tỷ lệ vay"
             type="range" min="0" max="100" step="5" 
             value={loanRatio} onChange={(e) => setLoanRatio(Number(e.target.value))} 
             style={{ width: '100%', accentColor: 'var(--color-primary)' }}
@@ -73,6 +75,7 @@ export default function MortgageCalculator() {
             <span style={{ color: 'white', fontWeight: 'bold' }}>{interestRate}%</span>
           </label>
           <input 
+            aria-label="Lãi suất"
             type="range" min="1" max="20" step="0.1" 
             value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} 
             style={{ width: '100%', accentColor: 'var(--color-primary)' }}
@@ -85,6 +88,7 @@ export default function MortgageCalculator() {
             <span style={{ color: 'white', fontWeight: 'bold' }}>{termYears} năm</span>
           </label>
           <input 
+            aria-label="Thời hạn vay"
             type="range" min="1" max="35" step="1" 
             value={termYears} onChange={(e) => setTermYears(Number(e.target.value))} 
             style={{ width: '100%', accentColor: 'var(--color-primary)' }}

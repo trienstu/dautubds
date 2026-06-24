@@ -11,6 +11,7 @@ import ConsultantCardMobile from '@/components/ConsultantCardMobile';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import MortgageCalculator from '@/components/MortgageCalculator';
 import ProjectActionButtons from '@/components/ProjectActionButtons';
+import ProjectFAQ from '@/components/ProjectFAQ';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 
@@ -78,6 +79,14 @@ const portableTextComponents = {
         </div>
       );
     }
+  },
+  list: {
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
   marks: {
     textAlign: ({ children, value }: any) => (
@@ -256,8 +265,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               
               {/* Giá */}
               <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '1.2rem', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-                <div style={{ color: '#3b82f6', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Mức giá chính thức</div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#3b82f6' }}>{project.price || 'Đang cập nhật'}</div>
+                <div style={{ color: '#60a5fa', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Mức giá chính thức</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 700, color: '#60a5fa' }}>{project.price || 'Đang cập nhật'}</div>
               </div>
 
               {/* Nút Liên hệ */}
@@ -266,14 +275,14 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               {/* Thống kê Mini */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={{ background: 'var(--background)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid var(--border-color)' }}>
-                  <div style={{ color: '#3b82f6', marginBottom: '0.5rem' }}>
+                  <div style={{ color: '#60a5fa', marginBottom: '0.5rem' }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                   </div>
                   <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.2rem' }}>{project.productCount || '--'}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Tổng số sản phẩm</div>
                 </div>
                 <div style={{ background: 'var(--background)', padding: '1rem', borderRadius: '8px', textAlign: 'center', border: '1px solid var(--border-color)' }}>
-                  <div style={{ color: '#3b82f6', marginBottom: '0.5rem' }}>
+                  <div style={{ color: '#60a5fa', marginBottom: '0.5rem' }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                   </div>
                   <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--foreground)', marginBottom: '0.2rem' }}>{project.viewCount || '367'}</div>
@@ -297,7 +306,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                       Tiến độ xây dựng
                     </div>
-                    <div style={{ fontWeight: 700, color: '#3b82f6', fontSize: '0.9rem' }}>{project.progressPercentage || 0}%</div>
+                    <div style={{ fontWeight: 700, color: '#60a5fa', fontSize: '0.9rem' }}>{project.progressPercentage || 0}%</div>
                   </div>
                   <div style={{ width: '100%', height: '6px', background: 'var(--background)', borderRadius: '3px', overflow: 'hidden' }}>
                     <div style={{ width: `${project.progressPercentage || 0}%`, height: '100%', background: '#3b82f6', borderRadius: '3px' }}></div>
@@ -313,7 +322,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   </div>
                   <div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Chủ đầu tư</div>
-                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#3b82f6' }}>{project.developer.name}</div>
+                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{project.developer.name}</div>
                   </div>
                 </div>
               )}
@@ -482,6 +491,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               </div>
             </div>
           )}
+
+          {/* Q&A */}
+          <ProjectFAQ faqs={project.faqs} />
 
           {/* Chủ Đầu Tư */}
           {project.developer && (

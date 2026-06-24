@@ -10,7 +10,7 @@ export default function ProjectActionButtons({ projectTitle }: { projectTitle: s
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
       <button 
-        style={{ background: '#3b82f6', color: 'white', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'background 0.3s', cursor: 'pointer' }}
+        style={{ background: '#2563EB', color: 'white', padding: '0.8rem', borderRadius: '6px', fontWeight: 600, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'background 0.3s', cursor: 'pointer' }}
         onClick={openBookingModal}
       >
         📞 Liên hệ tư vấn

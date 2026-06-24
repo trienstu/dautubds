@@ -47,6 +47,25 @@ const portableTextComponents = {
         />
       );
     },
+    imageGrid: ({ value }: any) => {
+      if (!value?.images || value.images.length < 2) return null;
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '2rem 0' }}>
+          {value.images.map((img: any, idx: number) => {
+            if (!img?.asset?._ref) return null;
+            return (
+              <img
+                key={idx}
+                alt={img.alt || `Hình ảnh ${idx + 1}`}
+                loading="lazy"
+                src={urlFor(img).width(600).fit('max').auto('format').url()}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+              />
+            );
+          })}
+        </div>
+      );
+    },
     table: ({ value }: any) => {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
@@ -87,6 +106,14 @@ const portableTextComponents = {
       return <h3 id={id} style={{ fontSize: '1.4rem', marginTop: '2.5rem', marginBottom: '1rem', color: 'var(--foreground)', fontWeight: 600 }}>{children}</h3>;
     },
     blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6', background: 'rgba(212,175,55,0.05)', padding: '1.5rem 1.5rem 1.5rem 2rem', borderRadius: '0 8px 8px 0' }}>{children}</blockquote>,
+  },
+  list: {
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
   marks: {
     strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,

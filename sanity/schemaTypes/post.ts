@@ -87,6 +87,9 @@ export const postType = defineType({
               description: 'Quan trọng cho SEO và người khiếm thị',
             }
           ]
+        },
+        {
+          type: 'imageGrid'
         }
       ],
     }),
