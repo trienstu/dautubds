@@ -115,9 +115,7 @@ const portableTextComponents = {
     bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
-  block: {
-    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '1em' }}>{children}</p>,
-  },
+
   marks: {
     strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
     link: ({ children, value }: any) => <a href={value.href} style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}>{children}</a>,
