@@ -427,7 +427,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Tiện Ích */}
           {((project.features && project.features.length > 0) || project.featuresContent) && (
             <div id="tien-ich" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
-              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiện ích nội khu dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiện ích dự án {project.title}</h2>
               {project.featuresContent && (
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
                   <PortableText value={project.featuresContent} components={portableTextComponents} />
