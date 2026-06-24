@@ -90,6 +90,13 @@ export const projectType = defineType({
       fieldset: 'basicInfo',
     }),
     defineField({
+      name: 'projectLogo',
+      title: 'Logo Dự Án (Nền trong suốt)',
+      type: 'image',
+      options: { hotspot: true },
+      fieldset: 'basicInfo',
+    }),
+    defineField({
       name: 'category',
       title: 'Phân Loại',
       type: 'string',

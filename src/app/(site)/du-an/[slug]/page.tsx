@@ -142,8 +142,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const query = `*[_type == "project" && slug.current == $slug][0] {
     ...,
     "imageUrl": imageUrl.asset->url + "?w=1600&fit=max&auto=format",
-    "galleryUrls": gallery[].asset->url + "?w=1200&fit=max&auto=format",
-    "floorPlans": floorPlans[].asset->url + "?w=1200&fit=max&auto=format",
+    "projectLogoUrl": projectLogo.asset->url + "?w=400&fit=max&auto=format",
+    "galleryUrls": gallery[].asset->url,
+    "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
@@ -255,11 +256,15 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               
               {/* Logo & Tên dự án */}
               <div style={{ textAlign: 'center' }}>
-                {project.developer && project.developer.logoUrl && (
+                {project.projectLogoUrl ? (
+                  <div style={{ width: '80px', height: '80px', margin: '0 auto 1rem', background: 'var(--color-dark)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={project.projectLogoUrl} alt={project.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  </div>
+                ) : project.developer && project.developer.logoUrl ? (
                   <div style={{ width: '80px', height: '80px', margin: '0 auto 1rem', background: 'var(--color-dark)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                   </div>
-                )}
+                ) : null}
                 <h1 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', color: 'var(--foreground)' }}>{project.title}</h1>
                 <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   <span>📍</span> {project.location || 'Đang cập nhật'}
