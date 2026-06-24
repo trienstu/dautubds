@@ -65,6 +65,9 @@ const portableTextComponents = {
     bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
+  block: {
+    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '1em' }}>{children}</p>,
+  },
 };
 
 export async function generateMetadata(

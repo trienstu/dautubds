@@ -30,7 +30,7 @@ export default async function StaticPage({ params }: { params: Promise<{ slug: s
       h1: ({ children }: any) => <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', marginTop: '2rem', color: 'var(--color-primary)' }}>{children}</h1>,
       h2: ({ children }: any) => <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', marginTop: '2rem' }}>{children}</h2>,
       h3: ({ children }: any) => <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', marginTop: '1.5rem' }}>{children}</h3>,
-      normal: ({ children }: any) => <p style={{ fontSize: '1.1rem', lineHeight: '1.8', marginBottom: '1rem' }}>{children}</p>,
+      normal: ({ children }: any) => <p style={{ fontSize: '1.1rem', lineHeight: '1.8', marginBottom: '1rem', textAlign: 'justify' }}>{children}</p>,
       blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '1rem', fontStyle: 'italic', margin: '1.5rem 0', background: 'rgba(255,255,255,0.05)', padding: '1rem' }}>{children}</blockquote>,
     },
     list: {

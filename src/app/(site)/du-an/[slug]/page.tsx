@@ -88,6 +88,9 @@ const portableTextComponents = {
     bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
+  block: {
+    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '1em' }}>{children}</p>,
+  },
   marks: {
     textAlign: ({ children, value }: any) => (
       <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
