@@ -32,7 +32,6 @@ export default function ThemeToggle() {
         cursor: 'pointer',
         transition: 'all 0.2s ease'
       }}
-      aria-label="Toggle Dark Mode"
     >
       {isDark ? (
         // Sun icon for dark mode (click to switch to light)
