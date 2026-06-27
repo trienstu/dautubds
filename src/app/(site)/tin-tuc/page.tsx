@@ -4,8 +4,8 @@ import { client } from '../../../../sanity/lib/client';
 export const revalidate = 60;
 
 export default async function NewsPage() {
-  const query = `*[_type == "post"] | order(date desc) {
-    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
+  const query = `*[_type == "post"] | order(coalesce(date, _createdAt) desc) {
+    "id": _id, title, "slug": slug.current, excerpt, "date": coalesce(date, _createdAt), "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
   }`;
   
   const news = await client.fetch(query);

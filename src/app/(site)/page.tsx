@@ -11,12 +11,12 @@ export default async function Home() {
     "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format", status
   }`);
   
-  const latestNews = await client.fetch(`*[_type == "post" && isMarketAnalysis != true] | order(date desc)[0...3] {
-    "id": _id, title, "slug": slug.current, excerpt, date, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
+  const latestNews = await client.fetch(`*[_type == "post" && isMarketAnalysis != true] | order(coalesce(date, _createdAt) desc)[0...3] {
+    "id": _id, title, "slug": slug.current, excerpt, "date": coalesce(date, _createdAt), "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
   }`);
 
-  const marketStats = await client.fetch(`*[_type == "post" && isMarketAnalysis == true] | order(date desc)[0...3] {
-    "id": _id, title, excerpt
+  const marketStats = await client.fetch(`*[_type == "post" && isMarketAnalysis == true] | order(coalesce(date, _createdAt) desc)[0...3] {
+    "id": _id, title, excerpt, "date": coalesce(date, _createdAt)
   }`);
 
   const events = await client.fetch(`*[_type == "event"] | order(date asc)[0...3] {
