@@ -23,11 +23,12 @@ export default function FloatingChatbot() {
   // Top of Contact widget is at 30 + 125 = 155px.
   
   // If not project detail, chatbot starts at 155 + 15 = 170px. Scroll to top at 170 + 55 + 15 = 240px.
-  // If project detail, chatbot starts at 30px. Scroll to top at 30 + 55 + 15 = 100px.
+  // If project detail, chatbot starts above the MobileBottomNav (which is ~70px tall). Let's use 90px.
+  // Scroll to top at 90 + 55 + 15 = 160px.
   
-  const desktopScrollBottom = isProjectDetail ? '100px' : '240px';
-  const mobileChatbotBottom = isProjectDetail ? '30px' : '170px';
-  const mobileScrollBottom = isProjectDetail ? '100px' : '240px';
+  const desktopScrollBottom = isProjectDetail ? '90px' : '240px';
+  const mobileChatbotBottom = isProjectDetail ? '90px' : '170px';
+  const mobileScrollBottom = isProjectDetail ? '160px' : '240px';
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -173,7 +174,7 @@ export default function FloatingChatbot() {
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
-            bottom: isProjectDetail ? '30px' : '170px',
+            bottom: isProjectDetail ? '90px' : '170px',
             right: '30px',
             width: '55px',
             height: '55px',
