@@ -18,10 +18,16 @@ export default function FloatingChatbot() {
   const pathname = usePathname();
   const isProjectDetail = pathname?.startsWith('/du-an/');
 
-  // Determine positions
-  const desktopScrollBottom = isProjectDetail ? '6.5rem' : '12rem';
-  const mobileChatbotBottom = isProjectDetail ? '5.5rem' : '12rem';
-  const mobileScrollBottom = isProjectDetail ? '9.5rem' : '16rem';
+  // Determine positions using exact px to match FloatingContact.module.css (bottom: 30px, gap: 15px, size: 55px)
+  // Contact widget height = 55 (phone) + 15 (gap) + 55 (zalo) = 125px. Starts at bottom 30px.
+  // Top of Contact widget is at 30 + 125 = 155px.
+  
+  // If not project detail, chatbot starts at 155 + 15 = 170px. Scroll to top at 170 + 55 + 15 = 240px.
+  // If project detail, chatbot starts at 30px. Scroll to top at 30 + 55 + 15 = 100px.
+  
+  const desktopScrollBottom = isProjectDetail ? '100px' : '240px';
+  const mobileChatbotBottom = isProjectDetail ? '30px' : '170px';
+  const mobileScrollBottom = isProjectDetail ? '100px' : '240px';
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -113,11 +119,11 @@ export default function FloatingChatbot() {
         @media (max-width: 768px) {
           .floating-chatbot-btn, .floating-chatbot-window {
             bottom: ${mobileChatbotBottom} !important;
-            right: 1rem !important;
+            right: 30px !important;
           }
           .floating-scroll-top {
             bottom: ${mobileScrollBottom} !important;
-            right: 1rem !important;
+            right: 35px !important;
           }
         }
       `}</style>
@@ -129,7 +135,7 @@ export default function FloatingChatbot() {
           style={{
             position: 'fixed',
             bottom: desktopScrollBottom,
-            right: '2rem',
+            right: '35px',
             width: '45px',
             height: '45px',
             borderRadius: '50%',
@@ -167,10 +173,10 @@ export default function FloatingChatbot() {
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
-            bottom: isProjectDetail ? '2rem' : '8rem',
-            right: '2rem',
-            width: '60px',
-            height: '60px',
+            bottom: isProjectDetail ? '30px' : '170px',
+            right: '30px',
+            width: '55px',
+            height: '55px',
             borderRadius: '50%',
             background: 'var(--color-primary)',
             color: 'var(--color-dark)',
