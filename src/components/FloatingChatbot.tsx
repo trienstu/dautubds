@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 type Message = {
   id: string;
@@ -14,6 +15,13 @@ export default function FloatingChatbot() {
   const [inputValue, setInputValue] = useState('');
   const [showScrollTop, setShowScrollTop] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const isProjectDetail = pathname?.startsWith('/du-an/');
+
+  // Determine positions
+  const desktopScrollBottom = isProjectDetail ? '6.5rem' : '12rem';
+  const mobileChatbotBottom = isProjectDetail ? '5.5rem' : '12rem';
+  const mobileScrollBottom = isProjectDetail ? '9.5rem' : '16rem';
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -98,17 +106,17 @@ export default function FloatingChatbot() {
             display: none !important;
           }
           .floating-scroll-top {
-            bottom: 12rem !important;
+            bottom: ${desktopScrollBottom} !important;
           }
         }
         /* Mobile */
         @media (max-width: 768px) {
           .floating-chatbot-btn, .floating-chatbot-window {
-            bottom: 12rem !important;
+            bottom: ${mobileChatbotBottom} !important;
             right: 1rem !important;
           }
           .floating-scroll-top {
-            bottom: 16rem !important;
+            bottom: ${mobileScrollBottom} !important;
             right: 1rem !important;
           }
         }
@@ -120,7 +128,7 @@ export default function FloatingChatbot() {
           onClick={scrollToTop}
           style={{
             position: 'fixed',
-            bottom: '12rem',
+            bottom: desktopScrollBottom,
             right: '2rem',
             width: '45px',
             height: '45px',
@@ -159,7 +167,7 @@ export default function FloatingChatbot() {
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
-            bottom: '8rem',
+            bottom: isProjectDetail ? '2rem' : '8rem',
             right: '2rem',
             width: '60px',
             height: '60px',
