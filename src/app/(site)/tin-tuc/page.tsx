@@ -11,7 +11,7 @@ export default async function NewsPage() {
   const news = await client.fetch(query);
 
   return (
-    <div className="container section">
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
         <h1 style={{ fontSize: '3rem', fontFamily: 'var(--font-heading)' }}>
           Tin Tức <span className="text-primary">Thị Trường</span>

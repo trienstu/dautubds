@@ -98,17 +98,17 @@ export default function FloatingChatbot() {
             display: none !important;
           }
           .floating-scroll-top {
-            bottom: 11.5rem !important;
+            bottom: 12rem !important;
           }
         }
         /* Mobile */
         @media (max-width: 768px) {
           .floating-chatbot-btn, .floating-chatbot-window {
-            bottom: 5.5rem !important;
+            bottom: 12rem !important;
             right: 1rem !important;
           }
           .floating-scroll-top {
-            bottom: 9.5rem !important;
+            bottom: 16rem !important;
             right: 1rem !important;
           }
         }
@@ -120,7 +120,7 @@ export default function FloatingChatbot() {
           onClick={scrollToTop}
           style={{
             position: 'fixed',
-            bottom: '6.5rem',
+            bottom: '12rem',
             right: '2rem',
             width: '45px',
             height: '45px',
@@ -159,7 +159,7 @@ export default function FloatingChatbot() {
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
-            bottom: '2rem',
+            bottom: '8rem',
             right: '2rem',
             width: '60px',
             height: '60px',
