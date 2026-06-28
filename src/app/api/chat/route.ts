@@ -16,14 +16,27 @@ export async function POST(req: Request) {
     const projects = await client.fetch(`*[_type == "project"] {
       title, 
       "slug": slug.current, 
-      location, 
+      category,
       price, 
-      status
+      productCount,
+      location, 
+      status,
+      "description": pt::text(description),
+      "features": pt::text(featuresContent),
+      "pricingPolicy": pt::text(pricingContent)
     }`);
 
     const projectContext = projects.map((p: any) => 
-      `- ${p.title} (${p.slug}): Giá ${p.price || 'Đang cập nhật'}, Vị trí: ${p.location}, Trạng thái: ${p.status}`
-    ).join('\n');
+      `DỰ ÁN: ${p.title} (${p.slug})\n` +
+      `- Loại hình: ${p.category || 'N/A'}\n` +
+      `- Giá: ${p.price || 'Đang cập nhật'}\n` +
+      `- Trạng thái: ${p.status || 'N/A'}\n` +
+      `- Vị trí: ${p.location || 'N/A'}\n` +
+      `- Tổng sản phẩm: ${p.productCount || 'N/A'}\n` +
+      `- Tổng quan: ${p.description ? p.description.substring(0, 500) : 'N/A'}\n` +
+      `- Tiện ích: ${p.features ? p.features.substring(0, 500) : 'N/A'}\n` +
+      `- Chính sách & Thanh toán: ${p.pricingPolicy ? p.pricingPolicy.substring(0, 500) : 'N/A'}\n`
+    ).join('\n\n');
 
     // 2. Prepare the System Prompt
     const systemInstruction = `
