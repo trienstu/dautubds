@@ -148,10 +148,11 @@ export const projectType = defineType({
       fieldset: 'basicInfo',
     }),
     defineField({
-      name: 'developer',
+      name: 'developers',
       title: 'Chủ Đầu Tư',
-      type: 'reference',
-      to: { type: 'developer' },
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'developer' } }],
+      description: 'Có thể chọn 1 hoặc nhiều Chủ đầu tư cho dự án này.',
       fieldset: 'basicInfo',
     }),
     defineField({

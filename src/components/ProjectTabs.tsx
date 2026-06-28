@@ -18,7 +18,7 @@ export default function ProjectTabs({ project }: { project: any }) {
     { id: 'tour-360', label: 'Tour 360°', hasData: !!project.tour360Url },
     { id: 'tien-do', label: 'Tiến độ', hasData: !!project.progressContent },
     { id: 'hoi-dap', label: 'Hỏi đáp', hasData: !!project.faqs && project.faqs.length > 0 },
-    { id: 'chu-dau-tu', label: 'Chủ đầu tư', hasData: !!project.developer },
+    { id: 'chu-dau-tu', label: 'Chủ đầu tư', hasData: !!project.developer || (project.developers && project.developers.length > 0) },
   ].filter(tab => tab.hasData); // Chỉ giữ lại các tab có dữ liệu
 
   // Theo dõi cuộn trang để active tab tự động

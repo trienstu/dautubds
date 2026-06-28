@@ -148,7 +148,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
-    developer->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    "developer": developer->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    "developers": developers[]->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
     consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
@@ -260,9 +261,26 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   <div style={{ width: '80px', height: '80px', margin: '0 auto 1rem', background: 'var(--color-dark)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img src={project.projectLogoUrl} alt={project.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                   </div>
-                ) : project.developer && project.developer.logoUrl ? (
-                  <div style={{ width: '80px', height: '80px', margin: '0 auto 1rem', background: 'var(--color-dark)', borderRadius: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                ) : (project.developers && project.developers.length > 0) || (project.developer && project.developer.logoUrl) ? (
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    margin: '0 auto 1rem',
+                    background: 'white',
+                    borderRadius: '50%',
+                    padding: '5px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    flexShrink: 0
+                  }}>
+                    <img 
+                      src={project.developers?.length > 0 ? project.developers[0].logoUrl : project.developer?.logoUrl} 
+                      alt="Logo CĐT" 
+                      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
+                    />
                   </div>
                 ) : null}
                 <h1 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', color: 'var(--foreground)' }}>{project.title}</h1>
@@ -323,15 +341,23 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               </div>
               
               {/* Nhãn CĐT */}
-              {project.developer && (
-                <div style={{ marginTop: '0.5rem', background: 'var(--background)', padding: '0.8rem 1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '1rem', border: '1px solid var(--border-color)' }}>
-                  <div style={{ width: '30px', height: '30px', background: 'white', borderRadius: '50%', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {(project.developers?.length > 0) ? (
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  {project.developers.map((dev: any, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ width: '40px', height: '40px', background: 'white', borderRadius: '8px', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                        <img src={dev.logoUrl} alt="Logo CĐT" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                      </div>
+                      <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{dev.name}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : project.developer && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '40px', height: '40px', background: 'white', borderRadius: '8px', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
                      <img src={project.developer.logoUrl} alt="Logo CĐT" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                   </div>
-                  <div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Chủ đầu tư</div>
-                    <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{project.developer.name}</div>
-                  </div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{project.developer.name}</div>
                 </div>
               )}
 
@@ -503,15 +529,33 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Q&A */}
           <ProjectFAQ faqs={project.faqs} />
 
-          {/* Chủ Đầu Tư */}
-          {project.developer && (
-            <div id="chu-dau-tu" style={{ background: 'var(--color-secondary)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '1.5rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
-              <div style={{ background: 'white', padding: '1rem', borderRadius: '8px', width: '120px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Multiple Developers Section */}
+          {(project.developers?.length > 0) ? (
+            <div id="chu-dau-tu" className="project-section" style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', marginBottom: '2rem', boxShadow: '0 4px 15px var(--shadow-color)' }}>
+              <h2 className="section-title" style={{ fontSize: '1.8rem', color: 'var(--color-primary)', marginBottom: '1.5rem', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem' }}>
+                Đơn vị Phát triển & Chủ đầu tư
+              </h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                {project.developers.map((dev: any, idx: number) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '12px' }}>
+                    <div style={{ width: '80px', height: '80px', background: 'white', borderRadius: '12px', padding: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <img src={dev.logoUrl} alt={dev.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '1.2rem', marginBottom: '0.2rem' }}>{dev.name}</h3>
+                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Chủ đầu tư</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : project.developer && (
+            <div id="chu-dau-tu" className="project-section" style={{ display: 'flex', alignItems: 'center', gap: '2rem', background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', marginBottom: '2rem', boxShadow: '0 4px 15px var(--shadow-color)' }}>
+              <div style={{ width: '150px', height: '150px', background: 'white', borderRadius: '12px', padding: '15px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Chủ Đầu Tư: {project.developer.name}</h3>
-                <p style={{ color: 'var(--color-text-muted)' }}>Đơn vị phát triển bất động sản uy tín, đảm bảo tiến độ và chất lượng cho dự án {project.title}.</p>
               </div>
             </div>
           )}
