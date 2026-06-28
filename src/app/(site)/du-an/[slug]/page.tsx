@@ -148,8 +148,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
-    "developer": developer->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
-    "developers": developers[]->{name, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
     consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
@@ -344,21 +344,21 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               {(project.developers?.length > 0) ? (
                 <div style={{ display: 'flex', gap: '15px' }}>
                   {project.developers.map((dev: any, idx: number) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Link key={idx} href={`/chu-dau-tu/${dev.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
                       <div style={{ width: '40px', height: '40px', background: 'white', borderRadius: '8px', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
                         <img src={dev.logoUrl} alt="Logo CĐT" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                       </div>
                       <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{dev.name}</div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               ) : project.developer && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Link href={`/chu-dau-tu/${project.developer.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
                   <div style={{ width: '40px', height: '40px', background: 'white', borderRadius: '8px', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
                      <img src={project.developer.logoUrl} alt="Logo CĐT" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                   </div>
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#60a5fa' }}>{project.developer.name}</div>
-                </div>
+                </Link>
               )}
 
             </div>
@@ -537,27 +537,28 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               </h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                 {project.developers.map((dev: any, idx: number) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '12px' }}>
+                  <Link key={idx} href={`/chu-dau-tu/${dev.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '12px', textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ width: '80px', height: '80px', background: 'white', borderRadius: '12px', padding: '10px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <img src={dev.logoUrl} alt={dev.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                     </div>
                     <div>
                       <h3 style={{ fontSize: '1.2rem', marginBottom: '0.2rem' }}>{dev.name}</h3>
-                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Chủ đầu tư</div>
+                      <div style={{ fontSize: '0.9rem', color: 'var(--color-primary)' }}>Xem chi tiết &rarr;</div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
           ) : project.developer && (
-            <div id="chu-dau-tu" className="project-section" style={{ display: 'flex', alignItems: 'center', gap: '2rem', background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', marginBottom: '2rem', boxShadow: '0 4px 15px var(--shadow-color)' }}>
+            <Link href={`/chu-dau-tu/${project.developer.slug}`} id="chu-dau-tu" className="project-section" style={{ display: 'flex', alignItems: 'center', gap: '2rem', background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', marginBottom: '2rem', boxShadow: '0 4px 15px var(--shadow-color)', textDecoration: 'none', color: 'inherit' }}>
               <div style={{ width: '150px', height: '150px', background: 'white', borderRadius: '12px', padding: '15px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <img src={project.developer.logoUrl} alt={project.developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
               </div>
               <div>
                 <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Chủ Đầu Tư: {project.developer.name}</h3>
+                <div style={{ fontSize: '1rem', color: 'var(--color-primary)' }}>Xem chi tiết &rarr;</div>
               </div>
-            </div>
+            </Link>
           )}
 
           {/* Mortgage Calculator */}
