@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
         const text = `🚨 BÁO ĐỘNG TING TING 🚨\n\nCó khách hàng mới để lại thông tin từ Chatbot AI!\n- SĐT: ${phone}\n- Đang xem trang: ${context}\n- Tin nhắn khách: "${latestUserMessage}"`;
         
-        await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        const telegramRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +64,14 @@ export async function POST(req: Request) {
             chat_id: process.env.TELEGRAM_CHAT_ID,
             text: text,
           }),
-        }).catch(err => console.error('Telegram Error:', err));
+        }).catch(err => {
+          console.error('Telegram Error:', err);
+          return null;
+        });
+        
+        if (telegramRes) {
+          console.log('Telegram API Response:', await telegramRes.json());
+        }
       }
     }
 
