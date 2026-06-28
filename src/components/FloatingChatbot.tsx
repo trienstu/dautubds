@@ -66,7 +66,7 @@ export default function FloatingChatbot() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
     // Add user message
@@ -80,28 +80,32 @@ export default function FloatingChatbot() {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate bot response based on rules
-    setTimeout(() => {
-      let botResponse = 'Dạ vâng, chuyên viên tư vấn của chúng tôi sẽ liên hệ hỗ trợ bạn ngay ạ. Bạn vui lòng để lại số điện thoại hoặc Zalo nhé!';
-      
-      const lowerText = text.toLowerCase();
-      if (lowerText.includes('giá') || lowerText.includes('bảng giá')) {
-        botResponse = 'Dạ, rổ hàng và bảng giá chi tiết tuỳ thuộc vào vị trí và loại căn. Anh/Chị vui lòng để lại SĐT hoặc kết nối Zalo để em gửi file báo giá chính xác nhất nhé!';
-      } else if (lowerText.includes('nhà mẫu') || lowerText.includes('tham quan')) {
-        botResponse = 'Dạ, nhà mẫu đang mở cửa đón khách tham quan hàng ngày. Anh/Chị cho em xin SĐT để em đăng ký vé tham quan VIP cho mình nhé!';
-      } else if (lowerText.includes('thanh toán') || lowerText.includes('chính sách')) {
-        botResponse = 'Dạ, hiện tại dự án đang có chính sách thanh toán giãn tiến độ cực kỳ tốt và chiết khấu cao. Anh/Chị kết nối Zalo để em gửi chi tiết bảng tính dòng tiền nhé!';
-      } else if (lowerText.includes('gọi')) {
-        botResponse = 'Dạ, anh/chị vui lòng nhập số điện thoại, bộ phận CSKH sẽ gọi lại hỗ trợ anh/chị ngay ạ!';
-      }
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, newUserMsg],
+          context: pathname
+        })
+      });
 
+      const data = await response.json();
+      
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
-        text: botResponse
+        text: data.message || 'Xin lỗi, tôi đang gặp sự cố kỹ thuật. Bạn vui lòng thử lại sau nhé!'
       }]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'bot',
+        text: 'Lỗi kết nối. Bạn vui lòng liên hệ Hotline nhé!'
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (
