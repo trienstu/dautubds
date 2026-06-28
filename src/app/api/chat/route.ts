@@ -74,10 +74,15 @@ export async function POST(req: Request) {
       systemInstruction: systemInstruction 
     });
 
-    const formattedHistory = messages.slice(0, -1).map((m: any) => ({
+    let formattedHistory = messages.slice(0, -1).map((m: any) => ({
       role: m.sender === 'user' ? 'user' : 'model',
       parts: [{ text: m.text }],
     }));
+
+    // Gemini requires history to start with a 'user' message
+    if (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+      formattedHistory.shift();
+    }
 
     const chat = model.startChat({
       history: formattedHistory,
