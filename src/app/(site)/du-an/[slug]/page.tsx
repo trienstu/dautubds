@@ -383,7 +383,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </div>
 
             <div id="tong-quan" className="project-content-section" style={{ marginTop: 0 }}>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Tổng quan dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tổng quan dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 {project.description ? (
                    <PortableText value={project.description} components={portableTextComponents} />
@@ -396,7 +396,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             {/* Vị trí */}
             {(project.mapHtml || project.locationContent) && (
               <div id="vi-tri" className="project-content-section">
-                <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Vị trí dự án {project.title}</h2>
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Vị trí dự án {project.title}</h2>
                 {project.mapHtml && (
                   <div className="responsive-map-iframe" style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
                 )}
@@ -411,7 +411,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             {/* Bảng giá */}
             {project.pricingContent && (
               <div id="bang-gia" className="project-content-section">
-                <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Bảng giá & Thanh toán dự án {project.title}</h2>
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Bảng giá & Thanh toán dự án {project.title}</h2>
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                   <PortableText value={project.pricingContent} components={portableTextComponents} />
                 </div>
@@ -421,7 +421,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             {/* Pháp lý */}
             {((project.legalDocuments && project.legalDocuments.length > 0) || project.legalContent) && (
               <div id="phap-ly" className="project-content-section">
-                <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Tài liệu pháp lý dự án {project.title}</h2>
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tài liệu pháp lý dự án {project.title}</h2>
                 
                 {project.legalContent && (
                   <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.legalDocuments && project.legalDocuments.length > 0) ? '2rem' : '0' }}>
@@ -454,7 +454,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Tiện Ích */}
           {((project.features && project.features.length > 0) || project.featuresContent) && (
             <div id="tien-ich" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Tiện ích dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tiện ích dự án {project.title}</h2>
               {project.featuresContent && (
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
                   <PortableText value={project.featuresContent} components={portableTextComponents} />
@@ -475,7 +475,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Mặt bằng */}
           {((project.floorPlans && project.floorPlans.length > 0) || project.floorPlanContent) && (
             <div id="mat-bang" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Mặt bằng dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Mặt bằng dự án {project.title}</h2>
               
               {project.floorPlanContent && (
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.floorPlans && project.floorPlans.length > 0) ? '2rem' : '0' }}>
@@ -492,7 +492,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Thiết kế */}
           {project.designContent && (
             <div id="thiet-ke" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Thiết kế dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Thiết kế dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.designContent} components={portableTextComponents} />
               </div>
@@ -502,7 +502,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Nhà mẫu */}
           {project.showroomContent && (
             <div id="nha-mau" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Nhà mẫu dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Nhà mẫu dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.showroomContent} components={portableTextComponents} />
               </div>
@@ -512,7 +512,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Tour 360 */}
           {project.tour360Url && (
             <div id="tour-360" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
               <Tour360Facade url={project.tour360Url} title={project.title} imageUrl={project.imageUrl} />
             </div>
           )}
@@ -520,7 +520,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {/* Tiến độ */}
           {project.progressContent && (
             <div id="tien-do" className="project-content-section">
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-primary)' }}>Tiến độ xây dựng dự án {project.title}</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tiến độ xây dựng dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.progressContent} components={portableTextComponents} />
               </div>
