@@ -143,3 +143,29 @@ button {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
 }
+
+/* Project Detail Sections */
+.project-content-section {
+  background: var(--color-secondary);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .project-content-section {
+    padding: 0.8rem; /* Viền mỏng hơn trên mobile */
+    border-radius: 8px;
+  }
+  
+  /* Bẻ khóa margin để hình ảnh full sát viền */
+  .project-content-section .pt-image,
+  .project-content-section .responsive-map-iframe {
+    width: calc(100% + 1.6rem) !important;
+    margin-left: -0.8rem !important;
+    margin-right: -0.8rem !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+  }
+}

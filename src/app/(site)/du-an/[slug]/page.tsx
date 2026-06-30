@@ -28,6 +28,7 @@ const portableTextComponents = {
       }
       return (
         <img
+          className="pt-image"
           alt={value.alt || 'Hình ảnh dự án'}
           loading="lazy"
           src={urlFor(value).width(800).fit('max').auto('format').url()}
@@ -40,7 +41,7 @@ const portableTextComponents = {
       const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
       if (!id) return null;
       return (
-        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '2rem 0', borderRadius: '8px' }}>
+        <div className="pt-image" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '2rem 0', borderRadius: '8px' }}>
           <iframe 
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
             src={`https://www.youtube.com/embed/${id}`} 
@@ -381,7 +382,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               <span>📍 {project.location || 'Đang cập nhật vị trí'}</span>
             </div>
 
-            <div id="tong-quan" style={{ background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="tong-quan" className="project-content-section" style={{ marginTop: 0 }}>
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tổng quan dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 {project.description ? (
@@ -394,7 +395,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             
             {/* Vị trí */}
             {(project.mapHtml || project.locationContent) && (
-              <div id="vi-tri" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <div id="vi-tri" className="project-content-section">
                 <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Vị trí dự án {project.title}</h2>
                 {project.mapHtml && (
                   <div className="responsive-map-iframe" style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
@@ -409,7 +410,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
             {/* Bảng giá */}
             {project.pricingContent && (
-              <div id="bang-gia" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <div id="bang-gia" className="project-content-section">
                 <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Bảng giá & Thanh toán dự án {project.title}</h2>
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                   <PortableText value={project.pricingContent} components={portableTextComponents} />
@@ -419,7 +420,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
             {/* Pháp lý */}
             {((project.legalDocuments && project.legalDocuments.length > 0) || project.legalContent) && (
-              <div id="phap-ly" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+              <div id="phap-ly" className="project-content-section">
                 <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tài liệu pháp lý dự án {project.title}</h2>
                 
                 {project.legalContent && (
@@ -452,7 +453,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Tiện Ích */}
           {((project.features && project.features.length > 0) || project.featuresContent) && (
-            <div id="tien-ich" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="tien-ich" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiện ích dự án {project.title}</h2>
               {project.featuresContent && (
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
@@ -473,7 +474,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Mặt bằng */}
           {((project.floorPlans && project.floorPlans.length > 0) || project.floorPlanContent) && (
-            <div id="mat-bang" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="mat-bang" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Mặt bằng dự án {project.title}</h2>
               
               {project.floorPlanContent && (
@@ -490,7 +491,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Thiết kế */}
           {project.designContent && (
-            <div id="thiet-ke" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="thiet-ke" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Thiết kế dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.designContent} components={portableTextComponents} />
@@ -500,7 +501,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Nhà mẫu */}
           {project.showroomContent && (
-            <div id="nha-mau" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="nha-mau" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Nhà mẫu dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.showroomContent} components={portableTextComponents} />
@@ -510,7 +511,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Tour 360 */}
           {project.tour360Url && (
-            <div id="tour-360" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="tour-360" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Trải nghiệm Tour 360° dự án {project.title}</h2>
               <Tour360Facade url={project.tour360Url} title={project.title} imageUrl={project.imageUrl} />
             </div>
@@ -518,7 +519,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
           {/* Tiến độ */}
           {project.progressContent && (
-            <div id="tien-do" style={{ marginTop: '1.5rem', background: 'var(--color-secondary)', borderRadius: '12px', padding: 'clamp(1.2rem, 4vw, 2rem)', border: '1px solid var(--border-color)' }}>
+            <div id="tien-do" className="project-content-section">
               <h2 style={{ fontSize: '1.05rem', marginBottom: '1.5rem' }}>Tiến độ xây dựng dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.progressContent} components={portableTextComponents} />
