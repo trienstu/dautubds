@@ -171,3 +171,16 @@ button {
     max-width: none !important;
   }
 }
+
+/* Khoảng cách nhỏ giữa 2 hình liên tiếp (Hình dính hình) */
+.pt-image {
+  display: block !important;
+}
+.pt-image + .pt-image {
+  margin-top: -1.8rem !important; /* Bù lại margin-bottom 2rem mặc định */
+}
+@media (max-width: 768px) {
+  .pt-image + .pt-image {
+    margin-top: -0.8rem !important; /* Bù lại margin-bottom 1rem trên mobile */
+  }
+}
