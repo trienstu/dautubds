@@ -27,10 +27,10 @@ export default function FloatingChatbot() {
   // Scroll to top at 90 + 55 + 15 = 160px.
   
   // On Desktop, the Chatbot button is hidden, so Scroll To Top only needs to be above Zalo.
-  // Zalo top is at 155px. Scroll to top at 155 + 15 = 170px.
-  const desktopScrollBottom = '170px';
-  const mobileChatbotBottom = isProjectDetail ? '90px' : '170px';
-  const mobileScrollBottom = isProjectDetail ? '160px' : '240px';
+  // Zalo top is at 135px. Scroll to top at 135 + 15 = 150px.
+  const desktopScrollBottom = '150px';
+  const mobileChatbotBottom = isProjectDetail ? '90px' : '150px';
+  const mobileScrollBottom = isProjectDetail ? '150px' : '210px';
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -180,10 +180,10 @@ export default function FloatingChatbot() {
           onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
-            bottom: isProjectDetail ? '90px' : '170px',
+            bottom: mobileChatbotBottom,
             right: '30px',
-            width: '55px',
-            height: '55px',
+            width: '45px',
+            height: '45px',
             borderRadius: '50%',
             background: 'var(--color-primary)',
             color: 'var(--color-dark)',
@@ -199,7 +199,7 @@ export default function FloatingChatbot() {
           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
         </button>
