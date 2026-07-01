@@ -1,8 +1,27 @@
 import { client } from '../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import { notFound } from 'next/navigation';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 export const revalidate = 60; // Revalidate every 60 seconds
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  const pageData = await client.fetch(`*[_type == "page" && slug.current == $slug][0]{ title }`, { slug });
+  
+  if (!pageData) return {};
+  
+  return {
+    title: pageData.title,
+    description: `Nội dung chi tiết ${pageData.title}.`,
+    alternates: {
+      canonical: `https://dautubds.io.vn/${slug}`,
+    },
+  };
+}
 
 export default async function StaticPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
