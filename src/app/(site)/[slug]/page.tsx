@@ -1,4 +1,4 @@
-import { client } from '../../../../../sanity/lib/client';
+import { client } from '../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import { notFound } from 'next/navigation';
 
