@@ -61,7 +61,7 @@ export const pageType = defineType({
               }
             ]
           }
-          }, { type: 'image' }],
+          }, { type: 'image' }, { type: 'youtube' }],
     }),
   ],
 })
