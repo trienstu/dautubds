@@ -25,6 +25,20 @@ export default async function StaticPage({ params }: { params: Promise<{ slug: s
           </div>
         );
       },
+      youtube: ({ value }: any) => {
+        const { url } = value;
+        const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+        if (!id) return null;
+        return (
+          <div className="pt-image" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '2rem 0', borderRadius: '8px' }}>
+            <iframe 
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+              src={`https://www.youtube.com/embed/${id}`} 
+              frameBorder="0" allowFullScreen
+            />
+          </div>
+        );
+      },
     },
     block: {
       h1: ({ children }: any) => <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', marginTop: '2rem', color: 'var(--color-primary)' }}>{children}</h1>,
