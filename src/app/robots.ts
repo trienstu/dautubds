@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin', '/studio'],
     },
-    sitemap: 'https://dautubds.io.vn/sitemap.xml',
+    sitemap: 'https://www.dautubds.io.vn/sitemap.xml',
   }
 }

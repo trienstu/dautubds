@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { client } from '../../sanity/lib/client'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://dautubds.io.vn'
+  const baseUrl = 'https://www.dautubds.io.vn'
 
   // Lấy danh sách slug từ Sanity
   const projects = await client.fetch(`*[_type == "project" && defined(slug.current)] { "slug": slug.current, _updatedAt }`)

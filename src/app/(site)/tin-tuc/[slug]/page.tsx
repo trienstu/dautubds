@@ -152,7 +152,7 @@ export async function generateMetadata(
       images: image ? [image] : [],
     },
     alternates: {
-      canonical: `https://dautubds.io.vn/tin-tuc/${slug}`,
+      canonical: `https://www.dautubds.io.vn/tin-tuc/${slug}`,
     },
   };
 }
@@ -215,9 +215,9 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://dautubds.io.vn' },
-      { '@type': 'ListItem', position: 2, name: 'Tin tức', item: 'https://dautubds.io.vn/tin-tuc' },
-      { '@type': 'ListItem', position: 3, name: article.title, item: `https://dautubds.io.vn/tin-tuc/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://www.dautubds.io.vn' },
+      { '@type': 'ListItem', position: 2, name: 'Tin tức', item: 'https://www.dautubds.io.vn/tin-tuc' },
+      { '@type': 'ListItem', position: 3, name: article.title, item: `https://www.dautubds.io.vn/tin-tuc/${slug}` },
     ],
   };
 
@@ -230,7 +230,7 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
     author: [{
         '@type': 'Person',
         name: article.author?.name || 'Trien BDS',
-        url: 'https://dautubds.io.vn'
+        url: 'https://www.dautubds.io.vn'
       }]
   };
 
@@ -363,7 +363,7 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
         </div>
       )}
 
-      <ShareButtons url={`https://dautubds.io.vn/tin-tuc/${slug}`} title={article.title} />
+      <ShareButtons url={`https://www.dautubds.io.vn/tin-tuc/${slug}`} title={article.title} />
 
       {article.relatedProjects && article.relatedProjects.length > 0 && (
         <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-color)' }}>

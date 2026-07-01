@@ -26,11 +26,11 @@ export const metadata: Metadata = {
     default: 'Website Bất Động Sản Hạng Sang | Đầu tư bất động sản',
   },
   description: 'Khám phá bộ sưu tập bất động sản hạng sang bậc nhất dành riêng cho giới tinh hoa.',
-  metadataBase: new URL('https://dautubds.io.vn'),
+  metadataBase: new URL('https://www.dautubds.io.vn'),
   openGraph: {
     title: 'Trien BDS Luxury Real Estate',
     description: 'Định Chuẩn Sống Đẳng Cấp - Bộ sưu tập bất động sản hạng sang.',
-    url: 'https://dautubds.io.vn',
+    url: 'https://www.dautubds.io.vn',
     siteName: 'Trien BDS',
     locale: 'vi_VN',
     type: 'website',

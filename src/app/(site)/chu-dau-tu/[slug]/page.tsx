@@ -95,7 +95,7 @@ export async function generateMetadata(
       images: image ? [image] : [],
     },
     alternates: {
-      canonical: `https://dautubds.io.vn/chu-dau-tu/${slug}`,
+      canonical: `https://www.dautubds.io.vn/chu-dau-tu/${slug}`,
     },
   };
 }
@@ -119,9 +119,9 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://dautubds.io.vn' },
-      { '@type': 'ListItem', position: 2, name: 'Chủ đầu tư', item: 'https://dautubds.io.vn/chu-dau-tu' },
-      { '@type': 'ListItem', position: 3, name: developer.name, item: `https://dautubds.io.vn/chu-dau-tu/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://www.dautubds.io.vn' },
+      { '@type': 'ListItem', position: 2, name: 'Chủ đầu tư', item: 'https://www.dautubds.io.vn/chu-dau-tu' },
+      { '@type': 'ListItem', position: 3, name: developer.name, item: `https://www.dautubds.io.vn/chu-dau-tu/${slug}` },
     ],
   };
 
@@ -130,7 +130,7 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
     '@type': 'Organization',
     name: developer.name,
     image: developer.logoUrl,
-    url: `https://dautubds.io.vn/chu-dau-tu/${slug}`
+    url: `https://www.dautubds.io.vn/chu-dau-tu/${slug}`
   };
 
   return (

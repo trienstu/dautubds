@@ -18,12 +18,12 @@ export async function generateMetadata(
     title: pageData.title,
     description: `Nội dung chi tiết ${pageData.title}.`,
     alternates: {
-      canonical: `https://dautubds.io.vn/${slug}`,
+      canonical: `https://www.dautubds.io.vn/${slug}`,
     },
     openGraph: {
       title: pageData.title,
       description: `Nội dung chi tiết ${pageData.title}.`,
-      url: `https://dautubds.io.vn/${slug}`,
+      url: `https://www.dautubds.io.vn/${slug}`,
       type: 'article',
     },
   };

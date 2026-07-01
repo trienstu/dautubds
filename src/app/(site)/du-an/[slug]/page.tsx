@@ -131,7 +131,7 @@ export async function generateMetadata(
       images: image ? [image] : [],
     },
     alternates: {
-      canonical: `https://dautubds.io.vn/du-an/${slug}`,
+      canonical: `https://www.dautubds.io.vn/du-an/${slug}`,
     },
   };
 }
@@ -176,9 +176,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://dautubds.io.vn' },
-      { '@type': 'ListItem', position: 2, name: 'Dự án', item: 'https://dautubds.io.vn/du-an' },
-      { '@type': 'ListItem', position: 3, name: project.title, item: `https://dautubds.io.vn/du-an/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://www.dautubds.io.vn' },
+      { '@type': 'ListItem', position: 2, name: 'Dự án', item: 'https://www.dautubds.io.vn/du-an' },
+      { '@type': 'ListItem', position: 3, name: project.title, item: `https://www.dautubds.io.vn/du-an/${slug}` },
     ],
   };
 
@@ -188,7 +188,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     name: project.title,
     description: project.description ? project.description.map((block: any) => block.children?.map((child: any) => child.text).join('')).join(' ') : '',
     image: project.imageUrl,
-    url: `https://dautubds.io.vn/du-an/${slug}`,
+    url: `https://www.dautubds.io.vn/du-an/${slug}`,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'VND',
