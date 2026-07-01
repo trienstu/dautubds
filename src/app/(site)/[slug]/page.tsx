@@ -20,6 +20,12 @@ export async function generateMetadata(
     alternates: {
       canonical: `https://dautubds.io.vn/${slug}`,
     },
+    openGraph: {
+      title: pageData.title,
+      description: `Nội dung chi tiết ${pageData.title}.`,
+      url: `https://dautubds.io.vn/${slug}`,
+      type: 'article',
+    },
   };
 }
 
