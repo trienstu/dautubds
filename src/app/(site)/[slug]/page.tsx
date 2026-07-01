@@ -58,8 +58,8 @@ export default async function StaticPage({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="container" style={{ padding: '4rem 1rem', maxWidth: '900px' }}>
-      <div style={{ background: 'var(--color-secondary)', padding: '3rem', borderRadius: '12px', border: '1px solid var(--border-color)', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '2rem', textAlign: 'center', color: 'var(--foreground)' }}>
+      <div className="project-content-section" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginTop: 0 }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem', textAlign: 'center', color: 'var(--foreground)' }}>
           {pageData.title}
         </h1>
         <div style={{ height: '2px', background: 'var(--color-primary)', width: '60px', margin: '0 auto 3rem auto' }}></div>
