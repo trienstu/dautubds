@@ -59,6 +59,11 @@ export default async function SiteLayout({
   }`);
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <head>
+        {config?.googleSiteVerification && (
+          <meta name="google-site-verification" content={config.googleSiteVerification} />
+        )}
+      </head>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} suppressHydrationWarning>
         <ThemeProvider>
           <div className="notranslate">
@@ -75,7 +80,7 @@ export default async function SiteLayout({
           </div>
         </ThemeProvider>
       </body>
-      <GoogleAnalytics gaId="G-XXXXXXXXXX" />
+      {config?.googleAnalyticsId && <GoogleAnalytics gaId={config.googleAnalyticsId} />}
     </html>
   );
 }

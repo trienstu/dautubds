@@ -95,6 +95,18 @@ export default defineType({
         }
       ]
     }),
+    defineField({
+      name: 'googleAnalyticsId',
+      title: 'Mã Google Analytics (ID)',
+      type: 'string',
+      description: 'Ví dụ: G-XXXXXXXXXX',
+    }),
+    defineField({
+      name: 'googleSiteVerification',
+      title: 'Mã Google Search Console (Verification)',
+      type: 'string',
+      description: 'Chỉ nhập đoạn mã ngẫu nhiên bên trong thẻ content="..."',
+    }),
   ],
   preview: {
     prepare() {
