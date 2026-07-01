@@ -129,7 +129,7 @@ export default async function Footer({ config }: { config?: any }) {
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem' }}>
               <li><Link href="/lien-he" className="footer-link">Liên hệ</Link></li>
               {pages && pages.map((page: any, idx: number) => (
-                <li key={idx}><Link href={`/trang/${page.slug}`} className="footer-link">{page.title}</Link></li>
+                <li key={idx}><Link href={`/${page.slug}`} className="footer-link">{page.title}</Link></li>
               ))}
               {!pages || pages.length === 0 ? (
                 <>

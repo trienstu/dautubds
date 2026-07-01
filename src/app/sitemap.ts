@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const pageUrls = pages.map((page: any) => ({
-    url: `${baseUrl}/trang/${page.slug}`,
+    url: `${baseUrl}/${page.slug}`,
     lastModified: new Date(page._updatedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
