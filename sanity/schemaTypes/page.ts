@@ -58,6 +58,18 @@ export const pageType = defineType({
                     }
                   }
                 ]
+              },
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                  }
+                ]
               }
             ]
           }

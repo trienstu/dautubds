@@ -58,16 +58,27 @@ export const postType = defineType({
                   {
                     name: 'align',
                     type: 'string',
-                    title: 'Chọn kiểu canh lề',
+                    title: 'Vị trí',
                     options: {
                       list: [
                         { title: 'Trái', value: 'left' },
                         { title: 'Giữa', value: 'center' },
                         { title: 'Phải', value: 'right' },
-                        { title: 'Đều 2 bên', value: 'justify' }
-                      ],
-                      layout: 'radio'
+                        { title: 'Đều', value: 'justify' }
+                      ]
                     }
+                  }
+                ]
+              },
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
                   }
                 ]
               }
