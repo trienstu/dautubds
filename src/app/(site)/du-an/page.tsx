@@ -1,7 +1,34 @@
 import ProjectCard from '@/components/ProjectCard';
 import { client } from '../../../../sanity/lib/client';
+import type { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await client.fetch(`*[_type == "siteConfig"][0]{
+    projectsSeo {
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+      "seoImageUrl": seoImage.asset->url
+    }
+  }`);
+  
+  const seo = config?.projectsSeo || {};
+  return {
+    title: seo.seoTitle || 'Danh Sách Dự Án | Trien BDS',
+    description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
+    keywords: seo.seoKeywords || '',
+    alternates: { canonical: 'https://www.dautubds.io.vn/du-an' },
+    openGraph: {
+      title: seo.seoTitle || 'Danh Sách Dự Án | Trien BDS',
+      description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
+      url: 'https://www.dautubds.io.vn/du-an',
+      type: 'website',
+      images: seo.seoImageUrl ? [{ url: seo.seoImageUrl }] : [],
+    },
+  };
+}
 
 export default async function ProjectsPage({
   searchParams,

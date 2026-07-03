@@ -3,8 +3,35 @@ import styles from './page.module.css';
 import ProjectCard from '@/components/ProjectCard';
 import NewsCard from '@/components/NewsCard';
 import { client } from '../../../sanity/lib/client';
+import type { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await client.fetch(`*[_type == "siteConfig"][0]{
+    homeSeo {
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+      "seoImageUrl": seoImage.asset->url
+    }
+  }`);
+  
+  const seo = config?.homeSeo || {};
+  return {
+    title: seo.seoTitle || 'Trang Chủ | Trien BDS',
+    description: seo.seoDescription || 'Định chuẩn sống đẳng cấp cùng Trien BDS Luxury Real Estate.',
+    keywords: seo.seoKeywords || '',
+    alternates: { canonical: 'https://www.dautubds.io.vn/' },
+    openGraph: {
+      title: seo.seoTitle || 'Trang Chủ | Trien BDS',
+      description: seo.seoDescription || 'Định chuẩn sống đẳng cấp cùng Trien BDS Luxury Real Estate.',
+      url: 'https://www.dautubds.io.vn/',
+      type: 'website',
+      images: seo.seoImageUrl ? [{ url: seo.seoImageUrl }] : [],
+    },
+  };
+}
 
 export default async function Home() {
   const featuredProjects = await client.fetch(`*[_type == "project"] | order(_createdAt desc)[0...6] {

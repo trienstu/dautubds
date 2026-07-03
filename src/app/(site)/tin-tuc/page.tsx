@@ -1,7 +1,34 @@
 import NewsCard from '@/components/NewsCard';
 import { client } from '../../../../sanity/lib/client';
+import type { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await client.fetch(`*[_type == "siteConfig"][0]{
+    newsSeo {
+      seoTitle,
+      seoDescription,
+      seoKeywords,
+      "seoImageUrl": seoImage.asset->url
+    }
+  }`);
+  
+  const seo = config?.newsSeo || {};
+  return {
+    title: seo.seoTitle || 'Tin Tức & Sự Kiện | Trien BDS',
+    description: seo.seoDescription || 'Cập nhật tin tức thị trường và sự kiện bất động sản mới nhất.',
+    keywords: seo.seoKeywords || '',
+    alternates: { canonical: 'https://www.dautubds.io.vn/tin-tuc' },
+    openGraph: {
+      title: seo.seoTitle || 'Tin Tức & Sự Kiện | Trien BDS',
+      description: seo.seoDescription || 'Cập nhật tin tức thị trường và sự kiện bất động sản mới nhất.',
+      url: 'https://www.dautubds.io.vn/tin-tuc',
+      type: 'website',
+      images: seo.seoImageUrl ? [{ url: seo.seoImageUrl }] : [],
+    },
+  };
+}
 
 export default async function NewsPage() {
   const query = `*[_type == "post"] | order(coalesce(date, _createdAt) desc) {
