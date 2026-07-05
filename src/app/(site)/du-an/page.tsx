@@ -32,7 +32,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   
   const seo = config?.projectsSeo || {};
   const categoryLabel = category && categoryMap[category] ? categoryMap[category] : '';
-  const pageTitle = categoryLabel ? `Dự Án ${categoryLabel} | Trien BDS` : (seo.seoTitle || 'Danh Sách Dự Án | Trien BDS');
+  const pageTitle = categoryLabel ? categoryLabel : (seo.seoTitle || 'Danh Sách Dự Án');
 
   return {
     title: pageTitle,
@@ -77,7 +77,7 @@ export default async function ProjectsPage({
     <div className="container section">
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <h1 style={{ fontSize: '3rem', fontFamily: 'var(--font-heading)' }}>
-          {q ? `Kết quả tìm kiếm cho "${q}"` : (categoryLabel ? `Dự Án ${categoryLabel}` : 'Tất Cả Dự Án')}
+          {q ? `Kết quả tìm kiếm cho "${q}"` : (categoryLabel ? categoryLabel : 'Tất Cả Dự Án')}
         </h1>
         <p style={{ color: 'var(--color-text-muted)', maxWidth: '600px', margin: '0 auto' }}>
           Khám phá danh sách các dự án bất động sản đẳng cấp, được tuyển chọn kỹ lưỡng để mang lại giá trị sống và cơ hội đầu tư tốt nhất.
