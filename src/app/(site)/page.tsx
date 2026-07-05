@@ -77,10 +77,10 @@ export default async function Home() {
               </div>
               <select name="category" className={styles.searchSelect}>
                 <option value="">Loại hình</option>
-                <option value="Biệt thự">Biệt thự</option>
-                <option value="Nhà phố">Nhà phố</option>
-                <option value="Căn hộ">Căn hộ</option>
-                <option value="Đất nền">Đất nền</option>
+                <option value="biet-thu">Biệt thự</option>
+                <option value="nha-pho">Nhà phố</option>
+                <option value="can-ho">Căn hộ</option>
+                <option value="dat-nen">Đất nền</option>
               </select>
               <select name="price" className={styles.searchSelect}>
                 <option value="">Mức giá</option>

@@ -4,7 +4,23 @@ import type { Metadata } from 'next';
 
 export const revalidate = 60;
 
-export async function generateMetadata(): Promise<Metadata> {
+const categoryMap: Record<string, string> = {
+  'biet-thu': 'Biệt thự',
+  'nha-pho': 'Nhà phố',
+  'can-ho': 'Căn hộ',
+  'dat-nen': 'Đất nền',
+};
+
+const categories = [
+  { slug: 'tat-ca', label: 'Tất cả' },
+  { slug: 'biet-thu', label: 'Biệt thự' },
+  { slug: 'nha-pho', label: 'Nhà phố' },
+  { slug: 'can-ho', label: 'Căn hộ' },
+  { slug: 'dat-nen', label: 'Đất nền' },
+];
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ category?: string }> }): Promise<Metadata> {
+  const { category } = await searchParams;
   const config = await client.fetch(`*[_type == "siteConfig"][0]{
     projectsSeo {
       seoTitle,
@@ -15,13 +31,16 @@ export async function generateMetadata(): Promise<Metadata> {
   }`);
   
   const seo = config?.projectsSeo || {};
+  const categoryLabel = category && categoryMap[category] ? categoryMap[category] : '';
+  const pageTitle = categoryLabel ? `Dự Án ${categoryLabel} | Trien BDS` : (seo.seoTitle || 'Danh Sách Dự Án | Trien BDS');
+
   return {
-    title: seo.seoTitle || 'Danh Sách Dự Án | Trien BDS',
+    title: pageTitle,
     description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
     keywords: seo.seoKeywords || '',
     alternates: { canonical: 'https://www.dautubds.io.vn/du-an' },
     openGraph: {
-      title: seo.seoTitle || 'Danh Sách Dự Án | Trien BDS',
+      title: pageTitle,
       description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
       url: 'https://www.dautubds.io.vn/du-an',
       type: 'website',
@@ -36,11 +55,12 @@ export default async function ProjectsPage({
   searchParams: Promise<{ category?: string, q?: string }>
 }) {
   const { category, q } = await searchParams;
+  const categoryLabel = category && categoryMap[category] ? categoryMap[category] : category;
   
   const queryConditions = ['_type == "project"'];
   
-  if (category && category !== 'Tất cả') {
-    queryConditions.push(`category == $category`);
+  if (categoryLabel && categoryLabel !== 'Tất cả') {
+    queryConditions.push(`category == $categoryLabel`);
   }
   
   if (q) {
@@ -51,13 +71,13 @@ export default async function ProjectsPage({
     "id": _id, title, "slug": slug.current, category, price, location, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format", status
   }`;
 
-  const projects = await client.fetch(query, { category, q });
+  const projects = await client.fetch(query, { categoryLabel, q });
 
   return (
     <div className="container section">
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <h1 style={{ fontSize: '3rem', fontFamily: 'var(--font-heading)' }}>
-          {q ? `Kết quả tìm kiếm cho "${q}"` : (category ? `Dự Án ${category}` : 'Tất Cả Dự Án')}
+          {q ? `Kết quả tìm kiếm cho "${q}"` : (categoryLabel ? `Dự Án ${categoryLabel}` : 'Tất Cả Dự Án')}
         </h1>
         <p style={{ color: 'var(--color-text-muted)', maxWidth: '600px', margin: '0 auto' }}>
           Khám phá danh sách các dự án bất động sản đẳng cấp, được tuyển chọn kỹ lưỡng để mang lại giá trị sống và cơ hội đầu tư tốt nhất.
@@ -65,17 +85,17 @@ export default async function ProjectsPage({
       </div>
 
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '3rem', flexWrap: 'wrap' }}>
-        {['Tất cả', 'Biệt thự', 'Nhà phố', 'Căn hộ', 'Đất nền'].map(cat => {
-          const isActive = (cat === 'Tất cả' && !category) || cat === category;
-          const href = cat === 'Tất cả' ? '/du-an' : `/du-an?category=${cat}`;
+        {categories.map(cat => {
+          const isActive = (cat.slug === 'tat-ca' && !category) || cat.slug === category;
+          const href = cat.slug === 'tat-ca' ? '/du-an' : `/du-an?category=${cat.slug}`;
           return (
             <a 
-              key={cat} 
+              key={cat.slug} 
               href={href}
               className={isActive ? 'btn' : 'btn btn-outline'}
               style={{ padding: '0.5rem 1.5rem', borderRadius: '50px' }}
             >
-              {cat}
+              {cat.label}
             </a>
           );
         })}
