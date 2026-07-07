@@ -142,16 +142,16 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const query = `*[_type == "project" && slug.current == $slug][0] {
     ...,
-    "imageUrl": imageUrl.asset->url + "?w=1600&fit=max&auto=format",
-    "projectLogoUrl": projectLogo.asset->url + "?w=400&fit=max&auto=format",
+    "imageUrl": imageUrl.asset->url + "?auto=format",
+    "projectLogoUrl": projectLogo.asset->url + "?auto=format",
     "galleryUrls": gallery[].asset->url,
     "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
-    "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
-    "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
-    consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
+    "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?auto=format"},
+    "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?auto=format"},
+    consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
   const project = await client.fetch(query, { slug });

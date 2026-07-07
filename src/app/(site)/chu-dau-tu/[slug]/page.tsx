@@ -105,9 +105,9 @@ export const revalidate = 60;
 export default async function DeveloperDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "developer" && slug.current == $slug][0] {
-    _id, name, description, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format",
+    _id, name, description, "logoUrl": logo.asset->url + "?auto=format",
     "projects": *[_type == "project" && (developer._ref == ^._id || ^._id in developers[]._ref)] {
-      _id, title, "slug": slug.current, location, price, "imageUrl": imageUrl.asset->url + "?w=800&fit=max&auto=format"
+      _id, title, "slug": slug.current, location, price, "imageUrl": imageUrl.asset->url + "?auto=format"
     }
   }`;
   
