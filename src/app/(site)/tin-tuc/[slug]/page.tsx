@@ -42,7 +42,7 @@ const portableTextComponents = {
         <img
           alt={value.alt || 'Hình ảnh minh họa'}
           loading="lazy"
-          src={urlFor(value).width(900).fit('max').auto('format').url()}
+          src={urlFor(value).auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
@@ -58,7 +58,7 @@ const portableTextComponents = {
                 key={idx}
                 alt={img.alt || `Hình ảnh ${idx + 1}`}
                 loading="lazy"
-                src={urlFor(img).width(600).fit('max').auto('format').url()}
+                src={urlFor(img).auto('format').url()}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
               />
             );

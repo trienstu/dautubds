@@ -31,7 +31,7 @@ const portableTextComponents = {
           className="pt-image"
           alt={value.alt || 'Hình ảnh dự án'}
           loading="lazy"
-          src={urlFor(value).width(800).fit('max').auto('format').url()}
+          src={urlFor(value).auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
