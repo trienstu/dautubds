@@ -55,7 +55,7 @@ export default async function SiteLayout({
 }>) {
   const config = await client.fetch(`*[_type == "siteConfig"][0] {
     ...,
-    "logoUrl": logo.asset->url
+    "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"
   }`);
   return (
     <html lang="vi" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
