@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function NewsPage() {
   const query = `*[_type == "post"] | order(coalesce(date, _createdAt) desc) {
-    "id": _id, title, "slug": slug.current, excerpt, "date": coalesce(date, _createdAt), "imageUrl": imageUrl.asset->url + "?auto=format"
+    "id": _id, title, "slug": slug.current, excerpt, "date": coalesce(date, _createdAt), "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format"
   }`;
   
   const news = await client.fetch(query);

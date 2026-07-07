@@ -31,7 +31,7 @@ const portableTextComponents = {
           className="pt-image"
           alt={value.alt || 'Hình ảnh dự án'}
           loading="lazy"
-          src={urlFor(value).auto('format').url()}
+          src={urlFor(value).width(1200).fit('max').auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
@@ -142,16 +142,16 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const query = `*[_type == "project" && slug.current == $slug][0] {
     ...,
-    "imageUrl": imageUrl.asset->url + "?auto=format",
-    "projectLogoUrl": projectLogo.asset->url + "?auto=format",
+    "imageUrl": imageUrl.asset->url + "?w=1920&fit=max&auto=format",
+    "projectLogoUrl": projectLogo.asset->url + "?w=400&fit=max&auto=format",
     "galleryUrls": gallery[].asset->url,
     "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
-    "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?auto=format"},
-    "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?auto=format"},
-    consultant->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
+    "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
+    consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
   const project = await client.fetch(query, { slug });

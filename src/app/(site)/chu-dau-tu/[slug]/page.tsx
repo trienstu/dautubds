@@ -18,7 +18,7 @@ const portableTextComponents = {
         <img
           alt={value.alt || 'Hình ảnh'}
           loading="lazy"
-          src={urlFor(value).auto('format').url()}
+          src={urlFor(value).width(1200).fit('max').auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
@@ -34,7 +34,7 @@ const portableTextComponents = {
                 key={idx}
                 alt={img.alt || `Hình ảnh ${idx + 1}`}
                 loading="lazy"
-                src={urlFor(img).auto('format').url()}
+                src={urlFor(img).width(800).fit('max').auto('format').url()}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
               />
             );
@@ -105,9 +105,9 @@ export const revalidate = 60;
 export default async function DeveloperDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "developer" && slug.current == $slug][0] {
-    _id, name, description, "logoUrl": logo.asset->url + "?auto=format",
+    _id, name, description, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format",
     "projects": *[_type == "project" && (developer._ref == ^._id || ^._id in developers[]._ref)] {
-      _id, title, "slug": slug.current, location, price, "imageUrl": imageUrl.asset->url + "?auto=format"
+      _id, title, "slug": slug.current, location, price, "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format"
     }
   }`;
   

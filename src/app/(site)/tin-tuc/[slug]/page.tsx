@@ -42,7 +42,7 @@ const portableTextComponents = {
         <img
           alt={value.alt || 'Hình ảnh minh họa'}
           loading="lazy"
-          src={urlFor(value).auto('format').url()}
+          src={urlFor(value).width(1200).fit('max').auto('format').url()}
           style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
         />
       );
@@ -58,7 +58,7 @@ const portableTextComponents = {
                 key={idx}
                 alt={img.alt || `Hình ảnh ${idx + 1}`}
                 loading="lazy"
-                src={urlFor(img).auto('format').url()}
+                src={urlFor(img).width(800).fit('max').auto('format').url()}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
               />
             );
@@ -162,19 +162,19 @@ export const revalidate = 60;
 export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "post" && slug.current == $slug][0] {
-    _id, title, excerpt, content, "date": coalesce(date, _createdAt), viewCount, "imageUrl": imageUrl.asset->url + "?auto=format",
-    author->{name, "avatarUrl": image.asset->url + "?auto=format", bio, isVerified},
+    _id, title, excerpt, content, "date": coalesce(date, _createdAt), viewCount, "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
+    author->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified},
     "relatedPosts": relatedPosts[]->{
       title,
       "slug": slug.current,
-      "imageUrl": imageUrl.asset->url + "?auto=format",
+      "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
       "date": coalesce(date, _createdAt),
       excerpt
     },
     "relatedProjects": relatedProjects[]->{
       title,
       "slug": slug.current,
-      "imageUrl": imageUrl.asset->url + "?auto=format",
+      "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
       price,
       location,
       status,
