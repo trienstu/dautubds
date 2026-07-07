@@ -70,8 +70,8 @@ const portableTextComponents = {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
       return (
-        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'auto', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '500px' }}>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'fixed', wordWrap: 'break-word' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
                 <tr>
@@ -85,7 +85,7 @@ const portableTextComponents = {
               {rows.map((row: any, i: number) => (
                 <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--color-secondary)' }}>
                   {row.cells.map((cell: string, j: number) => (
-                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)' }}>{cell}</td>
+                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)', wordBreak: 'break-word', whiteSpace: 'normal' }}>{cell}</td>
                   ))}
                 </tr>
               ))}
