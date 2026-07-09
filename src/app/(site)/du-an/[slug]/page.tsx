@@ -144,8 +144,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     ...,
     "imageUrl": imageUrl.asset->url + "?w=1920&fit=max&auto=format",
     "projectLogoUrl": projectLogo.asset->url + "?w=400&fit=max&auto=format",
-    "galleryUrls": gallery[].asset->url + "?w=1200&fit=max&auto=format",
-    "floorPlans": floorPlans[].asset->url + "?w=1200&fit=max&auto=format",
+    "galleryUrls": gallery[].asset->url,
+    "floorPlans": floorPlans[].asset->url,
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
@@ -159,6 +159,10 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   if (!project) {
     notFound();
   }
+
+  // Optimize image arrays
+  const optimizedGallery = project.galleryUrls?.map((url: string) => url + "?w=1200&fit=max&auto=format") || [];
+  const optimizedFloorPlans = project.floorPlans?.map((url: string) => url + "?w=1200&fit=max&auto=format") || [];
 
   if (project.customLandingPage) {
     return (
