@@ -13,6 +13,11 @@ export async function POST(request: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: 'GEMINI_API_KEY is not set' }, { status: 500 });
 
+    const sanityToken = process.env.SANITY_API_TOKEN;
+    if (!sanityToken) return NextResponse.json({ error: 'Thiếu SANITY_API_TOKEN trong file .env.local' }, { status: 500 });
+
+    const adminClient = client.withConfig({ token: sanityToken });
+
     // 1. Crawl content with Jina Reader
     const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
       headers: {
@@ -63,7 +68,7 @@ export async function POST(request: Request) {
       try {
         const imgRes = await fetch(result.imageUrl);
         const buffer = await imgRes.arrayBuffer();
-        const asset = await client.assets.upload('image', Buffer.from(buffer), {
+        const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
           filename: 'ai-thumbnail.jpg'
         });
         imageAssetId = asset._id;
@@ -113,7 +118,7 @@ export async function POST(request: Request) {
       };
     }
 
-    const createdDoc = await client.create(doc);
+    const createdDoc = await adminClient.create(doc);
 
     return NextResponse.json({ 
       success: true, 

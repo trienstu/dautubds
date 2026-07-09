@@ -70,7 +70,7 @@ export default function AiToolsPage() {
         {error && (
           <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '8px', color: '#ef4444' }}>
             <strong>Lỗi:</strong> {error}
-            <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Lưu ý: Bạn cần phải cấu hình GEMINI_API_KEY trong file .env.local thì tính năng này mới hoạt động.</p>
+            <p style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>Lưu ý: Bạn cần phải cấu hình <strong>GEMINI_API_KEY</strong> và <strong>SANITY_API_TOKEN</strong> trong file .env.local thì tính năng này mới hoạt động toàn diện.</p>
           </div>
         )}
 
