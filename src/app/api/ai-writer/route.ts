@@ -41,9 +41,9 @@ export async function POST(request: Request) {
     const outputFormat = `
     YÊU CẦU ĐẦU RA BẮT BUỘC (Chỉ trả về JSON hợp lệ, không bọc trong markdown code block, không giải thích gì thêm):
     {
-      "title": "Tiêu đề giật tít, hấp dẫn, chứa từ khóa chính",
-      "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự",
-      "content": "Nội dung bài viết được định dạng bằng HTML. Sử dụng <h2>, <h3>, <p>, <ul>, <li>, <table> (nếu có dữ liệu bảng). Tuyệt đối không dùng <h1>. Văn phong tự nhiên, cuốn hút.",
+      "title": "Tiêu đề bài viết chuẩn SEO. Bắt buộc phải giữ lại hoặc chứa chính xác từ khóa (keyword) có trong chủ đề/link gốc, không cần giật tít câu view.",
+      "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự, phải chứa từ khóa chính.",
+      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>). Không dùng <h1>. Phải phân bổ từ khóa chính xuất hiện tự nhiên xuyên suốt bài viết và trong các thẻ heading để tối ưu SEO.",
       "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
     }`;
 
