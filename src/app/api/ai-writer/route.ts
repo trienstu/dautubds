@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     {
       "title": "Tiêu đề giật tít, hấp dẫn, chứa từ khóa chính",
       "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự",
-      "content": "Nội dung bài viết được định dạng bằng HTML. Sử dụng <h2>, <h3>, <p>, <ul>, <li>. Tuyệt đối không dùng <h1>. Văn phong tự nhiên, cuốn hút.",
+      "content": "Nội dung bài viết được định dạng bằng HTML. Sử dụng <h2>, <h3>, <p>, <ul>, <li>, <table> (nếu có dữ liệu bảng). Tuyệt đối không dùng <h1>. Văn phong tự nhiên, cuốn hút.",
       "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
     }`;
 
@@ -83,8 +83,18 @@ export async function POST(request: Request) {
       types: [
         {
           type: 'object',
+          name: 'tableRow',
+          fields: [{ name: 'cells', type: 'array', of: [{ type: 'string' }] }]
+        },
+        {
+          type: 'object',
+          name: 'table',
+          fields: [{ name: 'rows', type: 'array', of: [{ type: 'tableRow' }] }]
+        },
+        {
+          type: 'object',
           name: 'blogPost',
-          fields: [{ name: 'body', type: 'array', of: [{ type: 'block' }] }],
+          fields: [{ name: 'body', type: 'array', of: [{ type: 'block' }, { type: 'table' }] }],
         },
       ],
     });
@@ -92,6 +102,29 @@ export async function POST(request: Request) {
     
     const blocks = htmlToBlocks(result.content, blockContentType, {
       parseHtml: (html) => new JSDOM(html).window.document,
+      rules: [
+        {
+          deserialize(el: any, next: any, block: any) {
+            if (el.tagName && el.tagName.toLowerCase() === 'table') {
+              const trs = Array.from(el.querySelectorAll('tr'));
+              const rows = trs.map((tr: any) => {
+                const cells = Array.from(tr.querySelectorAll('th, td')).map((td: any) => td.textContent || '');
+                return {
+                  _type: 'tableRow',
+                  _key: Math.random().toString(36).substring(7),
+                  cells
+                };
+              });
+              return block({
+                _type: 'table',
+                _key: Math.random().toString(36).substring(7),
+                rows
+              });
+            }
+            return undefined;
+          }
+        }
+      ]
     });
 
     // 5. Create Draft Document in Sanity
