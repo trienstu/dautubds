@@ -7,8 +7,10 @@ import { JSDOM } from 'jsdom';
 
 export async function POST(request: Request) {
   try {
-    const { url } = await request.json();
-    if (!url) return NextResponse.json({ error: 'URL is required' }, { status: 400 });
+    const { url, type, data } = await request.json();
+    const mode = type || 'url';
+    const input = data || url;
+    if (!input) return NextResponse.json({ error: 'Input is required' }, { status: 400 });
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: 'GEMINI_API_KEY is not set' }, { status: 500 });
@@ -18,24 +20,25 @@ export async function POST(request: Request) {
 
     const adminClient = client.withConfig({ token: sanityToken });
 
-    // 1. Crawl content with Jina Reader
-    const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
-      headers: {
-        'Accept': 'text/plain',
-        'X-Return-Format': 'markdown'
-      }
-    });
-    
-    if (!jinaRes.ok) throw new Error('Failed to crawl URL');
-    const markdown = await jinaRes.text();
+    let sourceContent = '';
+    if (mode === 'url') {
+      // 1. Crawl content with Jina Reader
+      const jinaRes = await fetch(`https://r.jina.ai/${input}`, {
+        headers: {
+          'Accept': 'text/plain',
+          'X-Return-Format': 'markdown'
+        }
+      });
+      
+      if (!jinaRes.ok) throw new Error('Failed to crawl URL');
+      sourceContent = await jinaRes.text();
+    }
 
-    // 2. Rewrite with Gemini
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `Bạn là một biên tập viên bất động sản xuất sắc. Hãy viết lại bài viết sau để nó trở thành một bài tin tức độc nhất (unique 100%), chuẩn SEO, văn phong chuyên nghiệp, không trùng lặp với bất kỳ bài nào khác.
-    
-    Bài viết gốc:
-    ${markdown}
-    
+    // 2. Compose Prompt & Config
+    let prompt = '';
+    let tools: any = undefined;
+
+    const outputFormat = `
     YÊU CẦU ĐẦU RA BẮT BUỘC (Chỉ trả về JSON hợp lệ, không bọc trong markdown code block, không giải thích gì thêm):
     {
       "title": "Tiêu đề giật tít, hấp dẫn, chứa từ khóa chính",
@@ -44,11 +47,31 @@ export async function POST(request: Request) {
       "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
     }`;
 
+    if (mode === 'url') {
+      prompt = `Bạn là một biên tập viên bất động sản xuất sắc. Hãy viết lại bài viết sau để nó trở thành một bài tin tức độc nhất (unique 100%), chuẩn SEO, văn phong chuyên nghiệp, không trùng lặp với bất kỳ bài nào khác.
+      
+      Bài viết gốc:
+      ${sourceContent}
+      
+      ${outputFormat}`;
+    } else {
+      prompt = `Bạn là một chuyên gia bất động sản xuất sắc. Hãy tự động tìm kiếm thông tin mới nhất trên mạng Internet và viết một bài tin tức cực kỳ chi tiết, độc nhất (unique 100%), chuẩn SEO, văn phong chuyên nghiệp, phân tích chuyên sâu về chủ đề sau.
+      
+      Chủ đề yêu cầu:
+      ${input}
+      
+      ${outputFormat}`;
+      tools = [{ googleSearch: {} }];
+    }
+
+    // 3. Generate with Gemini
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
+        tools: tools,
       }
     });
 

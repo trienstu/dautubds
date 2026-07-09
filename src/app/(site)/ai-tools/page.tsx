@@ -4,14 +4,15 @@ import React, { useState } from 'react';
 import styles from '../lien-he/page.module.css';
 
 export default function AiToolsPage() {
-  const [url, setUrl] = useState('');
+  const [mode, setMode] = useState<'url' | 'topic'>('url');
+  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url) return;
+    if (!inputValue) return;
     
     setLoading(true);
     setError('');
@@ -21,7 +22,7 @@ export default function AiToolsPage() {
       const res = await fetch('/api/ai-writer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ type: mode, data: inputValue })
       });
       
       const data = await res.json();
@@ -42,20 +43,48 @@ export default function AiToolsPage() {
           AI Content Auto-Writer
         </h1>
         <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', marginBottom: '3rem' }}>
-          Dán link bài viết gốc (VnExpress, CafeF, Batdongsan.com.vn...), AI sẽ tự động phân tích, viết lại chuẩn SEO và tạo thành bản nháp trên Sanity.
+          Dán link bài viết gốc hoặc nhập chủ đề bất kỳ. AI sẽ tự động phân tích, tìm kiếm thông tin và tạo thành bản nháp chuẩn SEO trên Sanity.
         </p>
+
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', justifyContent: 'center' }}>
+          <button 
+            onClick={() => { setMode('url'); setInputValue(''); }}
+            style={{ padding: '0.8rem 1.5rem', borderRadius: '30px', fontWeight: 600, border: mode === 'url' ? 'none' : '1px solid var(--border-color)', background: mode === 'url' ? 'var(--color-primary)' : 'transparent', color: mode === 'url' ? '#111' : 'var(--color-text)' }}
+          >
+            🔗 Viết lại từ Link (URL)
+          </button>
+          <button 
+            onClick={() => { setMode('topic'); setInputValue(''); }}
+            style={{ padding: '0.8rem 1.5rem', borderRadius: '30px', fontWeight: 600, border: mode === 'topic' ? 'none' : '1px solid var(--border-color)', background: mode === 'topic' ? 'var(--color-primary)' : 'transparent', color: mode === 'topic' ? '#111' : 'var(--color-text)' }}
+          >
+            💡 Sáng tạo từ Chủ đề
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--color-dark-light)', padding: '2rem', borderRadius: '12px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>URL Bài viết nguồn</label>
-            <input 
-              type="url" 
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://vnexpress.net/..." 
-              required
-              style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)' }}
-            />
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+              {mode === 'url' ? 'URL Bài viết nguồn' : 'Chủ đề / Yêu cầu viết bài'}
+            </label>
+            {mode === 'url' ? (
+              <input 
+                type="url" 
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="https://vnexpress.net/..." 
+                required
+                style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)' }}
+              />
+            ) : (
+              <textarea 
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ví dụ: Đánh giá tiềm năng đầu tư dự án The Privé Khang Điền tại Bình Tân..." 
+                required
+                rows={4}
+                style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', resize: 'vertical' }}
+              />
+            )}
           </div>
           <button 
             type="submit" 
