@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       }
     });
 
-    const aiText = response.text();
+    const aiText = response.text;
     if (!aiText) throw new Error('AI returned empty response');
     
     let result;
@@ -72,7 +72,8 @@ export async function POST(request: Request) {
     }
 
     // 4. Convert HTML to Sanity Portable Text Blocks
-    const blocks = htmlToBlocks(result.content, 'block', {
+    const blockContentType = { type: 'array', of: [{ type: 'block' }] } as any;
+    const blocks = htmlToBlocks(result.content, blockContentType, {
       parseHtml: (html) => new JSDOM(html).window.document,
     });
 
