@@ -66,16 +66,21 @@ export async function POST(request: Request) {
 
     // 3. Generate with Gemini
     const ai = new GoogleGenAI({ apiKey });
+    
+    const config: any = {};
+    if (tools) {
+      config.tools = tools;
+    } else {
+      config.responseMimeType = 'application/json';
+    }
+
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        tools: tools,
-      }
+      config: config
     });
 
-    const aiText = response.text;
+    const aiText = response.text?.replace(/```json/g, '').replace(/```/g, '').trim();
     if (!aiText) throw new Error('AI returned empty response');
     
     let result;
