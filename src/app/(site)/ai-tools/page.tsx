@@ -9,6 +9,18 @@ export default function AiToolsPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === '211291') {
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Mật khẩu không chính xác!');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,9 +54,31 @@ export default function AiToolsPage() {
         <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)', marginBottom: '1rem', textAlign: 'center' }}>
           AI Content Auto-Writer
         </h1>
-        <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', marginBottom: '3rem' }}>
-          Dán link bài viết gốc hoặc nhập chủ đề bất kỳ. AI sẽ tự động phân tích, tìm kiếm thông tin và tạo thành bản nháp chuẩn SEO trên Sanity.
-        </p>
+
+        {!isAuthenticated ? (
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--color-dark-light)', padding: '2rem', borderRadius: '12px', maxWidth: '400px', margin: '2rem auto' }}>
+            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Vui lòng nhập mật khẩu để sử dụng công cụ nội bộ này.</p>
+            <div>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Mật khẩu</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu..." 
+                required
+                style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)' }}
+              />
+            </div>
+            {error && <p style={{ color: '#ef4444', textAlign: 'center', fontSize: '0.9rem' }}>{error}</p>}
+            <button type="submit" className="btn" style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}>
+              🔓 Mở Khóa
+            </button>
+          </form>
+        ) : (
+          <>
+            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', marginBottom: '3rem' }}>
+              Dán link bài viết gốc hoặc nhập chủ đề bất kỳ. AI sẽ tự động phân tích, tìm kiếm thông tin và tạo thành bản nháp chuẩn SEO trên Sanity.
+            </p>
 
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', justifyContent: 'center' }}>
           <button 
@@ -113,6 +147,8 @@ export default function AiToolsPage() {
               📝 Mở bài viết trong Sanity Studio
             </a>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>

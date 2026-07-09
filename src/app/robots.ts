@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/studio'],
+      disallow: ['/admin', '/studio', '/ai-tools'],
     },
     sitemap: 'https://www.dautubds.io.vn/sitemap.xml',
   }
