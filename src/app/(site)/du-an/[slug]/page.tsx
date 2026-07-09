@@ -32,7 +32,7 @@ const portableTextComponents = {
           alt={value.alt || 'Hình ảnh dự án'}
           loading="lazy"
           src={urlFor(value).width(1200).fit('max').auto('format').url()}
-          style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
+          style={{ width: '100%', borderRadius: '8px', margin: '1rem 0' }}
         />
       );
     },
@@ -41,7 +41,7 @@ const portableTextComponents = {
       const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
       if (!id) return null;
       return (
-        <div className="pt-image" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '2rem 0', borderRadius: '8px' }}>
+        <div className="pt-image" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', margin: '1rem 0', borderRadius: '8px' }}>
           <iframe 
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
             src={`https://www.youtube.com/embed/${id}`} 
@@ -56,7 +56,7 @@ const portableTextComponents = {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
       return (
-        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', margin: '1rem 0', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'fixed', wordWrap: 'break-word' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
@@ -82,15 +82,18 @@ const portableTextComponents = {
     }
   },
   list: {
-    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
-    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
   },
   listItem: {
     bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '1em' }}>{children}</p>,
+    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '0.8rem' }}>{children}</p>,
+    h2: ({ children }: any) => <h2 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h2>,
+    h3: ({ children }: any) => <h3 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h3>,
+    h4: ({ children }: any) => <h4 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h4>,
   },
   marks: {
     textAlign: ({ children, value }: any) => (

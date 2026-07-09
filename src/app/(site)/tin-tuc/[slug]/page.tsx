@@ -43,14 +43,14 @@ const portableTextComponents = {
           alt={value.alt || 'Hình ảnh minh họa'}
           loading="lazy"
           src={urlFor(value).width(1200).fit('max').auto('format').url()}
-          style={{ width: '100%', borderRadius: '8px', margin: '2rem 0' }}
+          style={{ width: '100%', borderRadius: '8px', margin: '1rem 0' }}
         />
       );
     },
     imageGrid: ({ value }: any) => {
       if (!value?.images || value.images.length < 2) return null;
       return (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '2rem 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: '1rem 0' }}>
           {value.images.map((img: any, idx: number) => {
             if (!img?.asset?._ref) return null;
             return (
@@ -70,7 +70,7 @@ const portableTextComponents = {
       if (!value || !value.rows || value.rows.length === 0) return null;
       const [head, ...rows] = value.rows;
       return (
-        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', marginBottom: '2rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', margin: '0.8rem 0', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'fixed', wordWrap: 'break-word' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
@@ -96,24 +96,24 @@ const portableTextComponents = {
     },
   },
   block: {
-    normal: ({ children }: any) => <p style={{ marginBottom: '1.2rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,
+    normal: ({ children }: any) => <p style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,
     h2: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
-      return <h2 id={id} style={{ fontSize: '1.8rem', marginTop: '1.5rem', marginBottom: '1.2rem', color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
+      return <h2 id={id} style={{ fontSize: '1.8rem', marginTop: '1rem', marginBottom: '0.8rem', color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
     },
     h3: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
-      return <h3 id={id} style={{ fontSize: '1.4rem', marginTop: '2.5rem', marginBottom: '1rem', color: 'var(--foreground)', fontWeight: 600 }}>{children}</h3>;
+      return <h3 id={id} style={{ fontSize: '1.4rem', marginTop: '1rem', marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 600 }}>{children}</h3>;
     },
     blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6', background: 'rgba(212,175,55,0.05)', padding: '1.5rem 1.5rem 1.5rem 2rem', borderRadius: '0 8px 8px 0' }}>{children}</blockquote>,
   },
   list: {
-    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ul>,
-    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ol>,
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
   },
   listItem: {
-    bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
-    number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.4rem', lineHeight: '1.6' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.4rem', lineHeight: '1.6' }}>{children}</li>,
   },
 
   marks: {
