@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { client } from '../../../../sanity/lib/client';
 import { GoogleGenAI } from '@google/genai';
 import { htmlToBlocks } from '@sanity/block-tools';
+import { Schema } from '@sanity/schema';
 import { JSDOM } from 'jsdom';
 
 export async function POST(request: Request) {
@@ -72,7 +73,18 @@ export async function POST(request: Request) {
     }
 
     // 4. Convert HTML to Sanity Portable Text Blocks
-    const blockContentType = { type: 'array', of: [{ type: 'block' }] } as any;
+    const defaultSchema = Schema.compile({
+      name: 'default',
+      types: [
+        {
+          type: 'object',
+          name: 'blogPost',
+          fields: [{ name: 'body', type: 'array', of: [{ type: 'block' }] }],
+        },
+      ],
+    });
+    const blockContentType = defaultSchema.get('blogPost').fields.find((f: any) => f.name === 'body').type;
+    
     const blocks = htmlToBlocks(result.content, blockContentType, {
       parseHtml: (html) => new JSDOM(html).window.document,
     });
