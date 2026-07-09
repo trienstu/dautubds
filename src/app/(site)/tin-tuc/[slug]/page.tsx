@@ -71,7 +71,7 @@ const portableTextComponents = {
       const [head, ...rows] = value.rows;
       return (
         <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', margin: '0.8rem 0', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'fixed', wordWrap: 'break-word' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'auto', wordBreak: 'break-word' }}>
             {head && head.cells && (
               <thead style={{ background: 'var(--color-dark-light)' }}>
                 <tr>
