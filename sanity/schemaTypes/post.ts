@@ -27,6 +27,13 @@ export const postType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'sourceUrl',
+      title: 'Nguồn bài viết (Dành cho Auto-Crawl)',
+      description: 'Lưu trữ link bài viết gốc để hệ thống tự động nhận diện và không cào lại bài đã có.',
+      type: 'url',
+      readOnly: true,
+    }),
+    defineField({
       name: 'excerpt',
       title: 'Tóm Tắt',
       type: 'text',

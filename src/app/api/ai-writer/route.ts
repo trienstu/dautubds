@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     {
       "title": "Tiêu đề bài viết chuẩn SEO. Bắt buộc phải giữ lại hoặc chứa chính xác từ khóa (keyword) có trong chủ đề/link gốc, không cần giật tít câu view.",
       "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự, phải chứa từ khóa chính.",
-      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>). Không dùng <h1>. Phải phân bổ từ khóa chính xuất hiện tự nhiên xuyên suốt bài viết và trong các thẻ heading để tối ưu SEO.",
+      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>, <img>). Không dùng <h1>. Phải phân bổ từ khóa chính xuất hiện tự nhiên xuyên suốt bài viết và trong các thẻ heading để tối ưu SEO. Nếu bài gốc có ảnh minh họa, BẮT BUỘC phải giữ lại các thẻ <img src='...'> và đặt vào đúng ngữ cảnh.",
       "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
     }`;
 
@@ -101,11 +101,36 @@ export async function POST(request: Request) {
         });
         imageAssetId = asset._id;
       } catch (err) {
-        console.error('Failed to upload image', err);
+        console.error('Failed to upload thumbnail', err);
       }
     }
 
-    // 4. Convert HTML to Sanity Portable Text Blocks
+    // 4. Pre-process in-content images (Download & Upload to Sanity)
+    const dom = new JSDOM(result.content);
+    const document = dom.window.document;
+    const images = Array.from(document.querySelectorAll('img'));
+    
+    for (const img of images) {
+      const src = img.getAttribute('src');
+      if (src && src.startsWith('http')) {
+        try {
+          const imgRes = await fetch(src);
+          const buffer = await imgRes.arrayBuffer();
+          const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+            filename: `content-img-${Date.now()}.jpg`
+          });
+          // Replace src with the Sanity Asset ID so htmlToBlocks can pick it up
+          img.setAttribute('src', asset._id);
+        } catch (err) {
+          console.error(`Failed to upload in-content image: ${src}`, err);
+          img.remove(); // Remove broken images
+        }
+      }
+    }
+    
+    const processedHtml = document.body.innerHTML;
+
+    // 5. Convert HTML to Sanity Portable Text Blocks
     const defaultSchema = Schema.compile({
       name: 'default',
       types: [
@@ -120,15 +145,19 @@ export async function POST(request: Request) {
           fields: [{ name: 'rows', type: 'array', of: [{ type: 'tableRow' }] }]
         },
         {
+          type: 'image',
+          name: 'image'
+        },
+        {
           type: 'object',
           name: 'blogPost',
-          fields: [{ name: 'body', type: 'array', of: [{ type: 'block' }, { type: 'table' }] }],
+          fields: [{ name: 'body', type: 'array', of: [{ type: 'block' }, { type: 'table' }, { type: 'image' }] }],
         },
       ],
     });
     const blockContentType = defaultSchema.get('blogPost').fields.find((f: any) => f.name === 'body').type;
     
-    const blocks = htmlToBlocks(result.content, blockContentType, {
+    const blocks = htmlToBlocks(processedHtml, blockContentType, {
       parseHtml: (html) => new JSDOM(html).window.document,
       rules: [
         {
@@ -149,13 +178,26 @@ export async function POST(request: Request) {
                 rows
               });
             }
+            if (el.tagName && el.tagName.toLowerCase() === 'img') {
+              const src = el.getAttribute('src');
+              if (src && src.startsWith('image-')) {
+                return block({
+                  _type: 'image',
+                  _key: Math.random().toString(36).substring(7),
+                  asset: {
+                    _type: 'reference',
+                    _ref: src
+                  }
+                });
+              }
+            }
             return undefined;
           }
         }
       ]
     });
 
-    // 5. Create Draft Document in Sanity
+    // 6. Create Draft Document in Sanity
     const doc = {
       _type: 'post',
       _id: `drafts.ai-${Date.now()}`,
