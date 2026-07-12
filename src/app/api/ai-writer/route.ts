@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     const document = dom.window.document;
     const images = Array.from(document.querySelectorAll('img'));
     
-    for (const img of images) {
+    for (const img of images as any[]) {
       const src = img.getAttribute('src');
       if (src && src.startsWith('http')) {
         try {
