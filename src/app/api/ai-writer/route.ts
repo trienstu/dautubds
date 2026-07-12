@@ -5,6 +5,8 @@ import { htmlToBlocks } from '@sanity/block-tools';
 import { Schema } from '@sanity/schema';
 import { JSDOM } from 'jsdom';
 
+export const maxDuration = 60; // Tăng tối đa thời gian thực thi (60 giây cho gói Hobby)
+
 export async function POST(request: Request) {
   try {
     const { url, type, data } = await request.json();

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { client } from '../../../../../sanity/lib/client';
 
+export const maxDuration = 60;
+
 export async function GET(request: Request) {
   try {
     // 1. Verify Cron Secret (Security)
