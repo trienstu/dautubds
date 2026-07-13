@@ -10,7 +10,8 @@ import siteConfig from './siteConfig'
 import { youtubeType } from './youtube'
 import { imageGrid } from './imageGrid'
 import { leadType } from './lead'
+import { imageSlider } from './imageSlider'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType, imageGrid, leadType],
+  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType, imageGrid, leadType, imageSlider],
 }

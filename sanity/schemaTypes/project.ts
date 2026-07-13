@@ -63,6 +63,8 @@ const blockContent = [
       }
     ]
   },
+  { type: 'imageGrid' },
+  { type: 'imageSlider' },
   { type: 'youtube' }
 ];
 

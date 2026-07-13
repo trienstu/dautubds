@@ -108,6 +108,9 @@ export const postType = defineType({
         },
         {
           type: 'imageGrid'
+        },
+        {
+          type: 'imageSlider'
         }
       ],
     }),

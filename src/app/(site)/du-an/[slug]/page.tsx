@@ -36,6 +36,15 @@ const portableTextComponents = {
         />
       );
     },
+    imageSlider: ({ value }: any) => {
+      if (!value?.images || value.images.length === 0) return null;
+      const imageUrls = value.images.map((img: any) => urlFor(img).width(1200).fit('max').auto('format').url());
+      return (
+        <div style={{ margin: '2rem 0' }}>
+          <ProjectGallery images={imageUrls} />
+        </div>
+      );
+    },
     youtube: ({ value }: any) => {
       const { url } = value;
       const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
