@@ -83,6 +83,7 @@ export const projectType = defineType({
     { name: 'designGroup', title: 'Thiết Kế', options: { collapsible: true, collapsed: true } },
     { name: 'showroomGroup', title: 'Nhà Mẫu', options: { collapsible: true, collapsed: true } },
     { name: 'progressGroup', title: 'Tiến Độ & Tour 360', options: { collapsible: true, collapsed: true } },
+    { name: 'investmentGroup', title: 'Tại Sao Nên Đầu Tư', options: { collapsible: true, collapsed: true } },
     { name: 'qaGroup', title: 'Hỏi Đáp (Q&A)', options: { collapsible: true, collapsed: false } },
   ],
   fields: [
@@ -311,6 +312,13 @@ export const projectType = defineType({
       type: 'array',
       of: blockContent,
       fieldset: 'progressGroup',
+    }),
+    defineField({
+      name: 'investmentReasons',
+      title: 'Tại Sao Nên Đầu Tư Dự Án Này? (Editor)',
+      type: 'array',
+      of: blockContent,
+      fieldset: 'investmentGroup',
     }),
     defineField({
       name: 'customLandingPage',

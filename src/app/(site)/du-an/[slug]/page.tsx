@@ -152,6 +152,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     "legalDocuments": legalDocuments[]{ title, "fileUrl": asset->url },
     locationContent,
     featuresContent,
+    investmentReasons,
     "developer": developer->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
     "developers": developers[]->{name, "slug": slug.current, "logoUrl": logo.asset->url + "?w=400&fit=max&auto=format"},
     consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
@@ -530,6 +531,16 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tiến độ xây dựng dự án {project.title}</h2>
               <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
                 <PortableText value={project.progressContent} components={portableTextComponents} />
+              </div>
+            </div>
+          )}
+
+          {/* Tại sao nên đầu tư */}
+          {project.investmentReasons && (
+            <div id="tai-sao-dau-tu" className="project-content-section">
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tại sao nên đầu tư dự án {project.title}?</h2>
+              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                <PortableText value={project.investmentReasons} components={portableTextComponents} />
               </div>
             </div>
           )}
