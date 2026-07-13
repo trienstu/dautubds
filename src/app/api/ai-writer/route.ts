@@ -3,7 +3,7 @@ import { client } from '../../../../sanity/lib/client';
 import { GoogleGenAI } from '@google/genai';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { Schema } from '@sanity/schema';
-import { parseHTML } from 'linkedom';
+import { JSDOM } from 'jsdom';
 
 export const maxDuration = 60; // Tăng tối đa thời gian thực thi (60 giây cho gói Hobby)
 
@@ -108,7 +108,8 @@ export async function POST(request: Request) {
     }
 
     // 4. Pre-process in-content images (Download & Upload to Sanity)
-    const { document } = parseHTML(result.content);
+    const dom = new JSDOM(result.content);
+    const document = dom.window.document;
     const images = Array.from(document.querySelectorAll('img'));
     
     for (const img of images as any[]) {
@@ -159,7 +160,7 @@ export async function POST(request: Request) {
     const blockContentType = defaultSchema.get('blogPost').fields.find((f: any) => f.name === 'body').type;
     
     const blocks = htmlToBlocks(processedHtml, blockContentType, {
-      parseHtml: (html) => parseHTML(html).document,
+      parseHtml: (html) => new JSDOM(html).window.document,
       rules: [
         {
           deserialize(el: any, next: any, block: any) {
