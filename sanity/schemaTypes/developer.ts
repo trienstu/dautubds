@@ -27,6 +27,31 @@ export default defineType({
       type: 'number',
     }),
     defineField({
+      name: 'location',
+      title: 'Trụ sở (Vị trí)',
+      type: 'string',
+      description: 'Ví dụ: Hà Nội, TP.HCM',
+    }),
+    defineField({
+      name: 'foundedYear',
+      title: 'Năm thành lập',
+      type: 'string',
+      description: 'Ví dụ: 1993',
+    }),
+    defineField({
+      name: 'country',
+      title: 'Quốc gia',
+      type: 'string',
+      description: 'Ví dụ: Việt Nam',
+      initialValue: 'Việt Nam',
+    }),
+    defineField({
+      name: 'isFeatured',
+      title: 'Chủ đầu tư Nổi bật?',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'slug',
       title: 'Đường Dẫn (Slug)',
       type: 'slug',

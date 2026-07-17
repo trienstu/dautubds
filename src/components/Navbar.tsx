@@ -24,6 +24,7 @@ export default function Navbar({ config }: { config?: any }) {
         <ul className={styles.navLinks}>
           <li><Link href="/">Trang chủ</Link></li>
           <li><Link href="/du-an">Dự án</Link></li>
+          <li><Link href="/chu-dau-tu">Chủ đầu tư</Link></li>
           <li><Link href="/tin-tuc">Tin tức</Link></li>
           <li><Link href="/lien-he">Liên hệ</Link></li>
         </ul>
@@ -48,6 +49,7 @@ export default function Navbar({ config }: { config?: any }) {
           <ul className={styles.mobileNavLinks}>
             <li><Link href="/" onClick={() => setIsMenuOpen(false)}>Trang chủ</Link></li>
             <li><Link href="/du-an" onClick={() => setIsMenuOpen(false)}>Dự án</Link></li>
+            <li><Link href="/chu-dau-tu" onClick={() => setIsMenuOpen(false)}>Chủ đầu tư</Link></li>
             <li><Link href="/tin-tuc" onClick={() => setIsMenuOpen(false)}>Tin tức</Link></li>
             <li><Link href="/lien-he" onClick={() => setIsMenuOpen(false)}>Liên hệ</Link></li>
           </ul>
