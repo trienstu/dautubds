@@ -35,7 +35,10 @@ export async function GET(request: Request) {
         if (linksMatch) {
           const links = linksMatch
             .map(l => l.replace('<link>', '').replace('</link>', '').trim())
-            .filter(l => l.startsWith('http') && l !== 'https://vnexpress.net' && l !== 'https://cafef.vn' && l !== 'https://vneconomy.vn/dia-oc' && !l.includes('znews.vn/bat-dong-san'));
+            .filter(l => 
+              l.startsWith('http') && 
+              l.includes('.html') // Chỉ lấy link bài viết (thường có .html) hoặc dài hơn 40 ký tự
+            );
           allLinks.push(...links.slice(0, 3)); // Lấy 3 bài mới nhất mỗi trang
         }
       } catch (e) {
