@@ -61,42 +61,50 @@ export async function GET(request: Request) {
     // Lấy tất cả sourceUrl đã có trong database
     const existingPosts = await adminClient.fetch(`*[_type == "post" && defined(sourceUrl)].sourceUrl`);
     
-    // Tìm ra 1 bài viết MỚI NHẤT chưa từng cào
-    const newLink = allLinks.find(link => !existingPosts.includes(link));
+    // Tìm ra tối đa 3 bài viết MỚI NHẤT chưa từng cào (để xử lý song song)
+    const newLinks = allLinks.filter(link => !existingPosts.includes(link)).slice(0, 3);
 
-    if (!newLink) {
+    if (newLinks.length === 0) {
       return NextResponse.json({ message: 'No new articles to crawl.' });
     }
 
-    // 4. Gửi lệnh cho hệ thống AI Writer tự động xử lý bài viết này
+    // 4. Gửi lệnh cho hệ thống AI Writer tự động xử lý các bài viết này song song
     const host = request.headers.get('host');
     const protocol = request.headers.get('x-forwarded-proto') ?? (host?.includes('localhost') ? 'http' : 'https');
     const aiWriterUrl = `${protocol}://${host}/api/ai-writer`;
 
-    const aiRes = await fetch(aiWriterUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'url', data: newLink })
-    });
+    const results = await Promise.allSettled(
+      newLinks.map(async (newLink) => {
+        const aiRes = await fetch(aiWriterUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'url', data: newLink })
+        });
 
-    if (!aiRes.ok) {
-      const errorText = await aiRes.text();
-      return NextResponse.json({ error: 'AI Writer failed', details: errorText }, { status: 500 });
-    }
+        if (!aiRes.ok) {
+          const errorText = await aiRes.text();
+          throw new Error(`AI Writer failed for ${newLink}: ${errorText}`);
+        }
 
-    const aiResult = await aiRes.json();
+        const aiResult = await aiRes.json();
 
-    // 5. Cập nhật sourceUrl vào bản nháp vừa tạo để lưu vết
-    if (aiResult.docId) {
-      await adminClient.patch(aiResult.docId)
-        .set({ sourceUrl: newLink })
-        .commit();
-    }
+        // Cập nhật sourceUrl vào bản nháp vừa tạo để lưu vết
+        if (aiResult.docId) {
+          await adminClient.patch(aiResult.docId)
+            .set({ sourceUrl: newLink })
+            .commit();
+        }
+        return { source: newLink, docId: aiResult.docId };
+      })
+    );
+
+    const successful = results.filter(r => r.status === 'fulfilled').map((r: any) => r.value);
+    const failed = results.filter(r => r.status === 'rejected').map((r: any) => r.reason.message);
 
     return NextResponse.json({ 
-      message: 'Crawled and rewritten successfully!', 
-      source: newLink,
-      docId: aiResult.docId 
+      message: `Crawled ${successful.length} articles successfully, ${failed.length} failed.`, 
+      successful,
+      failed
     });
 
   } catch (error: any) {

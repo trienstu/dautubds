@@ -43,9 +43,9 @@ export async function POST(request: Request) {
     const outputFormat = `
     YÊU CẦU ĐẦU RA BẮT BUỘC (Chỉ trả về JSON hợp lệ, không bọc trong markdown code block, không giải thích gì thêm):
     {
-      "title": "Tiêu đề bài viết chuẩn SEO. Bắt buộc phải giữ lại hoặc chứa chính xác từ khóa (keyword) có trong chủ đề/link gốc, không cần giật tít câu view.",
-      "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự, phải chứa từ khóa chính.",
-      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>, <img>). Không dùng <h1>. Phải phân bổ từ khóa chính xuất hiện tự nhiên xuyên suốt bài viết và trong các thẻ heading để tối ưu SEO. Nếu bài gốc có ảnh minh họa, BẮT BUỘC phải giữ lại các thẻ <img src='...'> và đặt vào đúng ngữ cảnh.",
+      "title": "Tiêu đề bài viết chuẩn SEO. Tuyệt đối KHÔNG viết hoa từng chữ cái đầu (Title Case), mà hãy viết hoa chữ cái đầu câu bình thường (Sentence case). Phải chứa từ khóa (keyword) có trong chủ đề gốc.",
+      "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự, chứa từ khóa chính.",
+      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>, <img>). Các thẻ heading (h2, h3) cũng BẮT BUỘC phải viết hoa dạng Sentence case (chỉ viết hoa chữ đầu câu). Phải phân bổ từ khóa tự nhiên. Giữ lại các thẻ <img src='...'> nếu có.",
       "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
     }`;
 
@@ -130,7 +130,10 @@ export async function POST(request: Request) {
       }
     }
     
-    const processedHtml = document.body.innerHTML;
+    let processedHtml = document.body.innerHTML;
+    if (mode === 'url') {
+      processedHtml += `\n<p><em>Nguồn tham khảo: <a href="${input}" target="_blank">${input}</a></em></p>`;
+    }
 
     // 5. Convert HTML to Sanity Portable Text Blocks
     const defaultSchema = Schema.compile({
