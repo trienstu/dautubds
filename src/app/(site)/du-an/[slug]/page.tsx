@@ -394,7 +394,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             <span style={{ display: 'inline-block', padding: '0.4rem 1rem', background: 'rgba(212,175,55,0.1)', color: 'var(--color-primary)', borderRadius: '4px', fontSize: '0.9rem', fontWeight: 600, marginBottom: '1rem' }}>
               {project.category} • {project.status || 'Đang mở bán'}
             </span>
-            <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', marginBottom: '1rem', lineHeight: 1.2, fontWeight: 700 }}>{project.title}</h1>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', marginBottom: '1rem', lineHeight: 1.2, fontWeight: 700 }}>{project.title}</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
               <span>📍 {project.location || 'Đang cập nhật vị trí'}</span>
             </div>
