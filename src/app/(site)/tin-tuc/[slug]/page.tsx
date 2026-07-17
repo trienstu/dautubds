@@ -157,6 +157,7 @@ export async function generateMetadata(
     description,
     keywords: post.seo?.seoKeywords,
     openGraph: {
+      type: 'article',
       title,
       description,
       images: image ? [image] : [],
