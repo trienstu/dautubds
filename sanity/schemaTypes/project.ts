@@ -92,6 +92,7 @@ export const projectType = defineType({
     defineField({
       name: 'title',
       title: 'Tên Dự Án',
+      description: 'Có thể dùng các mã: {{thang_nam}}, {{thang}}, {{nam}}, {{ngay}} để tự động cập nhật thời gian.',
       type: 'string',
       validation: (rule) => rule.required(),
       fieldset: 'basicInfo',
@@ -204,7 +205,8 @@ export const projectType = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Nội Dung Tổng Quan Dự Án',
+      title: 'Tổng Quan Dự Án',
+      description: 'Mô tả chi tiết tổng quan dự án. Có thể chèn mã {{thang_nam}} hoặc {{ngay}} để tự hiển thị thời gian hiện tại.',
       type: 'array',
       of: blockContent,
       fieldset: 'contentGroup',

@@ -9,6 +9,7 @@ export const postType = defineType({
     defineField({
       name: 'title',
       title: 'Tiêu Đề (Title)',
+      description: 'Có thể dùng các mã: {{thang_nam}} (VD: 07/2026), {{thang}} (VD: 07), {{nam}} (VD: 2026), {{ngay}} (VD: 19/07/2026) để hệ thống tự động cập nhật thời gian thực.',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -41,6 +42,7 @@ export const postType = defineType({
     defineField({
       name: 'content',
       title: 'Nội Dung Chi Tiết',
+      description: 'Có thể chèn các mã {{thang_nam}}, {{thang}}, {{nam}}, {{ngay}} vào bất cứ đâu trong văn bản để tự động hiển thị thời gian hiện tại.',
       type: 'array',
       of: [
         { 
