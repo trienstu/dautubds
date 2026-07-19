@@ -9,6 +9,7 @@ import ArticleTranslator from '@/components/ArticleTranslator';
 import { client } from '../../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
+import { replaceDateShortcodes, replacePortableTextShortcodes } from '@/utils/dateReplace';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -148,17 +149,17 @@ export async function generateMetadata(
 
   if (!post) return {};
 
-  const title = post.seo?.seoTitle || post.title || 'Tin Tức';
-  const description = post.seo?.seoDescription || post.excerpt || 'Đọc tin tức mới nhất từ Trien BDS.';
+  const title = replaceDateShortcodes(post.seo?.seoTitle || post.title);
+  const description = replaceDateShortcodes(post.seo?.seoDescription || post.excerpt);
   const image = post.seo?.seoImageUrl || post.imageUrl;
 
   return {
-    title,
+    title: `${title} | Đầu Tư BĐS`,
     description,
     keywords: post.seo?.seoKeywords,
     openGraph: {
       type: 'article',
-      title,
+      title: `${title} | Đầu Tư BĐS`,
       description,
       images: image ? [image] : [],
     },
@@ -198,6 +199,10 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
   if (!article) {
     notFound();
   }
+
+  // Replace shortcodes for dynamic dates
+  article.title = replaceDateShortcodes(article.title);
+  article.content = replacePortableTextShortcodes(article.content);
 
   const formattedDate = article.date ? new Date(article.date).toLocaleDateString('vi-VN', {
     year: 'numeric',

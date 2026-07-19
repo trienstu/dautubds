@@ -14,6 +14,7 @@ import ProjectActionButtons from '@/components/ProjectActionButtons';
 import ProjectFAQ from '@/components/ProjectFAQ';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
+import { replaceDateShortcodes, replacePortableTextShortcodes } from '@/utils/dateReplace';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -134,13 +135,13 @@ export async function generateMetadata(
   const image = project.seo?.seoImageUrl || project.imageUrl;
 
   return {
-    title,
-    description,
+    title: replaceDateShortcodes(title),
+    description: replaceDateShortcodes(description),
     keywords: project.seo?.seoKeywords,
     openGraph: {
       type: 'website',
-      title,
-      description,
+      title: replaceDateShortcodes(title),
+      description: replaceDateShortcodes(description),
       images: image ? [image] : [],
     },
     alternates: {
@@ -173,6 +174,13 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   if (!project) {
     notFound();
   }
+  
+  // Replace shortcodes for dynamic dates
+  project.title = replaceDateShortcodes(project.title);
+  project.description = replacePortableTextShortcodes(project.description);
+  project.locationContent = replacePortableTextShortcodes(project.locationContent);
+  project.featuresContent = replacePortableTextShortcodes(project.featuresContent);
+  project.investmentReasons = replacePortableTextShortcodes(project.investmentReasons);
 
   // Optimize image arrays
   const optimizedGallery = project.galleryUrls?.map((url: string) => url + "?w=1200&fit=max&auto=format") || [];
