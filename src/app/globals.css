@@ -44,6 +44,20 @@ img, video, iframe {
   height: auto;
 }
 
+/* Lightbox Clickable Images */
+.portable-text-content img,
+article img:not(.no-lightbox),
+.project-content-section img {
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.portable-text-content img:hover,
+article img:not(.no-lightbox):hover,
+.project-content-section img:hover {
+  transform: scale(1.015);
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.35);
+}
+
 html,
 body {
   max-width: 100vw;

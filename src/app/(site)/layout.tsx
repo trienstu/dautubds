@@ -7,6 +7,7 @@ import FloatingContact from "@/components/FloatingContact";
 import GlobalBookingModal from "@/components/GlobalBookingModal";
 import FloatingChatbot from "@/components/FloatingChatbot";
 import ThemeProvider from "@/components/ThemeProvider";
+import ImageLightbox from "@/components/ImageLightbox";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { client } from "../../../sanity/lib/client";
 
@@ -70,7 +71,9 @@ export default async function SiteLayout({
             <Navbar config={config} />
           </div>
           <main style={{ flex: 1 }}>
-            {children}
+            <ImageLightbox>
+              {children}
+            </ImageLightbox>
           </main>
           <div className="notranslate">
             <Footer config={config} />
