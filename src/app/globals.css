@@ -63,19 +63,19 @@ article img:not(.no-lightbox):hover,
   .portable-text-content img,
   article img:not(.no-lightbox),
   .project-content-section img {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
   }
 
   .portable-text-content img + img,
   article img:not(.no-lightbox) + img:not(.no-lightbox),
   .project-content-section img + img {
-    margin-top: 2.5rem !important;
+    margin-top: 1.25rem !important;
   }
 
   .portable-text-content div:has(> img) + div:has(> img),
   article div:has(> img) + div:has(> img) {
-    margin-top: 2.5rem !important;
+    margin-top: 1.25rem !important;
   }
 }
 
