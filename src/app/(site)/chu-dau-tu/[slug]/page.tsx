@@ -179,7 +179,7 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       
-      <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
           <div style={{ width: '150px', height: '150px', background: 'white', borderRadius: '12px', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img src={developer.logoUrl} alt={developer.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
