@@ -9,7 +9,7 @@ import ArticleTranslator from '@/components/ArticleTranslator';
 import { client } from '../../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
-import { replaceDateShortcodes, replacePortableTextShortcodes } from '@/utils/dateReplace';
+import { replaceDateShortcodes, replaceDeepShortcodes } from '@/utils/dateReplace';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -194,15 +194,14 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
     }
   }`;
 
-  const article = await client.fetch(query, { slug });
+  const rawArticle = await client.fetch(query, { slug });
 
-  if (!article) {
+  if (!rawArticle) {
     notFound();
   }
 
-  // Replace shortcodes for dynamic dates
-  article.title = replaceDateShortcodes(article.title);
-  article.content = replacePortableTextShortcodes(article.content);
+  // Replace shortcodes for dynamic dates deeply in the entire article object
+  const article = replaceDeepShortcodes(rawArticle);
 
   const formattedDate = article.date ? new Date(article.date).toLocaleDateString('vi-VN', {
     year: 'numeric',

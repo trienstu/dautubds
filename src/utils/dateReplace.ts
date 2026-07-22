@@ -22,15 +22,17 @@ export function replaceDateShortcodes(text: string): string {
 
 export function replacePortableTextShortcodes(blocks: any[]): any[] {
   if (!blocks || !Array.isArray(blocks)) return blocks;
-  
-  // Efficiently replace text in the whole portable text JSON structure
-  const blocksString = JSON.stringify(blocks);
-  const replacedString = replaceDateShortcodes(blocksString);
-  
+  return replaceDeepShortcodes(blocks);
+}
+
+export function replaceDeepShortcodes<T>(data: T): T {
+  if (!data) return data;
   try {
-    return JSON.parse(replacedString);
+    const jsonStr = JSON.stringify(data);
+    const replaced = replaceDateShortcodes(jsonStr);
+    return JSON.parse(replaced);
   } catch (e) {
-    console.error("Failed to parse replaced portable text", e);
-    return blocks;
+    console.error("Failed to replace deep shortcodes", e);
+    return data;
   }
 }
