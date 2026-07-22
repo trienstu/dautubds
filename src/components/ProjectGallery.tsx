@@ -12,17 +12,12 @@ export default function ProjectGallery({ images }: { images: string[] }) {
 
   return (
     <div>
-      <style>{`
-        .gallery-thumbs::-webkit-scrollbar { height: 6px; }
-        .gallery-thumbs::-webkit-scrollbar-track { background: var(--color-dark-light); border-radius: 4px; }
-        .gallery-thumbs::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-        .gallery-thumbs::-webkit-scrollbar-thumb:hover { background: #6b7280; }
-      `}</style>
       <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', maxHeight: '700px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#121212' }}>
         <img 
           src={images[currentIndex]} 
           alt={`Gallery ${currentIndex + 1}`} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s' }} 
+          className="gallery-main-img no-lightbox"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', transition: 'opacity 0.3s', display: 'block', margin: 0 }} 
         />
         
         {images.length > 1 && (
@@ -60,12 +55,13 @@ export default function ProjectGallery({ images }: { images: string[] }) {
             </span>
           </div>
           
-          <div className="gallery-thumbs" style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.8rem', scrollBehavior: 'smooth' }}>
+          <div className="gallery-thumbs" style={{ display: 'flex', gap: '0.8rem', overflowX: 'auto', paddingBottom: '0.8rem', scrollBehavior: 'smooth', alignItems: 'center' }}>
             {images.map((img, idx) => (
               <div 
                 key={idx} 
-                className="no-lightbox thumb-img"
                 onClick={() => setCurrentIndex(idx)}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = '1')}
+                onMouseOut={(e) => { if (currentIndex !== idx) e.currentTarget.style.opacity = '0.6'; }}
                 style={{ 
                   width: '120px', 
                   height: '80px', 
@@ -76,13 +72,13 @@ export default function ProjectGallery({ images }: { images: string[] }) {
                   border: currentIndex === idx ? '2px solid #3b82f6' : '2px solid transparent',
                   opacity: currentIndex === idx ? 1 : 0.6,
                   transition: 'all 0.2s',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  backgroundImage: `url(${img})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
                 }}
-                onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
-                onMouseOut={(e) => { if (currentIndex !== idx) e.currentTarget.style.opacity = '0.6' }}
-              >
-                <img src={img} alt={`Thumbnail ${idx + 1}`} className="no-lightbox" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
+              />
             ))}
           </div>
         </div>

@@ -95,6 +95,7 @@ export const postType = defineType({
           }
         },
         { type: 'table' },
+        { type: 'tableBlock' },
         { 
           type: 'image',
           title: 'Chèn Hình Ảnh',

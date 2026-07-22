@@ -15,6 +15,7 @@ import ProjectFAQ from '@/components/ProjectFAQ';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 import { replaceDateShortcodes, replaceDeepShortcodes } from '@/utils/dateReplace';
+import { renderTable } from '@/components/PortableTextTable';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -64,32 +65,12 @@ const portableTextComponents = {
     },
     table: ({ value }: any) => {
       if (!value || !value.rows || value.rows.length === 0) return null;
-      const [head, ...rows] = value.rows;
-      return (
-        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', margin: '1rem 0', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'auto', wordBreak: 'break-word' }}>
-            {head && head.cells && (
-              <thead style={{ background: 'var(--color-dark-light)' }}>
-                <tr>
-                  {head.cells.map((cell: string, i: number) => (
-                    <th key={i} style={{ borderBottom: '2px solid var(--border-color)', padding: '12px 16px', fontWeight: 600, color: 'var(--foreground)' }}>{cell}</th>
-                  ))}
-                </tr>
-              </thead>
-            )}
-            <tbody>
-              {rows.map((row: any, i: number) => (
-                <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--color-secondary)' }}>
-                  {row.cells.map((cell: string, j: number) => (
-                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)', wordBreak: 'break-word', whiteSpace: 'normal' }}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-    }
+      return renderTable(value.rows);
+    },
+    tableBlock: ({ value }: any) => {
+      if (!value || !value.rows || value.rows.length === 0) return null;
+      return renderTable(value.rows, value.colWidths);
+    },
   },
   list: {
     bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
@@ -227,24 +208,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
-      <style>{`
-        .project-grid { display: grid; grid-template-columns: 9fr 3fr; gap: 2.5rem; align-items: start; }
-        .desktop-only { display: block; }
-        .mobile-only { display: none !important; }
-        .mobile-flex { display: none !important; }
-        
-        .responsive-map-iframe iframe { width: 100% !important; aspect-ratio: 16 / 9; height: auto !important; }
-        .responsive-tour-iframe { width: 100% !important; aspect-ratio: 16 / 9; border-radius: 8px; border: none; }
-        
-        @media (max-width: 900px) {
-          .project-grid, .project-grid-top { grid-template-columns: 1fr !important; }
-          .desktop-only { display: none !important; }
-          .mobile-only { display: block !important; }
-          .mobile-flex { display: flex !important; }
-          .responsive-map-iframe iframe { aspect-ratio: 4 / 3; }
-          .responsive-tour-iframe { aspect-ratio: 1 / 1; }
-        }
-      `}</style>
+
       <article style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
         <div className="container-wide" style={{ marginBottom: '2rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.95rem', marginBottom: '1.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

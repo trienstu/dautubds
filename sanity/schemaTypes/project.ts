@@ -51,6 +51,7 @@ const blockContent = [
     }
   },
   { type: 'table' },
+  { type: 'tableBlock' },
   { 
     type: 'image',
     title: 'Chèn Hình Ảnh',

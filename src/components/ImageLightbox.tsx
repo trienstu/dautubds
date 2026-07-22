@@ -57,6 +57,7 @@ export default function ImageLightbox({ children }: { children: React.ReactNode 
 
       {activeImage && (
         <div
+          className="lightbox-overlay"
           style={{
             position: 'fixed',
             top: 0,
@@ -70,21 +71,9 @@ export default function ImageLightbox({ children }: { children: React.ReactNode 
             justifyContent: 'center',
             padding: '1.5rem',
             backdropFilter: 'blur(10px)',
-            animation: 'fadeIn 0.2s ease-out'
           }}
           onClick={() => setActiveImage(null)}
         >
-          <style>{`
-            @keyframes fadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-            @keyframes zoomIn {
-              from { transform: scale(0.95); opacity: 0; }
-              to { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
-
           <button
             onClick={() => setActiveImage(null)}
             title="Đóng (Esc)"
@@ -122,13 +111,13 @@ export default function ImageLightbox({ children }: { children: React.ReactNode 
           <img
             src={activeImage}
             alt="Hình ảnh phóng to"
+            className="lightbox-image"
             style={{
               maxWidth: '92vw',
               maxHeight: '92vh',
               objectFit: 'contain',
               borderRadius: '10px',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
-              animation: 'zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
               cursor: 'default'
             }}
             onClick={(e) => e.stopPropagation()}

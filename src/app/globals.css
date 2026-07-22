@@ -44,16 +44,50 @@ img, video, iframe {
   height: auto;
 }
 
+/* Project detail page layout */
+.project-grid { display: grid; grid-template-columns: 9fr 3fr; gap: 2.5rem; align-items: start; }
+.desktop-only { display: block; }
+.mobile-only { display: none !important; }
+.mobile-flex { display: none !important; }
+.responsive-map-iframe iframe { width: 100% !important; aspect-ratio: 16 / 9; height: auto !important; }
+.responsive-tour-iframe { width: 100% !important; aspect-ratio: 16 / 9; border-radius: 8px; border: none; }
+@media (max-width: 900px) {
+  .project-grid, .project-grid-top { grid-template-columns: 1fr !important; }
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+  .mobile-flex { display: flex !important; }
+  .responsive-map-iframe iframe { aspect-ratio: 4 / 3; }
+  .responsive-tour-iframe { aspect-ratio: 1 / 1; }
+}
+
+/* Gallery thumbnail scrollbar */
+.gallery-thumbs::-webkit-scrollbar { height: 6px; }
+.gallery-thumbs::-webkit-scrollbar-track { background: var(--color-dark-light); border-radius: 4px; }
+.gallery-thumbs::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+.gallery-thumbs::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+/* Lightbox animations */
+@keyframes lightbox-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes lightbox-zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.lightbox-overlay { animation: lightbox-fadeIn 0.2s ease-out; }
+.lightbox-image { animation: lightbox-zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+
 /* Lightbox Clickable Images */
 .portable-text-content img,
-article img:not(.no-lightbox),
-.project-content-section img {
+article img:not(.no-lightbox):not(.gallery-main-img),
+.project-content-section img:not(.gallery-main-img):not(.no-lightbox) {
   cursor: zoom-in;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .portable-text-content img:hover,
-article img:not(.no-lightbox):hover,
-.project-content-section img:hover {
+article img:not(.no-lightbox):not(.gallery-main-img):hover,
+.project-content-section img:not(.gallery-main-img):not(.no-lightbox):hover {
   transform: scale(1.015);
   box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.35);
 }
@@ -61,15 +95,15 @@ article img:not(.no-lightbox):hover,
 /* Khoảng hở giữa các ảnh liên tiếp trên Desktop */
 @media (min-width: 768px) {
   .portable-text-content img,
-  article img:not(.no-lightbox),
-  .project-content-section img {
+  article img:not(.no-lightbox):not(.gallery-main-img),
+  .project-content-section img:not(.gallery-main-img):not(.no-lightbox) {
     margin-top: 0.8rem;
     margin-bottom: 0.8rem;
   }
 
   .portable-text-content img + img,
-  article img:not(.no-lightbox) + img:not(.no-lightbox),
-  .project-content-section img + img {
+  article img:not(.no-lightbox):not(.gallery-main-img) + img:not(.no-lightbox):not(.gallery-main-img),
+  .project-content-section img:not(.gallery-main-img):not(.no-lightbox) + img:not(.gallery-main-img):not(.no-lightbox) {
     margin-top: 1.25rem !important;
   }
 
