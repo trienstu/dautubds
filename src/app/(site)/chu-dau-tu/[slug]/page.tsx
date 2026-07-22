@@ -4,6 +4,8 @@ import { client } from '../../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 import Link from 'next/link';
+import ProjectGallery from '@/components/ProjectGallery';
+import { replaceDeepShortcodes } from '@/utils/dateReplace';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -39,6 +41,43 @@ const portableTextComponents = {
               />
             );
           })}
+        </div>
+      );
+    },
+    imageSlider: ({ value }: any) => {
+      if (!value?.images || value.images.length === 0) return null;
+      const imageUrls = value.images.map((img: any) => urlFor(img).width(1200).fit('max').auto('format').url());
+      return (
+        <div style={{ margin: '2rem 0' }}>
+          <ProjectGallery images={imageUrls} />
+        </div>
+      );
+    },
+    table: ({ value }: any) => {
+      if (!value || !value.rows || value.rows.length === 0) return null;
+      const [head, ...rows] = value.rows;
+      return (
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', margin: '1rem 0', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', tableLayout: 'auto', wordBreak: 'break-word' }}>
+            {head && head.cells && (
+              <thead style={{ background: 'var(--color-dark-light)' }}>
+                <tr>
+                  {head.cells.map((cell: string, i: number) => (
+                    <th key={i} style={{ borderBottom: '2px solid var(--border-color)', padding: '12px 16px', fontWeight: 600, color: 'var(--foreground)' }}>{cell}</th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {rows.map((row: any, i: number) => (
+                <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--color-secondary)' }}>
+                  {row.cells.map((cell: string, j: number) => (
+                    <td key={j} style={{ padding: '12px 16px', color: 'var(--color-text)', wordBreak: 'break-word', whiteSpace: 'normal' }}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       );
     },
@@ -111,9 +150,11 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
     }
   }`;
   
-  const developer = await client.fetch(query, { slug });
+  const rawDeveloper = await client.fetch(query, { slug });
 
-  if (!developer) notFound();
+  if (!rawDeveloper) notFound();
+
+  const developer = replaceDeepShortcodes(rawDeveloper);
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',

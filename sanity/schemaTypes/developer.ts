@@ -110,8 +110,22 @@ export default defineType({
               }
             ]
           }
-          },
-        { type: 'image', options: { hotspot: true } },
+        },
+        { type: 'table' },
+        { 
+          type: 'image',
+          title: 'Chèn Hình Ảnh',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Chú thích ảnh (Alt text)',
+            }
+          ]
+        },
+        { type: 'imageGrid' },
+        { type: 'imageSlider' },
         { type: 'youtube' }
       ],
     }),
