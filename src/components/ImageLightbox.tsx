@@ -18,7 +18,12 @@ export default function ImageLightbox({ children }: { children: React.ReactNode 
           img.width > 150 || 
           img.height > 150
         ) {
-          if (!img.closest('.no-lightbox') && !img.closest('a[href]')) {
+          if (
+            !img.closest('.no-lightbox') && 
+            !img.closest('.gallery-thumbs') && 
+            !img.closest('.thumb-img') && 
+            !img.closest('a[href]')
+          ) {
             setActiveImage(img.src);
           }
         }

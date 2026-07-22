@@ -64,6 +64,7 @@ export default function ProjectGallery({ images }: { images: string[] }) {
             {images.map((img, idx) => (
               <div 
                 key={idx} 
+                className="no-lightbox thumb-img"
                 onClick={() => setCurrentIndex(idx)}
                 style={{ 
                   width: '120px', 
@@ -80,7 +81,7 @@ export default function ProjectGallery({ images }: { images: string[] }) {
                 onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
                 onMouseOut={(e) => { if (currentIndex !== idx) e.currentTarget.style.opacity = '0.6' }}
               >
-                <img src={img} alt={`Thumbnail ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={img} alt={`Thumbnail ${idx + 1}`} className="no-lightbox" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             ))}
           </div>
