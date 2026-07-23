@@ -55,7 +55,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
 export default async function ProjectsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string, q?: string }>
+  searchParams: Promise<{ category?: string, q?: string, province?: string, status?: string }>
 }) {
   const { category, q, province, status } = await searchParams;
   const categoryLabel = category && categoryMap[category as string] ? categoryMap[category as string] : category;
