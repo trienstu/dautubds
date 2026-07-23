@@ -135,12 +135,12 @@ export async function generateMetadata(
   const image = post.seo?.seoImageUrl || post.imageUrl;
 
   return {
-    title: `${title} | Đầu Tư BĐS`,
+    title,
     description,
     keywords: post.seo?.seoKeywords,
     openGraph: {
       type: 'article',
-      title: `${title} | Đầu Tư BĐS`,
+      title,
       description,
       images: image ? [image] : [],
     },

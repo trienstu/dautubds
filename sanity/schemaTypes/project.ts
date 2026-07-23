@@ -159,9 +159,18 @@ export const projectType = defineType({
       fieldset: 'basicInfo',
     }),
     defineField({
+      name: 'province',
+      title: 'Khu Vực (Tỉnh/Thành phố)',
+      type: 'reference',
+      to: [{ type: 'province' }],
+      description: 'Chọn tỉnh/thành phố (Dùng để phân loại và lọc).',
+      fieldset: 'basicInfo',
+    }),
+    defineField({
       name: 'location',
-      title: 'Vị Trí',
+      title: 'Vị Trí Chi Tiết (Tuỳ chọn)',
       type: 'string',
+      description: 'Ví dụ: Phường Bến Nghé, Quận 1',
       fieldset: 'basicInfo',
     }),
     defineField({

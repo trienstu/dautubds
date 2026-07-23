@@ -1,8 +1,9 @@
 import ProjectCard from '@/components/ProjectCard';
 import ProjectSearch from '@/components/ProjectSearch';
-import { client } from '../../../../sanity/lib/client';
-import type { Metadata } from 'next';
+import { client } from '../../../../../sanity/lib/client';
+import type { Metadata, ResolvingMetadata } from 'next';
 import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 import { removeAccents } from '@/utils/stringUtils';
 
 export const revalidate = 60;
@@ -14,79 +15,70 @@ const categoryMap: Record<string, string> = {
   'dat-nen': 'Đất nền',
 };
 
-const categories = [
-  { slug: 'tat-ca', label: 'Tất cả' },
-  { slug: 'biet-thu', label: 'Biệt thự' },
-  { slug: 'nha-pho', label: 'Nhà phố' },
-  { slug: 'can-ho', label: 'Căn hộ' },
-  { slug: 'dat-nen', label: 'Đất nền' },
-];
-
-export async function generateMetadata({ searchParams }: { searchParams: Promise<{ category?: string }> }): Promise<Metadata> {
-  const { category } = await searchParams;
-  const config = await client.fetch(`*[_type == "siteConfig"][0]{
-    projectsSeo {
-      seoTitle,
-      seoDescription,
-      seoKeywords,
-      "seoImageUrl": seoImage.asset->url
-    }
-  }`);
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  const provinceData = await client.fetch(`*[_type == "province" && slug.current == $slug][0]{ title }`, { slug });
   
-  const seo = config?.projectsSeo || {};
-  const categoryLabel = category && categoryMap[category] ? categoryMap[category] : '';
-  const pageTitle = categoryLabel ? categoryLabel : (seo.seoTitle || 'Danh Sách Dự Án');
-
+  if (!provinceData) return {};
+  
+  const pageTitle = `Dự Án Tại ${provinceData.title}`;
+  
   return {
     title: pageTitle,
-    description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
-    keywords: seo.seoKeywords || '',
-    alternates: { canonical: 'https://www.dautubds.io.vn/du-an' },
+    description: `Danh sách các dự án bất động sản đẳng cấp tại ${provinceData.title}.`,
+    alternates: {
+      canonical: `https://www.dautubds.io.vn/khu-vuc/${slug}`,
+    },
     openGraph: {
       title: pageTitle,
-      description: seo.seoDescription || 'Khám phá các dự án bất động sản hạng sang từ Trien BDS.',
-      url: 'https://www.dautubds.io.vn/du-an',
+      description: `Danh sách các dự án bất động sản đẳng cấp tại ${provinceData.title}.`,
+      url: `https://www.dautubds.io.vn/khu-vuc/${slug}`,
       type: 'website',
-      images: seo.seoImageUrl ? [{ url: seo.seoImageUrl }] : [],
     },
   };
 }
 
-export default async function ProjectsPage({
+export default async function ProvinceProjectsPage({
+  params,
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string, q?: string }>
+  params: Promise<{ slug: string }>,
+  searchParams: Promise<{ category?: string, q?: string, status?: string }>
 }) {
-  const { category, q, province, status } = await searchParams;
+  const { slug } = await params;
+  const { category, q, status } = await searchParams;
+  
+  const provinceData = await client.fetch(`*[_type == "province" && slug.current == $slug][0]{ title, "slug": slug.current }`);
+  
+  if (!provinceData) {
+    return notFound();
+  }
+
   const categoryLabel = category && categoryMap[category as string] ? categoryMap[category as string] : category;
 
-  // Fetch all projects (including expanded province reference)
-  const query = `*[_type == "project"] | order(_createdAt desc) {
+  // Fetch all projects for this province
+  const query = `*[_type == "project" && province->slug.current == $slug] | order(_createdAt desc) {
     "id": _id, title, "slug": slug.current, category, price, location, 
     "provinceSlug": province->slug.current, status, 
     "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format"
   }`;
-  let projects = await client.fetch(query);
+  let projects = await client.fetch(query, { slug });
 
-  // Fetch all provinces for the dropdown
+  // Fetch all provinces for the dropdown (so users can switch provinces easily)
   const provinces = await client.fetch(`*[_type == "province"] | order(order asc) { title, "slug": slug.current }`);
 
-  // Filter by category
+  // JS Filters
   if (categoryLabel && categoryLabel !== 'Tất cả') {
     projects = projects.filter((p: any) => p.category === categoryLabel);
   }
 
-  // Filter by province
-  if (province) {
-    projects = projects.filter((p: any) => p.provinceSlug === province);
-  }
-
-  // Filter by status
   if (status) {
     projects = projects.filter((p: any) => p.status === status);
   }
 
-  // Filter by search query (diacritic-insensitive)
   if (q) {
     const normalizedQ = removeAccents((q as string).toLowerCase());
     projects = projects.filter((p: any) => {
@@ -101,10 +93,10 @@ export default async function ProjectsPage({
       <div className="page-header-top">
         <div className="page-header-title-section" style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 className="page-title-stylish">
-            {q ? `Kết quả tìm kiếm cho "${q}"` : (categoryLabel ? categoryLabel : 'Tất Cả Dự Án')}
+            {q ? `Kết quả tìm kiếm cho "${q}" tại ${provinceData.title}` : `Dự Án Tại ${provinceData.title}`}
           </h1>
           <p style={{ color: 'var(--color-text-muted)', maxWidth: '600px', margin: '0 auto' }}>
-            Khám phá danh sách các dự án bất động sản đẳng cấp, được tuyển chọn kỹ lưỡng để mang lại giá trị sống và cơ hội đầu tư tốt nhất.
+            Khám phá danh sách các dự án bất động sản đẳng cấp tại {provinceData.title}, được tuyển chọn kỹ lưỡng để mang lại giá trị sống và cơ hội đầu tư tốt nhất.
           </p>
         </div>
 
@@ -123,7 +115,7 @@ export default async function ProjectsPage({
         </div>
       ) : (
         <div className="text-center" style={{ padding: '5rem 0', color: 'var(--color-text-muted)' }}>
-          <p>Không tìm thấy dự án nào trong danh mục này.</p>
+          <p>Không tìm thấy dự án nào trong khu vực này.</p>
         </div>
       )}
     </div>
