@@ -1,86 +1,116 @@
-.card {
-  background-color: var(--color-dark-light);
-  border-radius: 8px;
+.carouselCard {
+  border-radius: 16px;
   overflow: hidden;
-  transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  height: 100%;
+  background: var(--color-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
+  text-decoration: none;
 }
 
-.card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border-color: rgba(212, 175, 55, 0.3); /* Gold border on hover */
-}
-
-.imageContainer {
+.carouselImgWrapper {
+  width: 100%;
+  aspect-ratio: 16 / 9;
   position: relative;
-  height: 250px;
   overflow: hidden;
 }
 
-.image {
+.carouselImgWrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
-.card:hover .image {
-  transform: scale(1.05);
-}
-
-.badge {
+.carouselBadge {
   position: absolute;
   top: 1rem;
-  right: 1rem;
-  background-color: var(--color-primary);
-  color: var(--color-dark);
+  left: 1rem;
+  background: var(--color-primary);
+  color: white;
   padding: 0.3rem 0.8rem;
-  border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 20px;
   z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.content {
+.carouselCard:hover .carouselImgWrapper img {
+  transform: scale(1.08);
+}
+
+.carouselContent {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
 }
 
-.category {
-  color: var(--color-primary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.carouselTitle {
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+  line-height: 1.3;
+  font-size: 1.25rem;
+  color: var(--foreground);
+  font-weight: 700;
 }
 
-.title {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+.carouselPrice {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.carouselLocation {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
   line-height: 1.4;
 }
 
-.location {
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.carouselIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.price {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  font-family: var(--font-heading);
+.carouselFooter {
   margin-top: auto;
-  font-weight: 700;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-color);
   padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.carouselDev {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.carouselArrow {
+  background: var(--background);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.carouselCard:hover .carouselArrow {
+  background: var(--color-primary);
 }

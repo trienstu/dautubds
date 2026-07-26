@@ -63,7 +63,7 @@ export default async function ProjectsPage({
   // Fetch all projects (including expanded province reference)
   const query = `*[_type == "project"] | order(_createdAt desc) {
     "id": _id, title, "slug": slug.current, category, price, location, 
-    "provinceSlug": province->slug.current, status, 
+    "provinceSlug": province->slug.current, status, "developer": developers[0]->name,
     "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format"
   }`;
   let projects = await client.fetch(query);

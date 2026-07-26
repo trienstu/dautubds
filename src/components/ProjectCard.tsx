@@ -1,26 +1,34 @@
-import Image from 'next/image';
+import Link from 'next/link';
 import styles from './ProjectCard.module.css';
-import { Project } from '@/data/mockData';
+import { MapPin, Building2, ArrowRight } from 'lucide-react';
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({ project }: { project: any }) {
   return (
-    <a href={`/du-an/${project.slug}`} className={styles.card}>
-      <div className={styles.imageContainer}>
-        <div className={styles.badge}>{project.status}</div>
+    <Link href={`/du-an/${project.slug}`} className={styles.carouselCard}>
+      <div className={styles.carouselImgWrapper}>
+        <div className={styles.carouselBadge}>{project.status || 'HOT'}</div>
         <img 
-          src={project.imageUrl} 
+          src={project.imageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750'} 
           alt={project.title} 
-          className={styles.image} 
+          loading="lazy" 
         />
       </div>
-      <div className={styles.content}>
-        <span className={styles.category}>{project.category}</span>
-        <h3 className={styles.title}>{project.title}</h3>
-        <div className={styles.location}>
-          📍 {project.location}
+      <div className={styles.carouselContent}>
+        <h3 className={styles.carouselTitle}>{project.title}</h3>
+        <p className={styles.carouselPrice}>{project.price ? project.price : 'Đang cập nhật'}</p>
+        <p className={styles.carouselLocation}>
+          <MapPin size={14} className={styles.carouselIcon} /> {project.location}
+        </p>
+        
+        <div className={styles.carouselFooter}>
+          <div className={styles.carouselDev}>
+            <Building2 size={14} className={styles.carouselIcon} /> {project.developer || 'Đang cập nhật'}
+          </div>
+          <div className={styles.carouselArrow}>
+            <ArrowRight size={18} color="var(--color-primary)" />
+          </div>
         </div>
-        <div className={styles.price}>{project.price}</div>
       </div>
-    </a>
+    </Link>
   );
 }

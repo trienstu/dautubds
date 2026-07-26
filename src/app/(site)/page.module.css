@@ -216,7 +216,7 @@
   overflow: hidden;
   position: relative;
   height: auto;
-  background: white;
+  background: var(--color-secondary);
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -242,7 +242,7 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: #ff4757;
+  background: var(--color-primary);
   color: white;
   padding: 0.3rem 0.8rem;
   font-size: 0.8rem;
@@ -269,12 +269,12 @@
   font-family: var(--font-heading);
   line-height: 1.3;
   font-size: 1.25rem;
-  color: #111;
+  color: var(--foreground);
   font-weight: 700;
 }
 
 .carouselPrice {
-  color: #ef4444; /* red-500 */
+  color: var(--color-primary);
   font-weight: 700;
   font-size: 1.1rem;
   margin-bottom: 0.8rem;
@@ -282,7 +282,7 @@
 
 .carouselLocation {
   font-size: 0.9rem;
-  color: #64748b; /* slate-500 */
+  color: var(--color-text-muted);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-start;
@@ -297,7 +297,7 @@
 
 .carouselFooter {
   margin-top: auto;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border-color);
   padding-top: 1rem;
   display: flex;
   justify-content: space-between;
@@ -309,11 +309,11 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: #94a3b8; /* slate-400 */
+  color: var(--color-text-muted);
 }
 
 .carouselArrow {
-  background: #fffbeb;
+  background: var(--background);
   width: 32px;
   height: 32px;
   border-radius: 50%;
