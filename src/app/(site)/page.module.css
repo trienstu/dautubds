@@ -31,13 +31,13 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(10,10,10,0.5), rgba(10,10,10,0.9));
+  background: linear-gradient(to bottom, rgba(10,10,10,0.4), rgba(10,10,10,0.9));
   z-index: 2;
 }
 
 .heroContent {
   text-align: center;
-  max-width: 900px;
+  max-width: 1000px;
   padding: 0 2rem;
   z-index: 3;
   position: relative;
@@ -45,55 +45,71 @@
 }
 
 .heroTitle {
-  font-size: 4.5rem;
+  font-size: 5rem;
   margin-bottom: 1rem;
-  line-height: 1.2;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -1px;
 }
 
 .heroTitle span {
   color: var(--color-primary);
   font-style: italic;
+  font-weight: 400;
 }
 
 .heroSubtitle {
-  font-size: 1.2rem;
-  color: #ddd;
-  margin-bottom: 3rem;
+  font-size: 1.25rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 3.5rem;
   font-family: var(--font-body);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Glassmorphism Search Box */
 .searchBox {
-  background: rgba(20, 20, 20, 0.7);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  padding: 1rem;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+  border-radius: 16px;
   display: flex;
   gap: 1rem;
   align-items: center;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 .searchInputGroup {
   flex: 2;
   display: flex;
   align-items: center;
-  background: rgba(255,255,255,0.05);
-  border-radius: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
   padding: 0 1rem;
   border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.3s;
+}
+
+.searchInputGroup:focus-within {
+  background: rgba(255,255,255,0.25);
+  border-color: var(--color-primary);
 }
 
 .searchInputGroup input {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 1rem;
+  padding: 1.2rem;
   color: white;
   outline: none;
+  font-size: 1.05rem;
 }
 
 .searchInputGroup input::placeholder {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.7);
 }
 
 .searchIcon {
@@ -102,17 +118,24 @@
 
 .searchSelect {
   flex: 1;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.15);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 1rem;
+  padding: 1.2rem;
   color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   outline: none;
   cursor: pointer;
+  font-size: 1.05rem;
+  transition: all 0.3s;
+}
+
+.searchSelect:hover {
+  background: rgba(255,255,255,0.25);
 }
 
 .searchSelect option {
   background: var(--color-dark);
+  color: white;
 }
 
 .searchBtn {
@@ -120,269 +143,239 @@
   background: var(--color-primary);
   color: var(--color-dark);
   border: none;
-  padding: 1rem;
+  padding: 1.2rem;
   font-weight: 700;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   text-transform: uppercase;
   transition: all 0.3s;
+  font-size: 1.05rem;
 }
 
 .searchBtn:hover {
   background: white;
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
 }
 
 .sectionLabel {
-  display: block;
+  display: inline-block;
   color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 0.3rem;
 }
 
-/* --- ABOUT OVERLAPPING IMAGES --- */
-.aboutWrapper {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: 3rem;
+/* --- CAROUSEL PROJECTS --- */
+.carouselContainer {
+  display: flex;
+  overflow-x: auto;
+  gap: 2rem;
+  padding-bottom: 2rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scroll-snap-type: x mandatory;
+}
+.carouselContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.carouselNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(10, 10, 10, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(5px);
 }
 
-.aboutContent {
-  padding-right: 2rem;
+.carouselNavBtn:hover {
+  background: var(--color-primary);
+  color: black;
+  border-color: var(--color-primary);
 }
 
-.aboutImageContainer {
-  position: relative;
-  width: 100%;
-  padding-bottom: 90%;
-}
-
-.aboutImgMain {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 80%;
-  height: 85%;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: -10px 20px 40px rgba(0,0,0,0.3);
-  z-index: 1;
-}
-
-.aboutImgSecondary {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 60%;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 8px solid var(--background);
-  z-index: 2;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.aboutImage {
-  position: relative;
-  border-radius: 8px;
+.carouselCard {
+  flex: 0 0 400px;
+  scroll-snap-align: start;
+  border-radius: 16px;
   overflow: hidden;
-}
-
-.aboutImage::before {
-  content: '';
-  display: block;
-  padding-bottom: 120%;
-}
-
-.aboutImage img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1s;
-}
-
-.aboutImage:hover img {
-  transform: scale(1.05);
-}
-
-/* --- EVENTS CALENDAR LIST --- */
-.eventsSection {
-  padding: 6rem 0;
-  background: var(--background);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.eventsList {
+  position: relative;
+  height: auto;
+  background: white;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
 }
 
-.eventRow {
-  display: grid;
-  grid-template-columns: 100px 1fr auto;
-  gap: 2rem;
-  align-items: center;
-  padding: 2.5rem 0;
-  border-bottom: 1px solid var(--border-color);
-  transition: all 0.3s;
-}
-
-.eventRow:first-child {
-  border-top: 1px solid var(--border-color);
-}
-
-.eventRow:hover {
-  background: rgba(212, 175, 55, 0.03);
-}
-
-.eventRowDate {
-  text-align: center;
-  border-right: 2px solid var(--color-primary);
-  padding-right: 1.5rem;
-}
-
-.eventDay {
-  display: block;
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--foreground);
-  line-height: 1;
-}
-
-.eventMonth {
-  display: block;
-  font-size: 0.9rem;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  margin-top: 0.5rem;
-}
-
-.eventRowTitle {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-}
-
-.eventRowLocation {
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-/* --- ASYMMETRIC GRID (PROJECTS) --- */
-.asymmetricGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 250px;
-  gap: 1.5rem;
-}
-
-.asymCard {
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-}
-
-.asymCardLarge {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.asymCardSmall {
-  grid-column: span 1;
-  grid-row: span 1;
-}
-
-.asymImgWrapper {
+.carouselImgWrapper {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
 }
 
-.asymImgWrapper img {
+.carouselImgWrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
 }
 
-.asymCard:hover .asymImgWrapper img {
-  transform: scale(1.05);
+.carouselBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: #ff4757;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 20px;
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.asymOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
+.carouselCard:hover .carouselImgWrapper img {
+  transform: scale(1.08);
+}
+
+.carouselContent {
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 2rem;
-  color: white;
+  flex: 1;
 }
 
-.asymTitle {
+.carouselTitle {
   margin-bottom: 0.5rem;
   font-family: var(--font-heading);
-  line-height: 1.2;
+  line-height: 1.3;
+  font-size: 1.25rem;
+  color: #111;
+  font-weight: 700;
 }
 
-.asymLocation {
+.carouselPrice {
+  color: #ef4444; /* red-500 */
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.carouselLocation {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.8);
-  margin: 0;
+  color: #64748b; /* slate-500 */
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  line-height: 1.4;
 }
 
-/* --- STAT BANNER (MARKET) --- */
-.statBannerSection {
-  background-image: linear-gradient(rgba(10,10,10,0.85), rgba(10,10,10,0.9)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
-  padding: 6rem 0;
+.carouselIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.statBannerGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 3rem;
+.carouselFooter {
+  margin-top: auto;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.statBannerIntro {
-  border-right: 1px solid rgba(255,255,255,0.2);
-  padding-right: 2rem;
+.carouselDev {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #94a3b8; /* slate-400 */
 }
 
-.statBannerItem {
+.carouselArrow {
+  background: #fffbeb;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.carouselCard:hover .carouselArrow {
+  background: var(--color-primary);
+}
+
+/* --- TOOLS & UTILITIES --- */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.toolCard {
+  background: var(--color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2.5rem;
   text-align: center;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.statBannerNum {
-  font-size: 3.5rem;
-  font-weight: 700;
+.toolCard:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+}
+
+.toolIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-primary);
-  margin-bottom: 0.5rem;
-  font-family: var(--font-heading);
 }
 
-.statBannerTitle {
-  font-size: 1.1rem;
-  color: white;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+.toolTitle {
+  color: var(--foreground);
+  font-size: 1.4rem;
+  margin: 0;
 }
 
-.statBannerDesc {
-  color: rgba(255,255,255,0.7);
-  font-size: 0.9rem;
+.toolDesc {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
 }
 
 /* --- MARQUEE DEVELOPERS --- */
@@ -391,6 +384,10 @@
   overflow: hidden;
   white-space: nowrap;
   position: relative;
+  padding: 3rem 0;
+  background: var(--color-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .marqueeContainer::before,
@@ -399,23 +396,27 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 150px;
+  width: 200px;
   z-index: 2;
 }
 
 .marqueeContainer::before {
   left: 0;
-  background: linear-gradient(to right, var(--color-dark), transparent);
+  background: linear-gradient(to right, var(--color-secondary), transparent);
 }
 
 .marqueeContainer::after {
   right: 0;
-  background: linear-gradient(to left, var(--color-dark), transparent);
+  background: linear-gradient(to left, var(--color-secondary), transparent);
 }
 
 .marqueeContent {
   display: inline-block;
-  animation: marquee 30s linear infinite;
+  animation: marquee 35s linear infinite;
+}
+
+.marqueeContent:hover {
+  animation-play-state: paused;
 }
 
 @keyframes marquee {
@@ -424,15 +425,15 @@
 }
 
 .marqueeLogo {
-  height: 50px;
+  height: 60px;
   margin: 0 4rem;
   display: inline-block;
-  filter: brightness(0) invert(1) opacity(0.5);
+  filter: var(--logo-filter, grayscale(100%) opacity(0.6));
   transition: all 0.3s;
 }
 
 .marqueeLogo:hover {
-  filter: brightness(0) invert(1) opacity(1) sepia(1) saturate(5) hue-rotate(15deg);
+  filter: var(--logo-filter-hover, grayscale(0%) opacity(1));
 }
 
 /* --- MAGAZINE NEWS --- */
@@ -442,43 +443,229 @@
   gap: 3rem;
 }
 
+.magMainArticle {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  display: block;
+  aspect-ratio: 4 / 3;
+  height: auto;
+}
+
+.magMainArticle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.magMainArticle:hover img {
+  transform: scale(1.05);
+}
+
+.magMainOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.magMainTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.magMainDate {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  margin: 0;
+}
+
 .magSideArticles {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  justify-content: space-between;
 }
 
 .magSideItem {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  text-decoration: none;
+  transition: transform 0.3s;
+}
+
+.magSideItem:hover {
+  transform: translateX(10px);
 }
 
 .magSideItem:last-child {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
+.magSideImg {
+  width: 140px;
+  height: 90px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.magSideContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.magSideTitle {
+  color: var(--foreground);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+.magSideDate {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.btnViewMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--foreground);
+  padding-bottom: 4px;
+  transition: opacity 0.3s;
+}
+.btnViewMore:hover {
+  opacity: 0.7;
+}
+
+/* --- LEAD MAGNET --- */
+.leadMagnet {
+  background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(10,10,10,1) 100%), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 6rem 2rem;
+  text-align: center;
+  border-radius: 24px;
+  margin: 0 auto;
+  max-width: 1200px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-primary);
+}
+
+.leadMagnet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 1;
+}
+
+.leadContent {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.leadTitle {
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.leadDesc {
+  color: rgba(255,255,255,0.8);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.leadForm {
+  display: flex;
+  gap: 1rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+}
+
+.leadForm input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  color: white;
+  outline: none;
+  font-size: 1.05rem;
+}
+
+.leadForm button {
+  background: var(--color-primary);
+  color: black;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 40px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.leadForm button:hover {
+  background: white;
+}
+
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .heroTitle { font-size: 3.5rem; }
   .searchBox { flex-direction: column; }
   .searchInputGroup, .searchSelect, .searchBtn { width: 100%; }
-  .aboutWrapper { gap: 3rem; grid-template-columns: 1fr; }
-  .asymmetricGrid { grid-template-columns: repeat(2, 1fr); }
-  .asymCardLarge { grid-column: span 2; grid-row: span 2; }
-  .statBannerGrid { grid-template-columns: 1fr; text-align: center; }
-  .statBannerIntro { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2rem; margin-bottom: 2rem; }
-  .magazineGrid { grid-template-columns: 1fr; }
+  
+  .toolsGrid { grid-template-columns: repeat(2, 1fr); }
+  .magazineGrid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .magMainArticle { border-radius: 12px; margin: 0 1rem; }
+  .magSideArticles { margin: 0 1rem; }
 }
 
 @media (max-width: 768px) {
   .heroTitle { font-size: 2.5rem; }
-  .aboutContent { padding: 0 1rem; }
-  .eventRow { grid-template-columns: 1fr; text-align: center; gap: 1rem; }
-  .eventRowDate { border-right: none; border-bottom: 2px solid var(--color-primary); padding-right: 0; padding-bottom: 1rem; display: flex; align-items: baseline; justify-content: center; gap: 0.5rem; }
-  .asymmetricGrid { grid-template-columns: 1fr; }
-  .asymCardLarge, .asymCardSmall { grid-column: span 1; grid-row: span 1; }
-  .magSideItem { flex-direction: column; }
-  .magSideItem > div:first-child { width: 100% !important; height: 200px !important; }
+  .toolsGrid { grid-template-columns: 1fr; }
+  .carouselCard { flex: 0 0 85vw; height: auto; }
+  .carouselNavBtn { display: none; }
+  
+  .magSideItem { flex-direction: row; align-items: center; }
+  .magSideImg { width: 120px; height: 80px; }
+  
+  .leadForm { flex-direction: column; border-radius: 16px; padding: 1rem; }
+  .leadForm button { border-radius: 8px; width: 100%; }
+  
+  .marqueeContainer::before,
+  .marqueeContainer::after {
+    width: 30px;
+  }
+  .marqueeLogo {
+    height: 40px;
+    margin: 0 1.5rem;
+  }
 }

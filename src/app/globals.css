@@ -21,6 +21,8 @@
   --color-text: #374151;
   --color-text-muted: #4b5563;
   --border-color: #e5e7eb;
+  --logo-filter: grayscale(100%) brightness(0) opacity(0.6);
+  --logo-filter-hover: grayscale(0%) brightness(1) opacity(1);
 }
 
 [data-theme='dark'] {
@@ -31,6 +33,8 @@
   --color-text: #e0e0e0;
   --color-text-muted: #d1d1d1;
   --border-color: #333333;
+  --logo-filter: brightness(0) invert(1) opacity(0.6);
+  --logo-filter-hover: brightness(0) invert(1) opacity(1) sepia(1) saturate(5) hue-rotate(15deg);
 }
 
 * {
@@ -340,7 +344,7 @@ button {
   padding: 5rem 0;
 }
 .section-title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 3rem;
   text-align: center;
 }
@@ -394,4 +398,13 @@ button {
   .pt-image + .pt-image {
     margin-top: -0.8rem !important; /* Bù lại margin-bottom 1rem trên mobile */
   }
+}
+
+/* Tool Card */
+.tool-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }

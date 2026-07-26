@@ -1,6 +1,7 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Script from 'next/script';
 import NewsCard from '@/components/NewsCard';
 import ProjectCard from '@/components/ProjectCard';
 import ProjectGallery from '@/components/ProjectGallery';
@@ -232,8 +233,8 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <article className="container section" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem', background: 'var(--background)' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} suppressHydrationWarning />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} suppressHydrationWarning />
+      <Script id={`breadcrumb-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} suppressHydrationWarning />
+      <Script id={`article-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} suppressHydrationWarning />
       
       <div style={{ marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
         <Link href="/" style={{ color: 'var(--color-primary)', textDecoration: 'none', transition: 'color 0.2s' }}>Trang chủ</Link>

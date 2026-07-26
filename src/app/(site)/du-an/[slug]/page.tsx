@@ -1,6 +1,7 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Script from 'next/script';
 import { client } from '../../../../../sanity/lib/client';
 import HtmlRenderer from '@/components/HtmlRenderer';
 import ProjectGallery from '@/components/ProjectGallery';
@@ -9,9 +10,9 @@ import Tour360Facade from '@/components/Tour360Facade';
 import ConsultantSidebar from '@/components/ConsultantSidebar';
 import ConsultantCardMobile from '@/components/ConsultantCardMobile';
 import MobileBottomNav from '@/components/MobileBottomNav';
-import MortgageCalculator from '@/components/MortgageCalculator';
 import ProjectActionButtons from '@/components/ProjectActionButtons';
 import ProjectFAQ from '@/components/ProjectFAQ';
+import ProjectNews from '@/components/ProjectNews';
 import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 import { replaceDateShortcodes, replaceDeepShortcodes } from '@/utils/dateReplace';
@@ -155,6 +156,15 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   if (!rawProject) {
     notFound();
   }
+
+  const newsQuery = `*[_type == "post" && references($projectId)] | order(date desc) {
+    "id": _id,
+    title,
+    "slug": slug.current,
+    "date": coalesce(date, _createdAt),
+    "imageUrl": imageUrl.asset->url + "?w=400&fit=max&auto=format"
+  }`;
+  const relatedNews = await client.fetch(newsQuery, { projectId: rawProject._id });
   
   // Replace shortcodes for dynamic dates deeply in the entire project object
   const project = replaceDeepShortcodes(rawProject);
@@ -206,8 +216,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
+      <Script id={`breadcrumb-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <Script id={`realestate-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(realEstateSchema) }} />
 
       <article style={{ paddingTop: '2rem', paddingBottom: '5rem' }}>
         <div className="container-wide" style={{ marginBottom: '2rem' }}>
@@ -558,8 +568,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             </Link>
           )}
 
-          {/* Mortgage Calculator */}
-          <MortgageCalculator />
+          {/* Related News */}
+          <ProjectNews news={relatedNews} />
 
         </div>
 

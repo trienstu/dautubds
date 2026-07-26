@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     
     let processedHtml = document.body.innerHTML;
     if (mode === 'url') {
-      processedHtml += `\n<p><em>Nguồn tham khảo: <a href="${input}" target="_blank">${input}</a></em></p>`;
+      processedHtml += `\n<p><em>Nguồn tham khảo: <a href="${input}" target="_blank" rel="nofollow noopener noreferrer">${input}</a></em></p>`;
     }
 
     // 5. Convert HTML to Sanity Portable Text Blocks

@@ -1,4 +1,5 @@
 import type { Metadata, ResolvingMetadata } from 'next';
+import Script from 'next/script';
 import { notFound } from 'next/navigation';
 import { client } from '../../../../../sanity/lib/client';
 import { PortableText } from '@portabletext/react';
@@ -157,8 +158,8 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
 
   return (
     <article style={{ paddingTop: '5rem', paddingBottom: '5rem', background: 'var(--background)', color: 'var(--foreground)' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
+      <Script id={`breadcrumb-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <Script id={`org-${slug}`} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       
       <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', background: 'var(--color-secondary)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
