@@ -44,6 +44,7 @@ const portableTextComponents = {
       }
       return (
         <img
+          className="pt-image article-full-width-mobile"
           alt={value.alt || 'Hình ảnh minh họa'}
           loading="lazy"
           src={urlFor(value).width(1200).fit('max').auto('format').url()}
@@ -92,11 +93,11 @@ const portableTextComponents = {
     normal: ({ children }: any) => <p style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,
     h2: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
-      return <h2 id={id} style={{ fontSize: '1.5rem', marginTop: '1rem', marginBottom: '0.8rem', color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
+      return <h2 id={id} style={{ fontSize: '1.15rem', marginTop: '0.8rem', marginBottom: '0.8rem', color: 'var(--color-primary)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
     },
     h3: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
-      return <h3 id={id} style={{ fontSize: '1.25rem', marginTop: '1rem', marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 600 }}>{children}</h3>;
+      return <h3 id={id} style={{ fontSize: '1.15rem', marginTop: '0.8rem', marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h3>;
     },
     blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6', background: 'rgba(212,175,55,0.05)', padding: '1.5rem 1.5rem 1.5rem 2rem', borderRadius: '0 8px 8px 0' }}>{children}</blockquote>,
   },
@@ -273,7 +274,7 @@ export default async function NewsDetail({ params }: { params: Promise<{ slug: s
       </header>
 
       {article.imageUrl && (
-        <div style={{ width: '100%', aspectRatio: '16/9', maxHeight: '500px', borderRadius: '12px', overflow: 'hidden', marginBottom: '3rem' }}>
+        <div className="article-full-width-mobile" style={{ width: '100%', aspectRatio: '16/9', maxHeight: '500px', borderRadius: '12px', overflow: 'hidden', marginBottom: '3rem' }}>
           <img 
             src={article.imageUrl} 
             alt={article.title} 

@@ -385,6 +385,14 @@ button {
     border-radius: 0 !important;
     max-width: none !important;
   }
+  
+  .article-full-width-mobile {
+    width: calc(100% + 3rem) !important;
+    margin-left: -1.5rem !important;
+    margin-right: -1.5rem !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+  }
 }
 
 /* Khoảng cách nhỏ giữa 2 hình liên tiếp (Hình dính hình) */
