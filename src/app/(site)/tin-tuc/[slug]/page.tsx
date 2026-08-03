@@ -112,7 +112,19 @@ const portableTextComponents = {
 
   marks: {
     strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
-    link: ({ children, value }: any) => <a href={value.href} style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}>{children}</a>,
+    link: ({ children, value }: any) => {
+      const isExternal = value?.href?.startsWith('http');
+      return (
+        <a 
+          href={value?.href} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "nofollow noopener noreferrer" : undefined}
+          style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}
+        >
+          {children}
+        </a>
+      );
+    },
     textAlign: ({ children, value }: any) => (
       <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
         {children}
@@ -157,7 +169,7 @@ export const revalidate = 60;
 export default async function NewsDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const query = `*[_type == "post" && slug.current == $slug][0] {
-    _id, title, excerpt, content, "date": coalesce(date, _createdAt), viewCount, "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
+    _id, title, excerpt, content, sourceUrl, "date": coalesce(date, _createdAt), viewCount, "imageUrl": imageUrl.asset->url + "?w=1200&fit=max&auto=format",
     author->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified},
     "relatedPosts": relatedPosts[]->{
       title,
