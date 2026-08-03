@@ -17,6 +17,7 @@ import { PortableText } from '@portabletext/react';
 import urlBuilder from '@sanity/image-url';
 import { replaceDateShortcodes, replaceDeepShortcodes } from '@/utils/dateReplace';
 import { renderTable } from '@/components/PortableTextTable';
+import { applyInternalLinks, LinkTarget } from '@/lib/autoLinker';
 
 const builder = urlBuilder(client);
 function urlFor(source: any) {
@@ -83,11 +84,24 @@ const portableTextComponents = {
   },
   block: {
     normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '0.8rem' }}>{children}</p>,
-    h2: ({ children }: any) => <h2 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h2>,
-    h3: ({ children }: any) => <h3 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h3>,
-    h4: ({ children }: any) => <h4 style={{ marginTop: '1rem', marginBottom: '0.8rem' }}>{children}</h4>,
+    h2: ({ children }: any) => <h2 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h2>,
+    h3: ({ children }: any) => <h3 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h3>,
+    h4: ({ children }: any) => <h4 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h4>,
   },
   marks: {
+    link: ({ children, value }: any) => {
+      const isExternal = value?.href?.startsWith('http');
+      return (
+        <a 
+          href={value?.href} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "nofollow noopener noreferrer" : undefined}
+          style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}
+        >
+          {children}
+        </a>
+      );
+    },
     textAlign: ({ children, value }: any) => (
       <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
         {children}
@@ -151,7 +165,11 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
     consultant->{name, "avatarUrl": image.asset->url + "?w=400&fit=max&auto=format", bio, isVerified, phone, email, zaloUrl, facebookUrl}
   }`;
   
-  const rawProject = await client.fetch(query, { slug });
+  const [rawProject, allProjects, internalLinks] = await Promise.all([
+    client.fetch(query, { slug }),
+    client.fetch(`*[_type == "project"]{ title, "slug": slug.current }`),
+    client.fetch(`*[_type == "internalLink"]{ keyword, url }`)
+  ]);
 
   if (!rawProject) {
     notFound();
@@ -168,6 +186,23 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
   
   // Replace shortcodes for dynamic dates deeply in the entire project object
   const project = replaceDeepShortcodes(rawProject);
+
+  const linkTargets: LinkTarget[] = [
+    ...internalLinks,
+    ...allProjects.filter((p: any) => p.slug !== slug).map((p: any) => ({ keyword: p.title, url: `/du-an/${p.slug}` }))
+  ];
+
+  const ptFields = [
+    'description', 'featuresContent', 'locationContent', 'pricingContent', 
+    'legalContent', 'floorPlanContent', 'designContent', 'showroomContent', 
+    'progressContent', 'investmentReasons'
+  ];
+
+  ptFields.forEach(field => {
+    if (project[field]) {
+       project[field] = applyInternalLinks(project[field], linkTargets);
+    }
+  });
 
   // Optimize image arrays
   const optimizedGallery = project.galleryUrls?.map((url: string) => url + "?w=1200&fit=max&auto=format") || [];

@@ -13,7 +13,8 @@ import { leadType } from './lead'
 import { imageSlider } from './imageSlider'
 import { tableBlock } from './tableBlock'
 import province from './province'
+import { internalLink } from './internalLink'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType, imageGrid, leadType, imageSlider, tableBlock, province],
+  types: [projectType, postType, pageType, author, developer, event, siteConfig, seo, youtubeType, imageGrid, leadType, imageSlider, tableBlock, province, internalLink],
 }
