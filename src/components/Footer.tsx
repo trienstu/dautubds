@@ -128,17 +128,25 @@ export default async function Footer({ config }: { config?: any }) {
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 600 }}>Hỗ trợ</h4>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.95rem' }}>
               <li><Link href="/lien-he" className="footer-link">Liên hệ</Link></li>
-              {pages && pages.map((page: any, idx: number) => (
-                <li key={idx}><Link href={`/${page.slug}`} className="footer-link">{page.title}</Link></li>
-              ))}
-              {!pages || pages.length === 0 ? (
+              {config?.footerSupport && config.footerSupport.length > 0 ? (
+                config.footerSupport.map((link: any, idx: number) => (
+                  <li key={idx}><Link href={link.url || '#'} className="footer-link">{link.title}</Link></li>
+                ))
+              ) : (
                 <>
-                  <li><Link href="#" className="footer-link">Quy chế hoạt động</Link></li>
-                  <li><Link href="#" className="footer-link">Điều khoản sử dụng</Link></li>
-                  <li><Link href="#" className="footer-link">Chính sách bảo mật</Link></li>
-                  <li><Link href="#" className="footer-link">Giải quyết khiếu nại</Link></li>
+                  {pages && pages.map((page: any, idx: number) => (
+                    <li key={idx}><Link href={`/${page.slug}`} className="footer-link">{page.title}</Link></li>
+                  ))}
+                  {!pages || pages.length === 0 ? (
+                    <>
+                      <li><Link href="#" className="footer-link">Quy chế hoạt động</Link></li>
+                      <li><Link href="#" className="footer-link">Điều khoản sử dụng</Link></li>
+                      <li><Link href="#" className="footer-link">Chính sách bảo mật</Link></li>
+                      <li><Link href="#" className="footer-link">Giải quyết khiếu nại</Link></li>
+                    </>
+                  ) : null}
                 </>
-              ) : null}
+              )}
             </ul>
           </div>
 

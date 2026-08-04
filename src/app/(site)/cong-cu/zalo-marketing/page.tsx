@@ -2,6 +2,7 @@ import React from 'react';
 import { Download, Users, MessageCircle, UserPlus, UserCog, Monitor, Apple, PlayCircle, ShieldCheck, Zap, BarChart3 } from 'lucide-react';
 import type { Metadata } from 'next';
 import styles from './ZaloMarketing.module.css';
+import ZaloPricing from './ZaloPricing';
 
 export const metadata: Metadata = {
   title: 'Công Cụ Zalo Marketing - Giải Pháp CSKH Tự Động',
@@ -44,8 +45,17 @@ export default function ZaloMarketingPage() {
 
   return (
     <main className={styles.container}>
+      {/* Sticky Sub Menu */}
+      <nav className={styles.subMenu}>
+        <div className={styles.subMenuInner}>
+          <a href="#download" className={styles.subMenuItem}>Tải Tool</a>
+          <a href="#features" className={styles.subMenuItem}>Tính Năng</a>
+          <a href="#pricing" className={styles.subMenuItem}>Bảng Giá</a>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className={styles.hero}>
+      <section className={styles.hero} id="download">
         <div className={styles.heroTag}>
           <Zap size={16} /> Phiên Bản Mới Nhất V2.0
         </div>
@@ -116,7 +126,7 @@ export default function ZaloMarketingPage() {
       </section>
 
       {/* Detailed Features Section */}
-      <section className={styles.featuresWrapper}>
+      <section className={styles.featuresWrapper} id="features">
         <div className={styles.sectionHeader}>
           <h2>Tại Sao Nên Chọn Zalo Marketing?</h2>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem', maxWidth: '700px', margin: '0 auto' }}>
@@ -136,6 +146,11 @@ export default function ZaloMarketingPage() {
           ))}
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <div id="pricing">
+        <ZaloPricing />
+      </div>
 
       {/* CTA Section */}
       <section className={styles.ctaSection}>

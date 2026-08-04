@@ -112,6 +112,21 @@ export default defineType({
       ]
     }),
     defineField({
+      name: 'footerSupport',
+      title: 'Menu Cột Hỗ Trợ (Footer)',
+      type: 'array',
+      group: 'general',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Tên hiển thị', type: 'string' },
+            { name: 'url', title: 'Đường dẫn (URL)', type: 'string' }
+          ]
+        }
+      ]
+    }),
+    defineField({
       name: 'googleAnalyticsId',
       title: 'Mã Google Analytics (ID)',
       type: 'string',
