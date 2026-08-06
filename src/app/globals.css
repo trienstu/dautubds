@@ -416,3 +416,13 @@ button {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
+
+.portable-text-p {
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  .portable-text-p {
+    text-align: left !important;
+  }
+}

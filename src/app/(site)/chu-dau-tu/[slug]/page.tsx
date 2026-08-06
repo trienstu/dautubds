@@ -87,7 +87,7 @@ const portableTextComponents = {
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '1em' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '1em' }}>{children}</p>,
   },
 };
 

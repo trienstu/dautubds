@@ -91,7 +91,7 @@ const portableTextComponents = {
     },
   },
   block: {
-    normal: ({ children }: any) => <p style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)', textAlign: 'justify' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</p>,
     h2: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
       return <h2 id={id} style={{ fontSize: '1.15rem', marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;

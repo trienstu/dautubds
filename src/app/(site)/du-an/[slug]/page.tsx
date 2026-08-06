@@ -83,7 +83,7 @@ const portableTextComponents = {
     number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p style={{ textAlign: 'justify', marginBottom: '0.8rem' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem' }}>{children}</p>,
     h2: ({ children }: any) => <h2 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h2>,
     h3: ({ children }: any) => <h3 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h3>,
     h4: ({ children }: any) => <h4 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h4>,
