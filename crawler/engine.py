@@ -16,7 +16,7 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
     
     # 2. Trích xuất Sapo / Tóm tắt mở đầu
     sapo = ""
-    sapo_elem = soup.select_one("p.description, .sapo, .detail-sapo, .lead, .summary")
+    sapo_elem = soup.select_one("p.description, .sapo, .detail-sapo, .lead, .summary, .article-summary")
     if sapo_elem:
         sapo = sapo_elem.get_text().strip()
         
@@ -24,10 +24,13 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
     body_container = None
     candidate_selectors = [
         "article.fck_detail",           # VnExpress
+        "#maincontent",                  # Vietnamnet
+        ".maincontent",                  # Vietnamnet
         "#mainContent",                  # CafeF
         ".totalcontentdetail",           # CafeF / Kenh14
-        ".detail-content",               # TuoiTre / ThanhNien / DanTri
-        ".content_detail",               # Vietnamnet
+        ".detail-content",               # TuoiTre / ThanhNien / DanTri / VnEconomy
+        ".content-detail",               # Vietnamnet
+        ".content_detail",               # Generic News
         ".entry-content",                # WordPress
         "article"                        # HTML5 Semantic
     ]
@@ -52,7 +55,8 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
         # Bỏ qua các đoạn text rác, thông báo bản quyền, link đọc thêm
         skip_phrases = [
             "tin liên quan", "đọc thêm", "theo dõi trên", "bấm để xem",
-            "nguồn:", "ảnh:", "video:", "bản quyền thuộc", "xem thêm"
+            "nguồn:", "ảnh:", "video:", "bản quyền thuộc", "xem thêm",
+            "bình luận", "chia sẻ bài viết"
         ]
         if text and not any(phrase in text_lower for phrase in skip_phrases):
             paragraphs.append(text)
@@ -64,7 +68,6 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
     seen_urls = set()
     
     for img in body_container.find_all("img"):
-        # Ưu tiên data-src / data-original (cho VnExpress, Tuổi Trẻ, CafeF)
         src = (
             img.get("data-src") or
             img.get("data-original") or
@@ -97,6 +100,9 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
             "src": src,
             "alt": alt
         })
+        
+        if len(article_images) >= 6:
+            break
         
     return {
         "url": url,

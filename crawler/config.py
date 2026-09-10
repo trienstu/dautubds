@@ -20,7 +20,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # Cấu hình Domain Website
 SITE_BASE_URL = os.getenv("NEXT_PUBLIC_SITE_URL", "https://www.dautubds.io.vn")
 
-# Danh sách nguồn RSS báo chí BĐS uy tín tại Việt Nam
+# Danh sách Top 5 nguồn RSS báo chí Bất Động Sản hàng đầu Việt Nam
 RSS_SOURCES = [
     {
         "name": "VnExpress Bất Động Sản",
@@ -33,13 +33,18 @@ RSS_SOURCES = [
         "category": "thi-truong"
     },
     {
-        "name": "Tuổi Trẻ Địa Ốc",
-        "url": "https://tuoitre.vn/rss/kinh-doanh/dia-oc.rss",
+        "name": "Dân Trí Bất Động Sản",
+        "url": "https://dantri.com.vn/rss/bat-dong-san.rss",
         "category": "tin-tuc"
     },
     {
-        "name": "Thanh Niên BĐS",
-        "url": "https://thanhnien.vn/rss/kinh-te/bat-dong-san.rss",
+        "name": "Vietnamnet Bất Động Sản",
+        "url": "https://vietnamnet.vn/rss/bat-dong-san.rss",
         "category": "tin-tuc"
+    },
+    {
+        "name": "VnEconomy Địa Ốc",
+        "url": "https://vneconomy.vn/dia-oc.rss",
+        "category": "thi-truong"
     }
 ]
