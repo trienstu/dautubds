@@ -1,0 +1,58 @@
+name: Auto Crawl & Publish Real Estate News
+
+on:
+  schedule:
+    # Chạy tự động 3 lần/ngày: 8h00 sáng, 13h00 trưa, 18h00 tối (Giờ VN UTC+7 -> 1, 6, 11 UTC)
+    - cron: '0 1,6,11 * * *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Số lượng bài viết tối đa cần cào'
+        required: false
+        default: '3'
+      draft:
+        description: 'Lưu dạng bản nháp (Draft) thay vì xuất bản trực tiếp'
+        type: boolean
+        default: false
+
+jobs:
+  crawl_and_publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID || 'bdvrj3dm' }}
+      NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://www.dautubds.io.vn' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'crawler/requirements.txt'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r crawler/requirements.txt
+
+      - name: Install Playwright Chromium
+        run: |
+          playwright install chromium --with-deps
+
+      - name: Run Crawler Pipeline (Auto-Publish Live)
+        run: |
+          ARGS="--auto --limit ${{ github.event.inputs.limit || 3 }}"
+          if [ "${{ github.event.inputs.draft }}" = "true" ]; then
+            ARGS="$ARGS --draft"
+          fi
+          python crawler/main.py $ARGS
