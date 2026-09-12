@@ -15,7 +15,9 @@ from sanity_client import (
     check_source_exists,
     upload_image_asset,
     create_post_document,
-    list_recent_projects
+    list_recent_projects,
+    get_unused_image_assets,
+    delete_image_assets
 )
 from engine import crawl_url_sync
 from ai_rewriter import rewrite_real_estate_article
@@ -167,12 +169,47 @@ def main():
     parser.add_argument("--urls", nargs="+", metavar="URL", help="Danh sách các link bài báo mới dùng để cập nhật dự án")
     parser.add_argument("--title", type=str, help="Tên dự án tùy chỉnh (tùy chọn)")
     parser.add_argument("--list-projects", action="store_true", help="Xem danh sách các dự án hiện có trên Sanity")
+    parser.add_argument("--check-unused-images", action="store_true", help="Kiểm tra và thống kê các ảnh đã upload nhưng không được dùng trong bài nào")
+    parser.add_argument("--clean-unused-images", action="store_true", help="Xóa các ảnh không sử dụng trên Sanity để giải phóng bộ nhớ")
     parser.add_argument("--draft", action="store_true", help="Lưu dưới dạng bản nháp (Draft) thay vì xuất bản trực tiếp")
     parser.add_argument("--force", action="store_true", help="Bỏ qua kiểm tra trùng lặp để cào lại URL")
     
     args = parser.parse_args()
     is_draft = args.draft # Mặc định là False (Auto Publish trực tiếp)
     
+    if args.check_unused_images:
+        print("\n🔍 Đang quét toàn bộ thư viện ảnh trên Sanity CMS...")
+        unused = get_unused_image_assets()
+        total_size = sum(a.get("size", 0) for a in unused)
+        print(f"\n📊 KẾT QUẢ KIỂM TRA HÌNH ẢNH TRÊN SANITY:")
+        print(f"  • Tổng số ảnh mồ côi (chưa/không gắn vào bài nào): {len(unused)} ảnh")
+        print(f"  • Tổng dung lượng chiếm dụng: {total_size / (1024 * 1024):.2f} MB")
+        if unused:
+            print(f"\n🖼️ Danh sách 15 ảnh mồ côi gần nhất:")
+            for idx, a in enumerate(unused[:15], 1):
+                size_kb = a.get('size', 0) / 1024
+                date_str = (a.get('_createdAt') or '')[:10]
+                print(f"  {idx:2d}. [{size_kb:6.1f} KB] ({date_str}) {a.get('url')}")
+            if len(unused) > 15:
+                print(f"  ... và còn {len(unused) - 15} ảnh khác.")
+            print(f"\n💡 Để dọn dẹp các ảnh này khỏi Sanity, chạy: python main.py --clean-unused-images")
+        else:
+            print("✨ Thư viện ảnh của bạn 100% gọn gàng, không có ảnh thừa.")
+        return
+
+    if args.clean_unused_images:
+        print("\n🔍 Đang quét ảnh không sử dụng trên Sanity...")
+        unused = get_unused_image_assets()
+        if not unused:
+            print("✨ Không có ảnh thừa nào cần dọn dẹp.")
+            return
+        total_size = sum(a.get("size", 0) for a in unused)
+        print(f"⚠️ Phát hiện {len(unused)} ảnh thừa ({total_size / (1024 * 1024):.2f} MB).")
+        asset_ids = [a["_id"] for a in unused]
+        res = delete_image_assets(asset_ids)
+        print(f"🗑️ Đã xóa thành công {res['deleted']} ảnh thừa khỏi Sanity! Đã giải phóng {total_size / (1024 * 1024):.2f} MB bộ nhớ.")
+        return
+
     if args.list_projects:
         projects = list_recent_projects(limit=30)
         print(f"\n🏢 Danh sách {len(projects)} dự án gần nhất trên Sanity CMS:")

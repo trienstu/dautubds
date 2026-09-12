@@ -393,3 +393,42 @@ def patch_project_document(doc_id: str, set_fields: dict) -> dict:
         return {"success": True, "document_id": doc_id}
     else:
         raise Exception(f"Lỗi Sanity Patch Mutation ({resp.status_code}): {resp.text}")
+
+
+def get_unused_image_assets() -> list[dict]:
+    """Truy vấn tất cả các hình ảnh đã upload lên Sanity nhưng không được bài viết/dự án nào sử dụng (Ảnh mồ côi)."""
+    query = """
+    *[_type == "sanity.imageAsset" && count(*[references(^._id)]) == 0] | order(_createdAt desc) {
+      _id,
+      originalFilename,
+      size,
+      url,
+      _createdAt
+    }
+    """
+    url = f"{BASE_URL}/data/query/{SANITY_DATASET}?query={quote(query)}"
+    try:
+        resp = requests.get(url, headers=get_headers(), timeout=20)
+        if resp.status_code == 200:
+            return resp.json().get("result", [])
+    except Exception as e:
+        print(f"[ERROR] Lỗi khi truy vấn ảnh mồ côi: {e}")
+    return []
+
+def delete_image_assets(asset_ids: list[str]) -> dict:
+    """Xóa danh sách ảnh không sử dụng trên Sanity để giải phóng bộ nhớ."""
+    if not asset_ids:
+        return {"deleted": 0}
+    mutate_url = f"{BASE_URL}/data/mutate/{SANITY_DATASET}"
+    mutations = [{"delete": {"id": aid}} for aid in asset_ids]
+    total_deleted = 0
+    batch_size = 50
+    for i in range(0, len(mutations), batch_size):
+        batch = mutations[i:i + batch_size]
+        payload = {"mutations": batch}
+        resp = requests.post(mutate_url, headers=get_headers(), json=payload, timeout=30)
+        if resp.status_code == 200:
+            total_deleted += len(batch)
+        else:
+            print(f"[WARN] Lỗi xóa batch ảnh: {resp.text}")
+    return {"deleted": total_deleted}
