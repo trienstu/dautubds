@@ -280,3 +280,116 @@ def create_post_document(
         }
     else:
         raise Exception(f"Lỗi Sanity Mutation ({resp.status_code}): {resp.text}")
+
+
+def get_project_by_slug_or_id(identifier: str) -> dict | None:
+    """Lấy toàn bộ thông tin chi tiết của một dự án trên Sanity theo slug hoặc _id."""
+    clean_id = identifier.strip()
+    query = f'*[_type == "project" && (_id == "{clean_id}" || _id == "drafts.{clean_id}" || slug.current == "{clean_id}")][0]'
+    url = f"{BASE_URL}/data/query/{SANITY_DATASET}?query={quote(query)}"
+    try:
+        resp = requests.get(url, headers=get_headers(), timeout=15)
+        if resp.status_code == 200:
+            return resp.json().get("result")
+    except Exception as e:
+        print(f"[ERROR] Lỗi khi truy vấn dự án '{identifier}': {e}")
+    return None
+
+def list_recent_projects(limit: int = 50) -> list[dict]:
+    """Liệt kê danh sách các dự án gần nhất trên Sanity."""
+    query = f'*[_type == "project"] | order(_updatedAt desc)[0...{limit}]{{_id, title, "slug": slug.current, category, price, status, progressPercentage, _updatedAt}}'
+    url = f"{BASE_URL}/data/query/{SANITY_DATASET}?query={quote(query)}"
+    try:
+        resp = requests.get(url, headers=get_headers(), timeout=15)
+        if resp.status_code == 200:
+            return resp.json().get("result", [])
+    except Exception as e:
+        print(f"[ERROR] Lỗi lấy danh sách dự án: {e}")
+    return []
+
+def create_project_document(project_dict: dict, is_draft: bool = False) -> dict:
+    """Tạo bản ghi dự án mới hoàn chỉnh trên Sanity."""
+    slug_str = project_dict.get("slug")
+    if not slug_str:
+        slug_str = create_slug(project_dict.get("title", "du-an-moi"))
+        
+    doc_id = f"drafts.project-{slug_str}" if is_draft else f"project-{slug_str}"
+    
+    doc = {
+        "_type": "project",
+        "_id": doc_id,
+        "title": project_dict["title"],
+        "slug": {
+            "_type": "slug",
+            "current": slug_str
+        },
+        "category": project_dict.get("category", "Căn hộ"),
+        "price": project_dict.get("price", ""),
+        "productCount": project_dict.get("productCount", ""),
+        "status": project_dict.get("status", "Đang mở bán"),
+        "location": project_dict.get("location", ""),
+        "description": project_dict.get("description", []),
+        "features": project_dict.get("features", []),
+        "featuresContent": project_dict.get("featuresContent", []),
+        "locationContent": project_dict.get("locationContent", []),
+        "pricingContent": project_dict.get("pricingContent", []),
+        "legalContent": project_dict.get("legalContent", []),
+        "progressContent": project_dict.get("progressContent", []),
+        "investmentReasons": project_dict.get("investmentReasons", []),
+        "faqs": project_dict.get("faqs", []),
+        "seo": project_dict.get("seo", {
+            "_type": "seo",
+            "seoTitle": project_dict["title"],
+            "seoDescription": project_dict.get("excerpt", "")
+        })
+    }
+    
+    if project_dict.get("progressPercentage") is not None:
+        try:
+            doc["progressPercentage"] = int(project_dict["progressPercentage"])
+        except (ValueError, TypeError):
+            pass
+        
+    if project_dict.get("imageUrl"):
+        doc["imageUrl"] = project_dict["imageUrl"]
+        
+    if project_dict.get("gallery"):
+        doc["gallery"] = project_dict["gallery"]
+        
+    mutate_url = f"{BASE_URL}/data/mutate/{SANITY_DATASET}"
+    payload = {
+        "mutations": [
+            {"createOrReplace": doc}
+        ]
+    }
+    
+    resp = requests.post(mutate_url, headers=get_headers(), json=payload, timeout=20)
+    if resp.status_code == 200:
+        return {
+            "success": True,
+            "document_id": doc_id,
+            "title": project_dict["title"],
+            "slug": slug_str,
+            "status": "draft" if is_draft else "published"
+        }
+    else:
+        raise Exception(f"Lỗi Sanity Project Mutation ({resp.status_code}): {resp.text}")
+
+def patch_project_document(doc_id: str, set_fields: dict) -> dict:
+    """Cập nhật đè (Patch mutation) lên dự án đã có trên Sanity (Giữ nguyên _id và slug)."""
+    mutate_url = f"{BASE_URL}/data/mutate/{SANITY_DATASET}"
+    payload = {
+        "mutations": [
+            {
+                "patch": {
+                    "id": doc_id,
+                    "set": set_fields
+                }
+            }
+        ]
+    }
+    resp = requests.post(mutate_url, headers=get_headers(), json=payload, timeout=20)
+    if resp.status_code == 200:
+        return {"success": True, "document_id": doc_id}
+    else:
+        raise Exception(f"Lỗi Sanity Patch Mutation ({resp.status_code}): {resp.text}")

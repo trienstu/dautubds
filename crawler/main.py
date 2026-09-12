@@ -14,11 +14,13 @@ from config import RSS_SOURCES, SITE_BASE_URL
 from sanity_client import (
     check_source_exists,
     upload_image_asset,
-    create_post_document
+    create_post_document,
+    list_recent_projects
 )
 from engine import crawl_url_sync
 from ai_rewriter import rewrite_real_estate_article
 from notifier import send_telegram_alert
+from project_engine import build_and_publish_new_project, update_and_patch_project
 
 def fetch_rss_entries(limit_per_source: int = 5) -> List[Dict[str, Any]]:
     """Quét các nguồn RSS và lọc ra các bài viết chưa từng được cào vào Sanity."""
@@ -160,12 +162,43 @@ def main():
     parser.add_argument("--auto", action="store_true", help="Tự động cào và xử lý hàng loạt theo số lượng")
     parser.add_argument("--limit", type=int, default=3, help="Số lượng bài viết tối đa khi chạy --auto (mặc định: 3)")
     parser.add_argument("--url", type=str, help="Cào đích danh một đường dẫn bài báo cụ thể")
+    parser.add_argument("--create-project", nargs="+", metavar="URL", help="Tạo dự án mới từ 1-5 link bài viết tham khảo")
+    parser.add_argument("--update-project", type=str, metavar="SLUG_OR_ID", help="Cập nhật (Smart Merge) dự án cũ trên Sanity theo slug hoặc ID")
+    parser.add_argument("--urls", nargs="+", metavar="URL", help="Danh sách các link bài báo mới dùng để cập nhật dự án")
+    parser.add_argument("--title", type=str, help="Tên dự án tùy chỉnh (tùy chọn)")
+    parser.add_argument("--list-projects", action="store_true", help="Xem danh sách các dự án hiện có trên Sanity")
     parser.add_argument("--draft", action="store_true", help="Lưu dưới dạng bản nháp (Draft) thay vì xuất bản trực tiếp")
     parser.add_argument("--force", action="store_true", help="Bỏ qua kiểm tra trùng lặp để cào lại URL")
     
     args = parser.parse_args()
     is_draft = args.draft # Mặc định là False (Auto Publish trực tiếp)
     
+    if args.list_projects:
+        projects = list_recent_projects(limit=30)
+        print(f"\n🏢 Danh sách {len(projects)} dự án gần nhất trên Sanity CMS:")
+        for idx, p in enumerate(projects, 1):
+            slug = p.get('slug') or 'chưa có slug'
+            title = p.get('title') or 'Không tên'
+            price = p.get('price') or 'Chưa cập nhật'
+            status = p.get('status') or 'N/A'
+            prog = f"{p.get('progressPercentage')}%" if p.get('progressPercentage') is not None else "N/A"
+            print(f"  {idx:2d}. [{slug}] {title} | Giá: {price} | TT: {status} | Tiến độ: {prog}")
+        return
+
+    if args.create_project:
+        urls = args.create_project
+        build_and_publish_new_project(urls, is_draft=is_draft, custom_title=args.title)
+        return
+
+    if args.update_project:
+        slug_or_id = args.update_project
+        urls = args.urls
+        if not urls:
+            print("❌ Lỗi: Khi dùng --update-project, bạn cần truyền kèm --urls <url1> [url2...]")
+            return
+        update_and_patch_project(slug_or_id, urls)
+        return
+
     if args.url:
         process_single_article(args.url, is_draft=is_draft, force=args.force)
         return
