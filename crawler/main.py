@@ -261,8 +261,14 @@ def main():
         if not pending:
             print("✨ Không có bài viết mới nào cần xử lý.")
             return
-        targets = pending[:args.limit]
-        print(f"\n⚡ Bắt đầu tiến trình tự động cào {len(targets)} bài viết...")
+            
+        # Đảm bảo số lượng cào tự động chuẩn là 5 bài (ngay cả khi cron workflow cũ truyền limit=3)
+        effective_limit = args.limit
+        if effective_limit <= 3:
+            effective_limit = 5
+
+        targets = pending[:effective_limit]
+        print(f"\n⚡ Bắt đầu tiến trình tự động cào {len(targets)} bài viết (Hạn mức: {effective_limit})...")
         for idx, item in enumerate(targets, 1):
             print(f"\n>>> Đang xử lý bài {idx}/{len(targets)}: {item['title']}")
             try:
