@@ -18,6 +18,27 @@ from sanity_client import (
 )
 from notifier import send_project_alert
 
+
+def normalize_status(val: str) -> str:
+    """Đảm bảo status luôn chỉ là 1 trong 3 lựa chọn của Sanity Studio: Đang mở bán, Sắp ra mắt, Đã bàn giao."""
+    s = (val or "").strip().lower()
+    if "bàn giao" in s:
+        return "Đã bàn giao"
+    if any(k in s for k in ["sắp", "chuẩn bị", "kick-off", "ra mắt", "booking", "rumo"]):
+        return "Sắp ra mắt"
+    return "Đang mở bán"
+
+def normalize_price(val: str) -> str:
+    """Đảm bảo mức giá chỉ là khoảng ngắn gọn (ví dụ: 1.7 - 5.56 tỷ hoặc 50 - 60 triệu/m²)."""
+    if not val:
+        return ""
+    val = val.strip()
+    if len(val) > 40:
+        match = re.search(r"(\d+(?:[.,]\d+)?)\s*(?:-|đến|–)\s*(\d+(?:[.,]\d+)?\s*(?:tỷ|triệu(?:/m[²2])?))", val, re.IGNORECASE)
+        if match:
+            return f"{match.group(1)} - {match.group(2)}"
+    return val
+
 def crawl_multiple_urls(urls: List[str]) -> Dict[str, Any]:
     """Cào đồng thời từ 1-5 đường dẫn bài viết tham khảo về dự án."""
     sources = []
@@ -164,9 +185,9 @@ YÊU CẦU ĐẦU RA (Chỉ trả về JSON hợp lệ, không bọc markdown ``
 {{
   "title": "Tên thương mại chính thức của dự án (Sentence case)",
   "category": "Căn hộ",
-  "price": "Mức giá công bố (ví dụ: 45 - 60 triệu/m² hoặc 3,5 tỷ - 9 tỷ)",
+  "price": "BẮT BUỘC CHỈ GHI KHOẢNG GIÁ NGẮN GỌN TỪ THẤP NHẤT ĐẾN CAO NHẤT (ví dụ: 1.7 - 5.56 tỷ hoặc 50 - 60 triệu/m²). TUYỆT ĐỐI KHÔNG viết thành câu văn dài.",
   "productCount": "Tổng số lượng sản phẩm (ví dụ: 1.250 căn hộ)",
-  "status": "Đang mở bán",
+  "status": "BẮT BUỘC CHỈ CHỌN 1 TRONG 3 GIÁ TRỊ: Đang mở bán, Sắp ra mắt, hoặc Đã bàn giao. Tuyệt đối không thêm từ ngữ khác.",
   "location": "Vị trí địa lý hành chính cụ thể của dự án",
   "progressPercentage": 45,
   "excerpt": "Tóm tắt dự án dưới 160 ký tự cho Google Meta Description",
@@ -272,8 +293,8 @@ QUY TẮC HỢP NHẤT THÔNG MINH (SMART MERGE):
 YÊU CẦU ĐẦU RA (Chỉ trả về JSON hợp lệ, không bọc markdown ```json, không thêm text ngoài):
 {{
   "title": "{old_project.get('title')}",
-  "price": "Mức giá mới nhất (hoặc giữ nguyên nếu không đổi)",
-  "status": "Trạng thái mới nhất",
+  "price": "BẮT BUỘC CHỈ GHI KHOẢNG GIÁ NGẮN GỌN TỪ THẤP NHẤT ĐẾN CAO NHẤT (ví dụ: 1.7 - 5.56 tỷ). TUYỆT ĐỐI KHÔNG viết thành câu văn dài.",
+  "status": "BẮT BUỘC CHỈ CHỌN 1 TRONG 3 GIÁ TRỊ: Đang mở bán, Sắp ra mắt, hoặc Đã bàn giao.",
   "progressPercentage": 75,
   "progressHtml": "Bài viết tiến độ thi công cập nhật mới nhất dạng HTML sạch (chèn ảnh thực tế <img>)",
   "pricingHtml": "Bảng giá / CSBH cập nhật mới dạng HTML sạch (để null nếu không có thay đổi)",
@@ -367,6 +388,10 @@ def build_and_publish_new_project(
     if not cover_image_obj and gallery_objs:
         cover_image_obj = gallery_objs[0]
 
+    floor_blocks = process_section_images_and_convert(ai_project.get("floorPlanHtml", ""), image_cache)
+    show_blocks = process_section_images_and_convert(ai_project.get("showroomHtml", ""), image_cache)
+    design_blocks = process_section_images_and_convert(ai_project.get("designHtml", ""), image_cache)
+
     # Format FAQs
     formatted_faqs = []
     for faq in ai_project.get("faqs", []):
@@ -384,9 +409,9 @@ def build_and_publish_new_project(
         "title": ai_project["title"],
         "slug": slug_str,
         "category": ai_project.get("category", "Căn hộ"),
-        "price": ai_project.get("price", ""),
+        "price": normalize_price(ai_project.get("price", "")),
         "productCount": ai_project.get("productCount", ""),
-        "status": ai_project.get("status", "Đang mở bán"),
+        "status": normalize_status(ai_project.get("status", "Đang mở bán")),
         "location": ai_project.get("location", ""),
         "progressPercentage": ai_project.get("progressPercentage"),
         "description": desc_blocks,
@@ -397,6 +422,9 @@ def build_and_publish_new_project(
         "legalContent": legal_blocks,
         "investmentReasons": invest_blocks,
         "progressContent": prog_blocks,
+        "floorPlanContent": floor_blocks,
+        "showroomContent": show_blocks,
+        "designContent": design_blocks,
         "faqs": formatted_faqs,
         "imageUrl": cover_image_obj,
         "gallery": gallery_objs,
@@ -468,9 +496,11 @@ def update_and_patch_project(
     patch_fields = {}
     
     if merge_result.get("price"):
-        patch_fields["price"] = merge_result["price"]
+        patch_fields["price"] = normalize_price(merge_result["price"])
     if merge_result.get("status"):
-        patch_fields["status"] = merge_result["status"]
+        patch_fields["status"] = normalize_status(merge_result["status"])
+    if merge_result.get("location"):
+        patch_fields["location"] = merge_result["location"]
     if merge_result.get("progressPercentage") is not None:
         try:
             patch_fields["progressPercentage"] = int(merge_result["progressPercentage"])
@@ -491,6 +521,30 @@ def update_and_patch_project(
             
     if merge_result.get("featuresList"):
         patch_fields["features"] = merge_result["featuresList"]
+
+    if merge_result.get("locationHtml"):
+        print("   -> Đang cập nhật bài viết vị trí mới...")
+        loc_b = process_section_images_and_convert(merge_result["locationHtml"], image_cache)
+        if loc_b:
+            patch_fields["locationContent"] = loc_b
+
+    if merge_result.get("featuresHtml"):
+        print("   -> Đang cập nhật bài viết tiện ích mới...")
+        feat_b = process_section_images_and_convert(merge_result["featuresHtml"], image_cache)
+        if feat_b:
+            patch_fields["featuresContent"] = feat_b
+
+    if merge_result.get("floorPlanHtml"):
+        print("   -> Đang cập nhật mặt bằng mới...")
+        floor_b = process_section_images_and_convert(merge_result["floorPlanHtml"], image_cache)
+        if floor_b:
+            patch_fields["floorPlanContent"] = floor_b
+
+    if merge_result.get("showroomHtml"):
+        print("   -> Đang cập nhật nhà mẫu mới...")
+        show_b = process_section_images_and_convert(merge_result["showroomHtml"], image_cache)
+        if show_b:
+            patch_fields["showroomContent"] = show_b
         
     new_gallery_urls = merge_result.get("newGalleryImageUrls", [])
     if new_gallery_urls:
@@ -515,6 +569,15 @@ def update_and_patch_project(
         current_seo = old_project.get("seo") or {"_type": "seo"}
         current_seo["seoDescription"] = merge_result["seoDescription"]
         patch_fields["seo"] = current_seo
+
+    # Đảm bảo có ảnh bìa imageUrl nếu đang rỗng
+    if not old_project.get("imageUrl"):
+        current_gal = patch_fields.get("gallery") or old_project.get("gallery") or []
+        if current_gal:
+            patch_fields["imageUrl"] = {
+                "_type": "image",
+                "asset": current_gal[0]["asset"]
+            }
 
     # 5. Gửi patch mutation lên Sanity
     print(f"\n💾 Đang gửi Patch Mutation lên Sanity cho bản ghi {doc_id}...")

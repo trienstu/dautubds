@@ -101,7 +101,7 @@ def extract_clean_article(html: str, url: str) -> Dict[str, Any]:
             "alt": alt
         })
         
-        if len(article_images) >= 6:
+        if len(article_images) >= 30:
             break
         
     return {
