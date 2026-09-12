@@ -39,7 +39,7 @@ export async function GET(request: Request) {
               l.startsWith('http') && 
               l.includes('.html') // Chỉ lấy link bài viết (thường có .html) hoặc dài hơn 40 ký tự
             );
-          allLinks.push(...links.slice(0, 3)); // Lấy 3 bài mới nhất mỗi trang
+          allLinks.push(...links.slice(0, 5)); // Lấy 3 bài mới nhất mỗi trang
         }
       } catch (e) {
         console.error(`Failed to fetch RSS: ${feed}`);
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     const existingPosts = await adminClient.fetch(`*[_type == "post" && defined(sourceUrl)].sourceUrl`);
     
     // Tìm ra tối đa 3 bài viết MỚI NHẤT chưa từng cào (để xử lý song song)
-    const newLinks = allLinks.filter(link => !existingPosts.includes(link)).slice(0, 3);
+    const newLinks = allLinks.filter(link => !existingPosts.includes(link)).slice(0, 5);
 
     if (newLinks.length === 0) {
       return NextResponse.json({ message: 'No new articles to crawl.' });

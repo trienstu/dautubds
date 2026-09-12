@@ -22,7 +22,7 @@ from ai_rewriter import rewrite_real_estate_article
 from notifier import send_telegram_alert
 from project_engine import build_and_publish_new_project, update_and_patch_project
 
-def fetch_rss_entries(limit_per_source: int = 5) -> List[Dict[str, Any]]:
+def fetch_rss_entries(limit_per_source: int = 8) -> List[Dict[str, Any]]:
     """Quét các nguồn RSS và lọc ra các bài viết chưa từng được cào vào Sanity."""
     pending_items = []
     print("\n🔍 Đang quét các luồng RSS báo chí Bất Động Sản...")
@@ -160,7 +160,7 @@ def main():
     parser.add_argument("--scan", action="store_true", help="Quét danh sách các bài viết mới từ RSS")
     parser.add_argument("--run-once", action="store_true", help="Cào và xử lý 1 bài viết mới nhất từ RSS")
     parser.add_argument("--auto", action="store_true", help="Tự động cào và xử lý hàng loạt theo số lượng")
-    parser.add_argument("--limit", type=int, default=3, help="Số lượng bài viết tối đa khi chạy --auto (mặc định: 3)")
+    parser.add_argument("--limit", type=int, default=5, help="Số lượng bài viết tối đa khi chạy --auto (mặc định: 5)")
     parser.add_argument("--url", type=str, help="Cào đích danh một đường dẫn bài báo cụ thể")
     parser.add_argument("--create-project", nargs="+", metavar="URL", help="Tạo dự án mới từ 1-5 link bài viết tham khảo")
     parser.add_argument("--update-project", type=str, metavar="SLUG_OR_ID", help="Cập nhật (Smart Merge) dự án cũ trên Sanity theo slug hoặc ID")
@@ -204,7 +204,7 @@ def main():
         return
 
     if args.scan:
-        pending = fetch_rss_entries(limit_per_source=5)
+        pending = fetch_rss_entries(limit_per_source=8)
         print(f"\n📊 Tổng cộng có {len(pending)} bài viết mới sẵn sàng để cào:")
         for idx, item in enumerate(pending, 1):
             print(f"  {idx}. [{item['source']}] {item['title']}\n     URL: {item['url']}")
@@ -220,7 +220,7 @@ def main():
         return
 
     if args.auto:
-        pending = fetch_rss_entries(limit_per_source=5)
+        pending = fetch_rss_entries(limit_per_source=8)
         if not pending:
             print("✨ Không có bài viết mới nào cần xử lý.")
             return
