@@ -426,3 +426,27 @@ button {
     text-align: left !important;
   }
 }
+
+
+/* Đồng bộ kích thước font chữ và khoảng cách dòng của danh sách liệt kê với đoạn văn */
+.portable-text-content ul,
+.portable-text-content ol,
+article ul,
+article ol,
+.project-content-section ul,
+.project-content-section ol {
+  font-size: 1.15rem !important;
+  line-height: 1.8 !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.2rem !important;
+  color: var(--color-text) !important;
+}
+
+.portable-text-content li,
+article li,
+.project-content-section li {
+  font-size: 1.15rem !important;
+  line-height: 1.8 !important;
+  margin-bottom: 0.6rem !important;
+  color: var(--color-text) !important;
+}

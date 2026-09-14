@@ -75,12 +75,12 @@ const portableTextComponents = {
     },
   },
   list: {
-    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ul>,
-    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.2rem', marginBottom: '0.8rem', color: 'var(--color-text)', fontSize: '1.05rem' }}>{children}</ol>,
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ol>,
   },
   listItem: {
-    bullet: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
-    number: ({ children }: any) => <li style={{ marginBottom: '0.8rem', lineHeight: '1.6' }}>{children}</li>,
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
   },
   block: {
     normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem' }}>{children}</p>,

@@ -30,6 +30,7 @@ export default function AiToolsPage() {
   const [formula, setFormula] = useState('auto');
   const [angle, setAngle] = useState('expert_analysis');
   const [developerNotes, setDeveloperNotes] = useState('');
+  const [developerLogoUrl, setDeveloperLogoUrl] = useState('');
   const [projectTitle, setProjectTitle] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [projectSlug, setProjectSlug] = useState('');
@@ -205,7 +206,7 @@ export default function AiToolsPage() {
 
       } else if (mode === 'developer') {
         endpoint = '/api/admin/developer-writer';
-        payload = { developerName: inputValue.trim(), customNotes: developerNotes.trim() };
+        payload = { developerName: inputValue.trim(), customNotes: developerNotes.trim(), customLogoUrl: developerLogoUrl.trim() };
       } else if (mode === 'topic') {
         payload = { type: 'topic', data: inputValue.trim(), formula, angle };
       } else {
@@ -643,6 +644,18 @@ export default function AiToolsPage() {
                           placeholder="Ví dụ: Nhấn mạnh uy tín bàn giao sổ hồng đúng hẹn, tập trung vào các dự án căn hộ cao cấp tại TP.HCM..."
                           rows={2}
                           style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', resize: 'vertical', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                          🌐 Link Website hoặc URL Logo (Tùy chọn - nếu để trống AI sẽ tự động tìm kiếm logo thật):
+                        </label>
+                        <input
+                          type="url"
+                          value={developerLogoUrl}
+                          onChange={(e) => setDeveloperLogoUrl(e.target.value)}
+                          placeholder="Ví dụ: https://huongvietproperties.com hoặc link ảnh logo..."
+                          style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '0.9rem' }}
                         />
                       </div>
                       <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)' }}>

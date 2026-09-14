@@ -52,9 +52,122 @@ function generateSvgLogo(name: string): Buffer {
   return Buffer.from(svg, 'utf-8');
 }
 
+async function fetchAndUploadLogo(adminClient: any, url: string, slug: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!res.ok) return null;
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('image') && !contentType.includes('octet-stream')) {
+      return null;
+    }
+    const buffer = await res.arrayBuffer();
+    if (buffer.byteLength < 600) return null; // Bỏ qua pixel tracker
+    const ext = contentType.includes('svg') ? 'svg' : contentType.includes('webp') ? 'webp' : contentType.includes('jpeg') || contentType.includes('jpg') ? 'jpg' : 'png';
+    const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+      filename: `${slug}-logo.${ext}`,
+      contentType: contentType.includes('image') ? contentType : 'image/png'
+    });
+    return asset._id;
+  } catch (err) {
+    console.warn('fetchAndUploadLogo error for:', url, err);
+    return null;
+  }
+}
+
+async function resolveDeveloperLogo(
+  adminClient: any, 
+  slug: string, 
+  officialName: string, 
+  customLogoUrl?: string, 
+  aiLogoUrl?: string, 
+  websiteUrl?: string
+): Promise<string> {
+  // 1. Ưu tiên 1: Người dùng nhập customLogoUrl
+  if (customLogoUrl && customLogoUrl.startsWith('http')) {
+    const id = await fetchAndUploadLogo(adminClient, customLogoUrl, slug);
+    if (id) return id;
+    if (!websiteUrl) websiteUrl = customLogoUrl;
+  }
+
+  // 2. Ưu tiên 2: URL ảnh trực tiếp AI tìm thấy
+  if (aiLogoUrl && aiLogoUrl.startsWith('http')) {
+    const id = await fetchAndUploadLogo(adminClient, aiLogoUrl, slug);
+    if (id) return id;
+  }
+
+  // 3. Ưu tiên 3: Tự động cào website chủ đầu tư để bóc tách thẻ <img> logo thật hoặc icon chất lượng cao
+  if (websiteUrl && websiteUrl.startsWith('http')) {
+    try {
+      const siteUrlObj = new URL(websiteUrl);
+      const origin = siteUrlObj.origin;
+      const res = await fetch(websiteUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        signal: AbortSignal.timeout(8000)
+      });
+      if (res.ok) {
+        const html = await res.text();
+        const candidateImgs: string[] = [];
+
+        // Tìm các thẻ <img> có src, alt, hoặc class chứa logo/brand
+        const imgMatches = Array.from(html.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/gi));
+        for (const match of imgMatches) {
+          const fullTag = match[0].toLowerCase();
+          const src = match[1];
+          if (fullTag.includes('logo') || src.toLowerCase().includes('logo') || fullTag.includes('brand')) {
+            candidateImgs.push(src);
+          }
+        }
+
+        // Tìm thẻ <link rel="icon" | "apple-touch-icon">
+        const linkMatches = Array.from(html.matchAll(/<link[^>]+rel=["']([^"']*(?:icon|apple-touch-icon)[^"']*)["'][^>]+href=["']([^"']+)["']/gi));
+        for (const match of linkMatches) {
+          candidateImgs.push(match[2]);
+        }
+
+        for (const rawSrc of candidateImgs) {
+          let resolvedSrc = rawSrc;
+          if (rawSrc.startsWith('//')) {
+            resolvedSrc = 'https:' + rawSrc;
+          } else if (rawSrc.startsWith('/')) {
+            resolvedSrc = origin + rawSrc;
+          } else if (!rawSrc.startsWith('http')) {
+            resolvedSrc = origin + '/' + rawSrc;
+          }
+
+          const id = await fetchAndUploadLogo(adminClient, resolvedSrc, slug);
+          if (id) return id;
+        }
+
+        // Thử Google Favicon 256px từ tên miền chính
+        const googleFaviconUrl = `https://www.google.com/s2/favicons?domain=${siteUrlObj.hostname}&sz=256`;
+        const googleFaviconId = await fetchAndUploadLogo(adminClient, googleFaviconUrl, slug);
+        if (googleFaviconId) return googleFaviconId;
+      }
+    } catch (siteErr) {
+      console.warn('Lỗi khi cào logo từ website chủ đầu tư:', siteErr);
+    }
+  }
+
+  // 4. Fallback: Tạo SVG vector thương hiệu đảm bảo 100% tài liệu luôn hợp lệ
+  const svgBuffer = generateSvgLogo(officialName);
+  const asset = await adminClient.assets.upload('image', svgBuffer, {
+    filename: `${slug}-brand-logo.svg`,
+    contentType: 'image/svg+xml'
+  });
+  return asset._id;
+}
+
+
 export async function POST(request: Request) {
   try {
-    const { developerName, customNotes } = await request.json();
+    const { developerName, customNotes, customLogoUrl } = await request.json();
     if (!developerName || !developerName.trim()) {
       return NextResponse.json({ error: 'Tên chủ đầu tư là bắt buộc' }, { status: 400 });
     }
@@ -84,7 +197,7 @@ QUY CHUẨN NỘI DUNG (NOTI CONTENT SKILL - BRAND STORYTELLING & AUTHORITY):
 3. Đánh giá chuyên sâu: Phân tích thế mạnh tài chính, phong cách thiết kế, chất lượng hoàn thiện công trình, năng lực quản lý vận hành và uy tín cam kết với cư dân/nhà đầu tư.
 4. Bảng biểu so sánh: BẮT BUỘC có 1 bảng HTML <table> tổng hợp danh mục dự án trọng điểm (Cột: Dự án | Vị trí | Loại hình | Năm bàn giao | Tình trạng sổ hồng).
 5. Chuẩn SEO/AEO: Định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>). Heading viết kiểu Sentence case (chỉ viết hoa chữ cái đầu câu). Không dùng văn mẫu bot sáo rỗng.
-6. Logo URL: Tìm kiếm URL hình ảnh logo chính thức (PNG hoặc SVG nền trong suốt) của chủ đầu tư này.
+6. Website & Logo: Tra cứu chính xác website chính thức của chủ đầu tư (ví dụ: https://huongvietproperties.com...) và URL hình ảnh logo thật (PNG, WEBP hoặc SVG nền trong suốt).
 
 ==================================================
 YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦN PHÂN TÁCH DƯỚI ĐÂY, KHÔNG ĐỂ NỘI DUNG HTML BÊN TRONG JSON ĐỂ TRÁNH LỖI PARSE):
@@ -95,7 +208,8 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
   "location": "Trụ sở chính hoặc khu vực hoạt động mạnh (ví dụ: TP. Hồ Chí Minh, Bình Dương, Hà Nội)",
   "foundedYear": "Năm thành lập (ví dụ: 2007 - chỉ lấy 4 chữ số năm, nếu không rõ thì để rỗng)",
   "country": "Việt Nam",
-  "logoUrl": "URL ảnh logo chính thức của chủ đầu tư nếu tìm thấy (bắt đầu bằng http/https). Nếu không chắc chắn thì để rỗng",
+  "websiteUrl": "Website chính thức của chủ đầu tư (ví dụ: https://huongvietproperties.com, https://vinhomes.vn...)",
+  "logoUrl": "URL trực tiếp file ảnh logo nếu tìm thấy trên web (đuôi .png, .webp, .svg...). Nếu không chắc chắn thì để rỗng",
   "seoTitle": "Tiêu đề SEO dưới 60 ký tự (Sentence case)",
   "seoDescription": "Đoạn mô tả SEO dưới 160 ký tự, súc tích và hấp dẫn"
 }
@@ -165,6 +279,7 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
           location: extractField('location'),
           foundedYear: extractField('foundedYear'),
           country: 'Việt Nam',
+          websiteUrl: extractField('websiteUrl'),
           logoUrl: extractField('logoUrl'),
           seoTitle: extractField('seoTitle'),
           seoDescription: extractField('seoDescription')
@@ -221,37 +336,15 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
     const officialName = developerName.trim();
     const slugCurrent = toSlug(officialName);
 
-    // 4. Xử lý Logo (Fetch logo thực tế hoặc fallback sang SVG logo gradient sang trọng)
-    let logoAssetId: string | null = null;
-    if (parsed.logoUrl && parsed.logoUrl.startsWith('http')) {
-      try {
-        const logoRes = await fetch(parsed.logoUrl, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
-        });
-        if (logoRes.ok) {
-          const buffer = await logoRes.arrayBuffer();
-          const contentType = logoRes.headers.get('content-type') || 'image/png';
-          const ext = contentType.includes('svg') ? 'svg' : 'png';
-          const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
-            filename: `${slugCurrent}-logo.${ext}`,
-            contentType
-          });
-          logoAssetId = asset._id;
-        }
-      } catch (err) {
-        console.warn('Không tải được logo từ URL:', parsed.logoUrl, err);
-      }
-    }
-
-    // Nếu không có logo từ web, tạo SVG Logo vector sang trọng đảm bảo 100% hợp lệ
-    if (!logoAssetId) {
-      const svgBuffer = generateSvgLogo(officialName);
-      const asset = await adminClient.assets.upload('image', svgBuffer, {
-        filename: `${slugCurrent}-brand-logo.svg`,
-        contentType: 'image/svg+xml'
-      });
-      logoAssetId = asset._id;
-    }
+    // 4. Xử lý Logo thực tế (Smart Logo Scraper & Multi-Tier Resolution)
+    const logoAssetId = await resolveDeveloperLogo(
+      adminClient,
+      slugCurrent,
+      officialName,
+      customLogoUrl,
+      parsed.logoUrl,
+      parsed.websiteUrl
+    );
 
     // 5. Convert HTML content sang PortableText
     const defaultSchema = Schema.compile({
