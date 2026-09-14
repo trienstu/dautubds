@@ -363,10 +363,14 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
       "excerpt": "Đoạn giới thiệu ngắn chuẩn SEO dưới 160 ký tự",
       "descriptionHtml": "Tổng quan dự án dạng HTML (Dùng h3, p, ul, li, chèn thẻ <img>. KHÔNG DÙNG H2 Ở ĐẦU).",
       "featuresList": ["Tiện ích 1", "Tiện ích 2", "Tiện ích 3"],
-      "featuresHtml": "Chi tiết tiện ích dạng HTML (kèm ảnh <img>).",
-      "locationHtml": "Chi tiết vị trí dạng HTML (kèm ảnh <img>).",
-      "pricingHtml": "Bảng giá & CSBH dạng HTML.",
+      "featuresHtml": "Chi tiết hệ thống tiện ích đẳng cấp dạng HTML (kèm ảnh <img>).",
+      "locationHtml": "Chi tiết vị trí và tiềm năng kết nối hạ tầng giao thông dạng HTML (kèm ảnh <img>).",
+      "pricingHtml": "Bảng giá & Chính sách bán hàng cập nhật dạng HTML (bảng biểu <table> hoặc danh sách <ul><li>).",
       "legalHtml": "Pháp lý dự án dạng HTML (Quy hoạch 1/500, giấy phép xây dựng, bảo lãnh ngân hàng).",
+      "floorPlanHtml": "Mặt bằng tổng thể dự án và bố trí layout các loại căn hộ/sản phẩm (1PN, 2PN, 3PN, Duplex...) dạng HTML (dùng <h3>, <p>, <ul>, <li>, chèn thẻ <img> mặt bằng).",
+      "designHtml": "Phong cách thiết kế kiến trúc, tối ưu công năng, ánh sáng, đón gió và danh mục vật liệu bàn giao cao cấp dạng HTML (kèm ảnh <img>).",
+      "showroomHtml": "Thông tin khu nhà mẫu, trải nghiệm thực tế không gian sống và tiêu chuẩn bàn giao dạng HTML (kèm ảnh <img>).",
+      "progressHtml": "Tiến độ thi công thực tế mới nhất của dự án dạng HTML (dùng <h3>, <p>, <ul>, <li>, chèn thẻ <img> công trường thực tế).",
       "investmentReasonsHtml": "Nội dung 4-5 lý do vì sao nên mua/đầu tư dự án này dạng HTML (dùng <h3> và <p>). BẮT BUỘC áp dụng công thức PPPP: 1. Picture (Bức tranh sống resort/tiềm năng); 2. Promise (Cam kết sinh lời/thanh khoản); 3. Prove (Chứng minh bằng uy tín CĐT, tiến độ và pháp lý); 4. Push (Đòn bẩy chi phí cơ hội khi mua sớm).",
       "faqs": [
         { "question": "Dự án nằm ở đâu và ai là chủ đầu tư?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." },
@@ -415,14 +419,22 @@ ${outputFormat}`;
       processedFeatHtml,
       processedPriceHtml,
       processedLegalHtml,
-      processedInvestHtml
+      processedInvestHtml,
+      processedFloorPlanHtml,
+      processedDesignHtml,
+      processedShowroomHtml,
+      processedProgressHtml
     ] = await Promise.all([
       processHtmlSectionImages(parsedResult.descriptionHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.locationHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.featuresHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.pricingHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.legalHtml || '', adminClient),
-      processHtmlSectionImages(parsedResult.investmentReasonsHtml || '', adminClient)
+      processHtmlSectionImages(parsedResult.investmentReasonsHtml || '', adminClient),
+      processHtmlSectionImages(parsedResult.floorPlanHtml || '', adminClient),
+      processHtmlSectionImages(parsedResult.designHtml || '', adminClient),
+      processHtmlSectionImages(parsedResult.showroomHtml || '', adminClient),
+      processHtmlSectionImages(parsedResult.progressHtml || '', adminClient)
     ]);
 
     const imagesToUpload: string[] = Array.isArray(parsedResult.selectedImages) && parsedResult.selectedImages.length > 0
@@ -463,6 +475,10 @@ ${outputFormat}`;
     const pricingBlocks = convertHtmlToPortableText(processedPriceHtml);
     const legalBlocks = convertHtmlToPortableText(processedLegalHtml);
     const investmentBlocks = convertHtmlToPortableText(processedInvestHtml);
+    const floorPlanBlocks = convertHtmlToPortableText(processedFloorPlanHtml);
+    const designBlocks = convertHtmlToPortableText(processedDesignHtml);
+    const showroomBlocks = convertHtmlToPortableText(processedShowroomHtml);
+    const progressBlocks = convertHtmlToPortableText(processedProgressHtml);
 
     const formattedFaqs = Array.isArray(parsedResult.faqs)
       ? parsedResult.faqs.map((q: any) => ({
@@ -508,6 +524,10 @@ ${outputFormat}`;
       pricingContent: pricingBlocks,
       legalContent: legalBlocks,
       investmentReasons: investmentBlocks,
+      floorPlanContent: floorPlanBlocks,
+      designContent: designBlocks,
+      showroomContent: showroomBlocks,
+      progressContent: progressBlocks,
       faqs: formattedFaqs,
       seo: {
         _type: 'seo',
