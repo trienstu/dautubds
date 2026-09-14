@@ -196,12 +196,14 @@ YÊU CẦU ĐẦU RA (Chỉ trả về JSON hợp lệ, không bọc markdown ``
   "featuresHtml": "Nội dung chi tiết hệ thống tiện ích dạng HTML sạch (kèm ảnh <img> tiện ích nếu có).",
   "locationHtml": "Nội dung phân tích vị trí và tiềm năng hạ tầng dạng HTML sạch (kèm ảnh <img> sơ đồ vị trí nếu có).",
   "pricingHtml": "Bảng giá dự kiến và chính sách thanh toán dạng HTML sạch.",
-  "legalHtml": "Thông tin pháp lý minh bạch của dự án dạng HTML sạch.",
-  "investmentReasonsHtml": "4-5 lý do then chốt vì sao nên sở hữu/đầu tư dự án này dạng HTML sạch.",
-  "progressHtml": "Thông tin tiến độ thi công cập nhật mới nhất dạng HTML sạch.",
+  "legalHtml": "Thông tin pháp lý minh bạch của dự án dạng HTML sạch (quy hoạch 1/500, giấy phép xây dựng, bảo lãnh ngân hàng).",
+  "investmentReasonsHtml": "Nội dung 4-5 lý do then chốt vì sao nên sở hữu/đầu tư dự án này dạng HTML sạch (dùng <h3> và <p>). BẮT BUỘC áp dụng công thức PPPP & Tâm lý học BĐS: 1. Picture (Bức tranh không gian sống resort hoặc tiềm năng hạ tầng bứt phá); 2. Promise (Cam kết tỷ suất cho thuê và biên độ tăng giá dài hạn); 3. Prove (Chứng minh bằng uy tín chủ đầu tư, tiến độ thực địa và pháp lý minh bạch); 4. Push (Đòn bẩy chi phí cơ hội Cost of Inaction khi xuống tiền ở giai đoạn mở bán đầu tiên).",
+  "progressHtml": "Thông tin tiến độ thi công cập nhật mới nhất dạng HTML sạch (kèm ảnh công trường thực tế).",
   "faqs": [
-    {{"question": "Dự án nằm ở đâu và ai là chủ đầu tư?", "answer": "Câu trả lời chi tiết."}},
-    {{"question": "Mức giá bán hiện tại là bao nhiêu?", "answer": "Câu trả lời chi tiết."}}
+    {{"question": "Dự án nằm ở đâu và ai là chủ đầu tư?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO."}},
+    {{"question": "Mức giá bán chính thức hiện tại là bao nhiêu?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO."}},
+    {{"question": "Pháp lý dự án hiện tại đã có những gì?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO."}},
+    {{"question": "Chính sách thanh toán và ngân hàng hỗ trợ vay ra sao?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO."}}
   ],
   "coverImageUrl": "1 URL ảnh đẹp nhất làm ảnh bìa",
   "galleryImageUrls": ["URL 1", "URL 2", "URL 3", "URL 4"],

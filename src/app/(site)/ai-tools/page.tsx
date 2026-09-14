@@ -26,7 +26,10 @@ interface ImageAsset {
 }
 
 export default function AiToolsPage() {
-  const [mode, setMode] = useState<'url' | 'topic' | 'project' | 'update_project' | 'unused_images'>('project');
+  const [mode, setMode] = useState<'url' | 'topic' | 'project' | 'update_project' | 'unused_images' | 'developer'>('project');
+  const [formula, setFormula] = useState('auto');
+  const [angle, setAngle] = useState('expert_analysis');
+  const [developerNotes, setDeveloperNotes] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [projectSlug, setProjectSlug] = useState('');
   const [existingProjects, setExistingProjects] = useState<ProjectOption[]>([]);
@@ -199,8 +202,13 @@ export default function AiToolsPage() {
 
         payload = { action: 'update', slug: projectSlug.trim(), urls: urlsArray };
 
+      } else if (mode === 'developer') {
+        endpoint = '/api/admin/developer-writer';
+        payload = { developerName: inputValue.trim(), customNotes: developerNotes.trim() };
+      } else if (mode === 'topic') {
+        payload = { type: 'topic', data: inputValue.trim(), formula, angle };
       } else {
-        payload = { type: mode, data: inputValue };
+        payload = { type: mode, data: inputValue.trim() };
       }
 
       const res = await fetch(endpoint, {
@@ -339,6 +347,21 @@ export default function AiToolsPage() {
                 }}
               >
                 💡 Viết Tin Tức từ Chủ Đề
+              </button>
+              <button 
+                onClick={() => { setMode('developer'); setInputValue(''); setDeveloperNotes(''); setResult(null); setError(''); }}
+                style={{ 
+                  padding: '0.7rem 1.2rem', 
+                  borderRadius: '30px', 
+                  fontWeight: 600, 
+                  fontSize: '0.92rem',
+                  border: mode === 'developer' ? 'none' : '1px solid var(--border-color)', 
+                  background: mode === 'developer' ? 'var(--color-primary)' : 'transparent', 
+                  color: mode === 'developer' ? '#111' : 'var(--color-text)',
+                  cursor: 'pointer'
+                }}
+              >
+                🏛️ Hồ Sơ Chủ Đầu Tư
               </button>
             </div>
 
@@ -556,6 +579,7 @@ export default function AiToolsPage() {
                     {mode === 'update_project' && 'Dán các đường link bài báo mới về TIẾN ĐỘ / BẢNG GIÁ / CHÍNH SÁCH MỚI (Mỗi link 1 dòng):'}
                     {mode === 'url' && 'URL Bài viết nguồn (1 link):'}
                     {mode === 'topic' && 'Chủ đề / Yêu cầu viết bài:'}
+                    {mode === 'developer' && 'Nhập tên Chủ Đầu Tư:'}
                   </label>
                   
                   {mode === 'project' || mode === 'update_project' ? (
@@ -580,15 +604,79 @@ export default function AiToolsPage() {
                       required
                       style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)' }}
                     />
+                  ) : mode === 'developer' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <input 
+                        type="text" 
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="Ví dụ: Masterise Homes, Vinhomes, Khang Điền, Gamuda Land, Sun Group..." 
+                        required
+                        style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }}
+                      />
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                          Ghi chú hoặc yêu cầu riêng (Tùy chọn):
+                        </label>
+                        <textarea
+                          value={developerNotes}
+                          onChange={(e) => setDeveloperNotes(e.target.value)}
+                          placeholder="Ví dụ: Nhấn mạnh uy tín bàn giao sổ hồng đúng hẹn, tập trung vào các dự án căn hộ cao cấp tại TP.HCM..."
+                          rows={2}
+                          style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', resize: 'vertical', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--color-primary)' }}>
+                        🤖 <strong>Tự động hóa hoàn toàn:</strong> AI sẽ tự tra cứu Google để lấy năm thành lập, trụ sở chính, logo chính thức, danh mục dự án & tiến độ cấp sổ hồng, tự viết bài chuẩn SEO và lưu vào Sanity!
+                      </p>
+                    </div>
                   ) : (
-                    <textarea 
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Ví dụ: Đánh giá tiềm năng đầu tư dự án The Privé Khang Điền tại Bình Tân..." 
-                      required
-                      rows={4}
-                      style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', resize: 'vertical' }}
-                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <textarea 
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="Ví dụ: Đánh giá tiềm năng đầu tư dự án The Privé Khang Điền tại Bình Tân..." 
+                        required
+                        rows={3}
+                        style={{ width: '100%', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', resize: 'vertical' }}
+                      />
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', background: 'var(--background)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.88rem', fontWeight: 600 }}>
+                            🎯 Công Thức Content (Noti Skill):
+                          </label>
+                          <select
+                            value={formula}
+                            onChange={(e) => setFormula(e.target.value)}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--color-dark-light)', color: 'var(--foreground)', fontSize: '0.9rem' }}
+                          >
+                            <option value="auto">⚡ Tự Động Tối Ưu (PAS / PPPP / Story)</option>
+                            <option value="pas">🔥 PAS (Problem - Agitate - Solve: Nỗi đau & Chi phí cơ hội)</option>
+                            <option value="pppp">💎 PPPP (Picture - Promise - Prove - Push: Khắc họa & Chốt)</option>
+                            <option value="aida">🚀 AIDA (Attention - Interest - Desire - Action: Kích thích mua)</option>
+                            <option value="storytelling">📖 Storytelling (Kể chuyện thị trường & Bài học thực chiến)</option>
+                            <option value="4cs">📊 4Cs (Clear - Concise - Compelling - Credible: Ngắn & Số liệu)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.88rem', fontWeight: 600 }}>
+                            🧭 Góc Nhìn Tiếp Cận:
+                          </label>
+                          <select
+                            value={angle}
+                            onChange={(e) => setAngle(e.target.value)}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--color-dark-light)', color: 'var(--foreground)', fontSize: '0.9rem' }}
+                          >
+                            <option value="expert_analysis">🧐 Chuyên Gia Phân Tích (Khách quan, đa chiều)</option>
+                            <option value="investment_advice">💰 Lời Khuyên Đầu Tư (Tối ưu dòng tiền, đòn bẩy)</option>
+                            <option value="legal_alert">⚖️ Cảnh Báo Pháp Lý (Sổ hồng, quy hoạch 1/500)</option>
+                            <option value="buyer_guide">🏡 Cẩm Nang An Cư (Không gian sống, tiện ích thực)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                   )}
 
                   {mode === 'project' && (
@@ -609,12 +697,16 @@ export default function AiToolsPage() {
                         ? '⚡ AI đang tổng hợp & thực hiện Smart Merge (Khoảng 25-45s)...'
                         : mode === 'project' 
                           ? '⚡ AI đang cào dữ liệu & bóc tách dự án (Khoảng 25-45s)...' 
-                          : '⚡ AI đang tổng hợp bài viết (Khoảng 15-30s)...') 
+                          : mode === 'developer'
+                            ? '⚡ AI đang tra cứu & tạo hồ sơ Chủ Đầu Tư (Khoảng 20-35s)...'
+                            : '⚡ AI đang tổng hợp bài viết (Khoảng 15-30s)...') 
                     : (mode === 'update_project'
                         ? '🔄 Bắt Đầu Cập Nhật Hợp Nhất (Smart Merge)'
                         : mode === 'project' 
                           ? '🚀 Bắt Đầu Tạo Dự Án BĐS' 
-                          : '🚀 Chạy AI Viết Bài')}
+                          : mode === 'developer'
+                            ? '🏛️ AI Tra Cứu & Tạo Hồ Sơ Chủ Đầu Tư'
+                            : '🚀 Chạy AI Viết Bài')}
                 </button>
               </form>
             )}
@@ -634,7 +726,9 @@ export default function AiToolsPage() {
                     ? `Dự án "${result.title || ''}" đã được Smart Merge cập nhật thành công!`
                     : mode === 'project' 
                       ? `Dự án "${result.title || 'Mới'}" đã được AI bóc tách từ ${result.sourcesCount || 'các'} link nguồn và lưu thành công trên Sanity.`
-                      : 'Bài viết đã được AI viết lại thành công.'
+                      : mode === 'developer'
+                        ? `Hồ sơ Chủ Đầu Tư "${result.name || inputValue}" đã được AI tra cứu và lưu thành công trên Sanity!`
+                        : 'Bài viết đã được AI viết lại thành công.'
                   }
                 </p>
 
@@ -645,7 +739,11 @@ export default function AiToolsPage() {
                 )}
 
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  {result.slug && (
+                  {result.viewUrl ? (
+                    <a href={result.viewUrl} target="_blank" rel="noopener noreferrer" className="btn" style={{ display: 'inline-block' }}>
+                      🌐 Xem Hồ Sơ Chủ Đầu Tư trên Web
+                    </a>
+                  ) : result.slug && (
                     <a href={`/du-an/${result.slug}`} target="_blank" rel="noopener noreferrer" className="btn" style={{ display: 'inline-block' }}>
                       🌐 Xem Dự Án Trực Tiếp trên Web
                     </a>

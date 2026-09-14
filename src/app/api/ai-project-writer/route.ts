@@ -342,9 +342,9 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
     {
       "title": "Tên thương mại dự án chuẩn SEO (Sentence case)",
       "category": "Căn hộ | Nhà phố | Biệt thự | Đất nền",
-      "price": "Mức giá dự án (ví dụ: 45 - 60 triệu/m²)",
+      "price": "BẮT BUỘC CHỈ GHI KHOẢNG GIÁ NGẮN GỌN TỪ THẤP NHẤT ĐẾN CAO NHẤT (ví dụ: 1.7 - 5.56 tỷ hoặc 50 - 60 triệu/m²). Không viết thành câu văn dài.",
       "productCount": "Tổng số sản phẩm (ví dụ: 1200 căn)",
-      "status": "Đang mở bán | Sắp ra mắt | Đã bàn giao",
+      "status": "BẮT BUỘC CHỈ CHỌN 1 TRONG 3 GIÁ TRỊ: Đang mở bán, Sắp ra mắt, hoặc Đã bàn giao. Tuyệt đối không thêm từ ngữ khác.",
       "location": "Vị trí địa lý hành chính cụ thể",
       "progressPercentage": 45,
       "excerpt": "Đoạn giới thiệu ngắn chuẩn SEO dưới 160 ký tự",
@@ -353,10 +353,13 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
       "featuresHtml": "Chi tiết tiện ích dạng HTML (kèm ảnh <img>).",
       "locationHtml": "Chi tiết vị trí dạng HTML (kèm ảnh <img>).",
       "pricingHtml": "Bảng giá & CSBH dạng HTML.",
-      "legalHtml": "Pháp lý dự án dạng HTML.",
+      "legalHtml": "Pháp lý dự án dạng HTML (Quy hoạch 1/500, giấy phép xây dựng, bảo lãnh ngân hàng).",
+      "investmentReasonsHtml": "Nội dung 4-5 lý do vì sao nên mua/đầu tư dự án này dạng HTML (dùng <h3> và <p>). BẮT BUỘC áp dụng công thức PPPP: 1. Picture (Bức tranh sống resort/tiềm năng); 2. Promise (Cam kết sinh lời/thanh khoản); 3. Prove (Chứng minh bằng uy tín CĐT, tiến độ và pháp lý); 4. Push (Đòn bẩy chi phí cơ hội khi mua sớm).",
       "faqs": [
-        { "question": "Câu hỏi 1", "answer": "Câu trả lời 1" },
-        { "question": "Câu hỏi 2", "answer": "Câu trả lời 2" }
+        { "question": "Dự án nằm ở đâu và ai là chủ đầu tư?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." },
+        { "question": "Mức giá bán chính thức hiện tại là bao nhiêu?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." },
+        { "question": "Pháp lý dự án hiện tại đã có những gì?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." },
+        { "question": "Chính sách thanh toán và ngân hàng hỗ trợ vay ra sao?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." }
       ],
       "selectedImages": ["URL 1", "URL 2", "URL 3", "URL 4"]
     }`;
