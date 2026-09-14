@@ -390,9 +390,10 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
     const prompt = `Bạn là Chuyên gia tư vấn đầu tư Bất Động Sản cao cấp.
 Tổng hợp nội dung từ ${successfulSources.length} nguồn bài viết dưới đây để tạo một bài viết dự án BĐS hoàn chỉnh, 100% Unique, chuẩn SEO/AEO/GEO.${titleRule}
 
-LƯU Ý QUAN TRỌNG:
+LƯU Ý QUAN TRỌNG VỀ HÌNH ẢNH & ĐỊNH DẠNG:
 1. Giao diện frontend ĐÃ CÓ thẻ <h2> cho từng tab. Các trường HTML TUYỆT ĐỐI KHÔNG DÙNG THẺ <h2> Ở ĐẦU! Chỉ dùng <h3> bên trong.
-2. Hãy chèn các thẻ <img src="URL" alt="..." /> vào giữa các đoạn văn trong từng mục từ danh sách ảnh dưới đây.
+2. BẮT BUỘC chèn ảnh vào TẤT CẢ các mục: Trong mỗi trường HTML (descriptionHtml, featuresHtml, locationHtml, pricingHtml, legalHtml, floorPlanHtml, designHtml, showroomHtml, progressHtml), hãy chủ động chọn từ danh sách ảnh bên dưới và chèn các thẻ \`<img src="URL_CHÍNH_XÁC" alt="Mô tả chuẩn SEO" />\` vào giữa các đoạn văn để bài viết sinh động trực quan.
+3. Chọn các URL ảnh mặt bằng / layout căn hộ đưa vào mảng \`floorPlanImages\`.
 
 DANH SÁCH ẢNH TÌM THẤY:
 ${JSON.stringify(extractedImages.slice(0, 25), null, 2)}
@@ -469,6 +470,37 @@ ${outputFormat}`;
       }
     }
 
+    // Tải thư viện ảnh Mặt bằng (floorPlans)
+    const floorPlanAssets: any[] = [];
+    const fpUrls = Array.isArray(parsedResult.floorPlanImages) && parsedResult.floorPlanImages.length > 0
+      ? parsedResult.floorPlanImages.filter((u: string) => typeof u === 'string' && u.startsWith('http'))
+      : extractedImages.filter((u: string) => /mat-bang|floorplan|layout|so-do|can-ho/i.test(u)).slice(0, 4);
+
+    for (let i = 0; i < Math.min(fpUrls.length, 6); i++) {
+      try {
+        const imgUrl = fpUrls[i];
+        const imgRes = await fetch(imgUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+        });
+        if (imgRes.ok) {
+          const buffer = await imgRes.arrayBuffer();
+          const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+          if (contentType.includes('image')) {
+            const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+              filename: `project-floorplan-${Date.now()}-${i}.jpg`
+            });
+            floorPlanAssets.push({
+              _type: 'image',
+              _key: Math.random().toString(36).substring(7),
+              asset: { _type: 'reference', _ref: asset._id }
+            });
+          }
+        }
+      } catch (err) {
+        console.error(`Failed uploading floor plan image ${i}:`, err);
+      }
+    }
+
     const descriptionBlocks = convertHtmlToPortableText(processedDescHtml);
     const locationBlocks = convertHtmlToPortableText(processedLocHtml);
     const featuresBlocks = convertHtmlToPortableText(processedFeatHtml);
@@ -539,6 +571,10 @@ ${outputFormat}`;
     if (galleryAssets.length > 0) {
       doc.imageUrl = galleryAssets[0];
       doc.gallery = galleryAssets;
+    }
+
+    if (floorPlanAssets.length > 0) {
+      doc.floorPlans = floorPlanAssets;
     }
 
     const createdDoc = await adminClient.createOrReplace(doc);
