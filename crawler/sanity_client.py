@@ -78,6 +78,71 @@ def upload_image_asset(image_url: str, filename: str = None) -> str | None:
         print(f"[WARN] Lỗi tải/upload ảnh {image_url}: {e}")
     return None
 
+
+CURATED_REAL_ESTATE_IMAGES = [
+    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=1200&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=1200&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&fit=crop&q=80"
+]
+
+def generate_fallback_svg_banner(title: str) -> bytes:
+    """Tạo banner vector SVG 1200x630 chuẩn Open Graph mang thương hiệu khi bài báo không có ảnh."""
+    clean_title = title[:80] + "..." if len(title) > 80 else title
+    # Tách dòng ngắn để hiển thị đẹp
+    words = clean_title.split()
+    line1 = " ".join(words[:6])
+    line2 = " ".join(words[6:12])
+    line3 = " ".join(words[12:18])
+    
+    svg = f"""<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="40" y="40" width="1120" height="550" rx="24" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.3" />
+  <circle cx="1050" cy="150" r="280" fill="#f59e0b" opacity="0.04" filter="blur(60px)" />
+  
+  <rect x="80" y="80" width="180" height="38" rx="19" fill="#f59e0b" opacity="0.15" />
+  <text x="170" y="105" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="2">
+    TIN TỨC THỊ TRƯỜNG
+  </text>
+  
+  <text x="80" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="800" fill="#ffffff">
+    <tspan x="80" dy="0">{line1}</tspan>
+    <tspan x="80" dy="65">{line2}</tspan>
+    <tspan x="80" dy="65">{line3}</tspan>
+  </text>
+  
+  <line x1="80" y1="480" x2="1120" y2="480" stroke="#334155" stroke-width="1" />
+  <text x="80" y="530" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#94a3b8" letter-spacing="3">
+    DAUTUBDS.IO.VN | KÊNH THÔNG TIN BẤT ĐỘNG SẢN CHUYÊN SÂU
+  </text>
+</svg>"""
+    return svg.encode("utf-8")
+
+def upload_image_buffer(buffer: bytes, content_type: str = "image/jpeg", filename: str = "image.jpg") -> str:
+    """Upload trực tiếp buffer ảnh lên Sanity Asset."""
+    try:
+        upload_url = f"{BASE_URL}/assets/images/{SANITY_DATASET}?filename={quote(filename)}"
+        headers = get_headers(content_type=content_type)
+        resp = requests.post(upload_url, headers=headers, data=buffer, timeout=30)
+        if resp.status_code in (200, 201):
+            return resp.json().get("document", {}).get("_id")
+    except Exception as e:
+        print(f"[WARN] Lỗi upload buffer ảnh: {e}")
+    return None
+
 def create_slug(title: str) -> str:
     """Tạo slug không dấu chuẩn SEO từ tiêu đề tiếng Việt."""
     import unicodedata
@@ -167,10 +232,49 @@ def html_to_portable_text(html_content: str, uploaded_images_map: dict = None) -
                     "asset": {"_type": "reference", "_ref": asset_id},
                     "alt": alt
                 })
+
+        # Table tag (Bảng biểu phân tích BĐS)
+        elif tag_name == "table":
+            table_rows = []
+            for tr in elem.find_all("tr"):
+                cells = [cell.get_text().strip() for cell in tr.find_all(["th", "td"])]
+                if cells:
+                    table_rows.append({
+                        "_type": "tableRow",
+                        "_key": uuid.uuid4().hex[:12],
+                        "cells": cells
+                    })
+            if table_rows:
+                blocks.append({
+                    "_type": "table",
+                    "_key": uuid.uuid4().hex[:12],
+                    "rows": table_rows
+                })
                 
         # Paragraph or generic container
         else:
-            # Check for embedded images inside paragraph
+            # Check for embedded tables inside container
+            tables = elem.find_all("table")
+            if tables:
+                for tbl in tables:
+                    t_rows = []
+                    for tr in tbl.find_all("tr"):
+                        cells = [cell.get_text().strip() for cell in tr.find_all(["th", "td"])]
+                        if cells:
+                            t_rows.append({
+                                "_type": "tableRow",
+                                "_key": uuid.uuid4().hex[:12],
+                                "cells": cells
+                            })
+                    if t_rows:
+                        blocks.append({
+                            "_type": "table",
+                            "_key": uuid.uuid4().hex[:12],
+                            "rows": t_rows
+                        })
+                    tbl.decompose()
+
+            # Check for embedded images inside container
             imgs = elem.find_all("img")
             if imgs:
                 for img in imgs:
@@ -252,6 +356,22 @@ def create_post_document(
         }
     }
     
+    # Fallback Thumbnail 3 lớp: Nếu chưa có thumbnail, tự động lấy ảnh từ kho BĐS hoặc tạo SVG Banner
+    if not thumbnail_asset_id:
+        # Lớp 1: Lấy ảnh bất kỳ đã tải lên trong bài
+        if uploaded_images_map:
+            thumbnail_asset_id = list(uploaded_images_map.values())[0]
+        else:
+            # Lớp 2: Lấy từ kho ảnh BĐS chất lượng cao
+            import random
+            random_img_url = random.choice(CURATED_REAL_ESTATE_IMAGES)
+            thumbnail_asset_id = upload_image_asset(random_img_url, filename="curated-bds-thumb.jpg")
+            
+            # Lớp 3: Fallback SVG Brand Banner nếu không tải được mạng
+            if not thumbnail_asset_id:
+                svg_data = generate_fallback_svg_banner(title)
+                thumbnail_asset_id = upload_image_buffer(svg_data, content_type="image/svg+xml", filename="brand-news-banner.svg")
+
     if thumbnail_asset_id:
         doc["imageUrl"] = {
             "_type": "image",

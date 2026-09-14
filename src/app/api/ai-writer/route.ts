@@ -5,7 +5,57 @@ import { htmlToBlocks } from '@sanity/block-tools';
 import { Schema } from '@sanity/schema';
 import { JSDOM } from 'jsdom';
 
-export const maxDuration = 60; // Tăng tối đa thời gian thực thi (60 giây cho gói Hobby)
+export const maxDuration = 60;
+
+const CURATED_REAL_ESTATE_THUMBNAILS = [
+  "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=1200&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=1200&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&fit=crop&q=80"
+];
+
+function generateFallbackSvgBanner(title: string): Buffer {
+  const cleanTitle = title.length > 85 ? title.slice(0, 85) + '...' : title;
+  const words = cleanTitle.split(' ');
+  const line1 = words.slice(0, 6).join(' ');
+  const line2 = words.slice(6, 12).join(' ');
+  const line3 = words.slice(12, 18).join(' ');
+
+  const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="40" y="40" width="1120" height="550" rx="24" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.3" />
+  <circle cx="1050" cy="150" r="280" fill="#f59e0b" opacity="0.04" filter="blur(60px)" />
+  <rect x="80" y="80" width="190" height="38" rx="19" fill="#f59e0b" opacity="0.15" />
+  <text x="175" y="105" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="2">
+    TIN TỨC BẤT ĐỘNG SẢN
+  </text>
+  <text x="80" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="800" fill="#ffffff">
+    <tspan x="80" dy="0">${line1}</tspan>
+    <tspan x="80" dy="65">${line2}</tspan>
+    <tspan x="80" dy="65">${line3}</tspan>
+  </text>
+  <line x1="80" y1="480" x2="1120" y2="480" stroke="#334155" stroke-width="1" />
+  <text x="80" y="530" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#94a3b8" letter-spacing="3">
+    DAUTUBDS.IO.VN | KÊNH THÔNG TIN BẤT ĐỘNG SẢN CHUYÊN SÂU
+  </text>
+</svg>`;
+
+  return Buffer.from(svg, 'utf-8');
+}
+ // Tăng tối đa thời gian thực thi (60 giây cho gói Hobby)
 
 export async function POST(request: Request) {
   try {
@@ -225,41 +275,90 @@ ${outputFormat}`;
 
     result.content = contentHtml;
 
-    // 3. Upload thumbnail if exists
-    let imageAssetId = null;
-    if (result.imageUrl && result.imageUrl.startsWith('http')) {
-      try {
-        const imgRes = await fetch(result.imageUrl);
-        const buffer = await imgRes.arrayBuffer();
-        const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
-          filename: 'ai-thumbnail.jpg'
-        });
-        imageAssetId = asset._id;
-      } catch (err) {
-        console.error('Failed to upload thumbnail', err);
-      }
-    }
-
-    // 4. Pre-process in-content images (Download & Upload to Sanity)
+    // 3. Pre-process in-content images (Download & Upload to Sanity)
     const dom = new JSDOM(result.content);
     const document = dom.window.document;
     const images = Array.from(document.querySelectorAll('img'));
+    const inContentAssetIds: string[] = [];
     
     for (const img of images as any[]) {
       const src = img.getAttribute('src');
       if (src && src.startsWith('http')) {
         try {
-          const imgRes = await fetch(src);
-          const buffer = await imgRes.arrayBuffer();
-          const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
-            filename: `content-img-${Date.now()}.jpg`
+          const imgRes = await fetch(src, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
           });
-          // Replace src with the Sanity Asset ID so htmlToBlocks can pick it up
-          img.setAttribute('src', asset._id);
+          if (imgRes.ok) {
+            const buffer = await imgRes.arrayBuffer();
+            const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+              filename: `content-img-${Date.now()}.jpg`
+            });
+            img.setAttribute('src', asset._id);
+            inContentAssetIds.push(asset._id);
+          } else {
+            img.remove();
+          }
         } catch (err) {
           console.error(`Failed to upload in-content image: ${src}`, err);
           img.remove(); // Remove broken images
         }
+      }
+    }
+
+    // 4. Upload Thumbnail (3-Tier Fallback System: Bảo đảm 100% bài viết luôn có thumbnail đẹp)
+    let imageAssetId = null;
+
+    // Lớp 1: Lấy URL thumbnail từ nguồn nếu có
+    if (result.imageUrl && result.imageUrl.startsWith('http')) {
+      try {
+        const imgRes = await fetch(result.imageUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
+        });
+        if (imgRes.ok) {
+          const buffer = await imgRes.arrayBuffer();
+          const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+            filename: 'ai-thumbnail.jpg'
+          });
+          imageAssetId = asset._id;
+        }
+      } catch (err) {
+        console.warn('Failed to upload primary thumbnail, proceeding to fallbacks:', err);
+      }
+    }
+
+    // Lớp 2: Lấy ảnh đầu tiên trong bài viết nếu chưa có thumbnail
+    if (!imageAssetId && inContentAssetIds.length > 0) {
+      imageAssetId = inContentAssetIds[0];
+    }
+
+    // Lớp 3: Lấy từ Kho ảnh BĐS chất lượng cao (Curated Real Estate Wallpapers)
+    if (!imageAssetId) {
+      const randomUrl = CURATED_REAL_ESTATE_THUMBNAILS[Math.floor(Math.random() * CURATED_REAL_ESTATE_THUMBNAILS.length)];
+      try {
+        const imgRes = await fetch(randomUrl);
+        if (imgRes.ok) {
+          const buffer = await imgRes.arrayBuffer();
+          const asset = await adminClient.assets.upload('image', Buffer.from(buffer), {
+            filename: 'curated-bds-thumbnail.jpg'
+          });
+          imageAssetId = asset._id;
+        }
+      } catch (err) {
+        console.warn('Failed to download curated thumbnail:', err);
+      }
+    }
+
+    // Lớp 4 (Ultimate Fallback): Tự động tạo SVG Brand Banner chuẩn 1200x630
+    if (!imageAssetId) {
+      try {
+        const svgBuffer = generateFallbackSvgBanner(result.title || 'Tin Tức Bất Động Sản');
+        const asset = await adminClient.assets.upload('image', svgBuffer, {
+          filename: 'brand-news-banner.svg',
+          contentType: 'image/svg+xml'
+        });
+        imageAssetId = asset._id;
+      } catch (err) {
+        console.error('Failed to create fallback SVG banner:', err);
       }
     }
     
