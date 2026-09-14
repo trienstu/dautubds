@@ -41,13 +41,18 @@ export async function POST(request: Request) {
     let tools: any = undefined;
 
     const outputFormat = `
-    YÊU CẦU ĐẦU RA BẮT BUỘC (Chỉ trả về JSON hợp lệ, không bọc trong markdown code block, không giải thích gì thêm):
+    YÊU CẦU ĐẦU RA BẮT BUỘC (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 KHỐI PHÂN TÁCH DƯỚI ĐÂY, KHÔNG NHỒI HTML VÀO TRONG JSON):
+    <<<METADATA>>>
     {
-      "title": "Tiêu đề bài viết chuẩn SEO. Tuyệt đối KHÔNG viết hoa từng chữ cái đầu (Title Case), mà hãy viết hoa chữ cái đầu câu bình thường (Sentence case). Phải chứa từ khóa (keyword) có trong chủ đề gốc.",
+      "title": "Tiêu đề bài viết chuẩn SEO. Viết hoa dạng Sentence case (chỉ viết hoa chữ cái đầu câu và danh từ riêng). Phải chứa từ khóa chính.",
       "excerpt": "Đoạn mô tả ngắn gọn (meta description) chuẩn SEO dưới 160 ký tự, chứa từ khóa chính.",
-      "content": "Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>, <img>). Các thẻ heading (h2, h3) cũng BẮT BUỘC phải viết hoa dạng Sentence case (chỉ viết hoa chữ đầu câu). Phải phân bổ từ khóa tự nhiên. Giữ lại các thẻ <img src='...'> nếu có.",
-      "imageUrl": "Tìm trong markdown gốc xem có URL ảnh chính nào không, nếu có hãy trích xuất ra đây để tôi dùng làm thumbnail. Nếu không có, để rỗng."
-    }`;
+      "imageUrl": "URL ảnh chính tìm thấy trong nguồn (nếu có để làm thumbnail, nếu không có để rỗng)"
+    }
+    <<<END_METADATA>>>
+
+    <<<CONTENT>>>
+    Nội dung bài viết định dạng HTML (<h2>, <h3>, <p>, <ul>, <li>, <table>, <img>). Các thẻ heading (h2, h3) BẮT BUỘC viết hoa dạng Sentence case. Đoạn văn ngắn gọn, dễ đọc trên smartphone. Giữ lại các thẻ <img> ảnh minh họa nếu có.
+    <<<END_CONTENT>>>`;
 
     // Xây dựng hướng dẫn công thức bài viết (14 công thức & tâm lý học BĐS)
     let formulaGuide = "";
@@ -154,15 +159,71 @@ ${outputFormat}`;
       config: config
     });
 
-    const aiText = response.text?.replace(/```json/g, '').replace(/```/g, '').trim();
-    if (!aiText) throw new Error('AI returned empty response');
+    const aiText = response.text || '';
+    if (!aiText.trim()) throw new Error('AI returned empty response');
     
-    let result;
-    try {
-      result = JSON.parse(aiText);
-    } catch (e) {
-      throw new Error('AI did not return valid JSON');
+    let result: any = {};
+    let contentHtml = '';
+
+    const metaMatch = aiText.match(/<<<METADATA>>>([\s\S]*?)<<<END_METADATA>>>/i);
+    const contentMatch = aiText.match(/<<<CONTENT>>>([\s\S]*?)<<<END_CONTENT>>>/i);
+
+    if (metaMatch) {
+      const metaRaw = metaMatch[1].replace(/```json/g, '').replace(/```/g, '').trim();
+      try {
+        result = JSON.parse(metaRaw);
+      } catch (err) {
+        const extractField = (key: string) => {
+          const m = metaRaw.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`, 'i'));
+          return m ? m[1] : '';
+        };
+        result = {
+          title: extractField('title'),
+          excerpt: extractField('excerpt'),
+          imageUrl: extractField('imageUrl')
+        };
+      }
     }
+
+    if (contentMatch) {
+      contentHtml = contentMatch[1].replace(/```html/g, '').replace(/```/g, '').trim();
+    }
+
+    // Fallback: nếu AI trả về format JSON cũ
+    if (!result.title) {
+      const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const cleaned = jsonMatch[0].replace(/[\u0000-\u001F]+/g, ' ');
+          const rawParsed = JSON.parse(cleaned);
+          result = rawParsed;
+          if (rawParsed.content) {
+            contentHtml = rawParsed.content;
+          }
+        } catch (e) {
+          const extractField = (key: string) => {
+            const m = aiText.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`, 'i'));
+            return m ? m[1] : '';
+          };
+          result = {
+            title: extractField('title') || 'Bài viết phân tích thị trường Bất Động Sản',
+            excerpt: extractField('excerpt') || '',
+            imageUrl: extractField('imageUrl') || ''
+          };
+        }
+      }
+    }
+
+    if (!contentHtml) {
+      const htmlStart = aiText.search(/<[hH][1-6]|<[pP]|<[tT]able/);
+      if (htmlStart !== -1) {
+        contentHtml = aiText.slice(htmlStart).replace(/<<<END_CONTENT>>>/gi, '').replace(/```/g, '').trim();
+      } else {
+        contentHtml = `<p>${result.excerpt || result.title || 'Nội dung phân tích bất động sản.'}</p>`;
+      }
+    }
+
+    result.content = contentHtml;
 
     // 3. Upload thumbnail if exists
     let imageAssetId = null;
