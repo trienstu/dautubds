@@ -417,20 +417,55 @@ button {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* Đồng bộ kích thước font chữ và khoảng cách dòng cho toàn bộ đoạn văn và danh sách */
+/* ======================================================== */
+/* TYPOGRAPHY CHUẨN ĐỒNG BỘ TOÀN BỘ WEBSITE               */
+/* ======================================================== */
+
+/* 1. Mặc định Desktop: Rộng rãi, sang trọng (1.15rem, line-height 1.8) */
+.portable-text-p,
+.portable-text-content p,
+article p,
+.project-content-section p,
+.portable-text-content ul,
+.portable-text-content ol,
+article ul,
+article ol,
+.project-content-section ul,
+.project-content-section ol,
+.portable-text-content li,
+article li,
+.project-content-section li {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--color-text);
+}
+
 .portable-text-p,
 .portable-text-content p,
 article p,
 .project-content-section p {
-  font-size: 1.15rem !important;
-  line-height: 1.8 !important;
-  color: var(--color-text) !important;
   margin-bottom: 0.8rem;
   text-align: justify;
 }
 
+.portable-text-content ul,
+.portable-text-content ol,
+article ul,
+article ol,
+.project-content-section ul,
+.project-content-section ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.portable-text-content li,
+article li,
+.project-content-section li {
+  margin-bottom: 0.6rem;
+}
+
+/* 2. Di động: Nhỏ gọn, thanh thoát như báo VnExpress (1.03rem, line-height 1.65) */
 @media (max-width: 768px) {
-  /* Tối ưu typography cho di động: Nhỏ gọn, thanh thoát, dễ đọc như báo VnExpress */
   .portable-text-p,
   .portable-text-content p,
   article p,
@@ -444,7 +479,7 @@ article p,
   .portable-text-content li,
   article li,
   .project-content-section li {
-    font-size: 1.03rem !important; /* ~16.5px, chuẩn đọc di động như VnExpress */
+    font-size: 1.03rem !important; /* ~16.5px, chuẩn VnExpress */
     line-height: 1.65 !important;
     text-align: left !important;
   }
@@ -465,7 +500,6 @@ article p,
     margin-bottom: 0.45rem !important;
   }
 
-  /* Đảm bảo tiêu đề H2 và H3 trên di động có thứ bậc rõ ràng */
   .project-content-section h2,
   .project-block-title {
     font-size: 1.35rem !important;
@@ -480,28 +514,4 @@ article p,
     margin-top: 1.25rem !important;
     margin-bottom: 0.5rem !important;
   }
-}
-
-
-/* Đồng bộ kích thước font chữ và khoảng cách dòng của danh sách liệt kê với đoạn văn */
-.portable-text-content ul,
-.portable-text-content ol,
-article ul,
-article ol,
-.project-content-section ul,
-.project-content-section ol {
-  font-size: 1.15rem !important;
-  line-height: 1.8 !important;
-  padding-left: 1.5rem !important;
-  margin-bottom: 1.2rem !important;
-  color: var(--color-text) !important;
-}
-
-.portable-text-content li,
-article li,
-.project-content-section li {
-  font-size: 1.15rem !important;
-  line-height: 1.8 !important;
-  margin-bottom: 0.6rem !important;
-  color: var(--color-text) !important;
 }

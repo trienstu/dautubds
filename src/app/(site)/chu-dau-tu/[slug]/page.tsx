@@ -79,15 +79,15 @@ const portableTextComponents = {
     }
   },
   list: {
-    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ul>,
-    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ol>,
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-text)' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-text)' }}>{children}</ol>,
   },
   listItem: {
-    bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
-    number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '1em', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '1em', lineHeight: '1.8', color: 'var(--color-text)' }}>{children}</p>,
   },
   marks: {
     strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
@@ -194,7 +194,7 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
         </div>
 
         {developer.description ? (
-          <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)', marginBottom: '4rem' }}>
+          <div style={{ lineHeight: '1.8', color: 'var(--color-text)', marginBottom: '4rem' }}>
             <PortableText value={developer.description} components={portableTextComponents} />
           </div>
         ) : (

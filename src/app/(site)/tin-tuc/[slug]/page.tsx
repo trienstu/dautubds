@@ -91,7 +91,7 @@ const portableTextComponents = {
     },
   },
   block: {
-    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem', lineHeight: '1.8', color: 'var(--color-text)' }}>{children}</p>,
     h2: ({ children, value }: any) => {
       const id = slugify(getPlainText(value));
       return <h2 id={id} style={{ fontSize: '1.15rem', marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700, letterSpacing: '-0.5px' }}>{children}</h2>;
@@ -103,12 +103,12 @@ const portableTextComponents = {
     blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '2rem', fontStyle: 'italic', color: 'var(--color-text-muted)', margin: '2rem 0', fontSize: '1.35rem', lineHeight: '1.6', background: 'rgba(212,175,55,0.05)', padding: '1.5rem 1.5rem 1.5rem 2rem', borderRadius: '0 8px 8px 0' }}>{children}</blockquote>,
   },
   list: {
-    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ul>,
-    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)', fontSize: '1.15rem' }}>{children}</ol>,
+    bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)' }}>{children}</ul>,
+    number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.2rem', color: 'var(--color-text)' }}>{children}</ol>,
   },
   listItem: {
-    bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
-    number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
+    bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8' }}>{children}</li>,
+    number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8' }}>{children}</li>,
   },
 
   marks: {
