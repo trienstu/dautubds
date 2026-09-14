@@ -5,6 +5,19 @@ import { Schema } from '@sanity/schema';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { JSDOM } from 'jsdom';
 
+function toSlug(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+
 // Helper function to upload in-content image to Sanity and replace <img> src with asset _id
 async function processHtmlSectionImages(htmlContent: string, adminClient: any) {
   if (!htmlContent) return '';
@@ -131,7 +144,7 @@ function extractImageUrls(texts: string[]): string[] {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action = 'create', slug, urls, url } = body;
+    const { action = 'create', slug, urls, url, customTitle } = body;
     
     // Normalize URLs
     let urlList: string[] = [];
@@ -361,11 +374,17 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
         { "question": "Pháp lý dự án hiện tại đã có những gì?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." },
         { "question": "Chính sách thanh toán và ngân hàng hỗ trợ vay ra sao?", "answer": "Câu trả lời trực diện 40-50 từ chuẩn AEO." }
       ],
+      "seoTitle": "Tiêu đề SEO chuẩn Google dưới 60 ký tự (Sentence case)",
+      "seoDescription": "Mô tả SEO chuẩn Google dưới 160 ký tự, súc tích và hấp dẫn",
       "selectedImages": ["URL 1", "URL 2", "URL 3", "URL 4"]
     }`;
 
+    const titleRule = customTitle && customTitle.trim()
+      ? `\nQUY TẮC ĐỊNH DANH BẮT BUỘC:\n- Tên thương mại chính thức của dự án ĐÚNG CHÍNH XÁC LÀ: "${customTitle.trim()}". BẮT BUỘC đặt tên bài viết và tiêu đề SEO xoay quanh tên dự án "${customTitle.trim()}". Tuyệt đối không tự ý thêm bớt từ ngữ khác vào tên dự án.\n`
+      : '';
+
     const prompt = `Bạn là Chuyên gia tư vấn đầu tư Bất Động Sản cao cấp.
-Tổng hợp nội dung từ ${successfulSources.length} nguồn bài viết dưới đây để tạo một bài viết dự án BĐS hoàn chỉnh, 100% Unique, chuẩn SEO/AEO/GEO.
+Tổng hợp nội dung từ ${successfulSources.length} nguồn bài viết dưới đây để tạo một bài viết dự án BĐS hoàn chỉnh, 100% Unique, chuẩn SEO/AEO/GEO.${titleRule}
 
 LƯU Ý QUAN TRỌNG:
 1. Giao diện frontend ĐÃ CÓ thẻ <h2> cho từng tab. Các trường HTML TUYỆT ĐỐI KHÔNG DÙNG THẺ <h2> Ở ĐẦU! Chỉ dùng <h3> bên trong.
@@ -395,13 +414,15 @@ ${outputFormat}`;
       processedLocHtml,
       processedFeatHtml,
       processedPriceHtml,
-      processedLegalHtml
+      processedLegalHtml,
+      processedInvestHtml
     ] = await Promise.all([
       processHtmlSectionImages(parsedResult.descriptionHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.locationHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.featuresHtml || '', adminClient),
       processHtmlSectionImages(parsedResult.pricingHtml || '', adminClient),
-      processHtmlSectionImages(parsedResult.legalHtml || '', adminClient)
+      processHtmlSectionImages(parsedResult.legalHtml || '', adminClient),
+      processHtmlSectionImages(parsedResult.investmentReasonsHtml || '', adminClient)
     ]);
 
     const imagesToUpload: string[] = Array.isArray(parsedResult.selectedImages) && parsedResult.selectedImages.length > 0
@@ -441,6 +462,7 @@ ${outputFormat}`;
     const featuresBlocks = convertHtmlToPortableText(processedFeatHtml);
     const pricingBlocks = convertHtmlToPortableText(processedPriceHtml);
     const legalBlocks = convertHtmlToPortableText(processedLegalHtml);
+    const investmentBlocks = convertHtmlToPortableText(processedInvestHtml);
 
     const formattedFaqs = Array.isArray(parsedResult.faqs)
       ? parsedResult.faqs.map((q: any) => ({
@@ -451,18 +473,22 @@ ${outputFormat}`;
         }))
       : [];
 
-    const slugCurrent = (parsedResult.title || 'du-an-moi')
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d").replace(/Đ/g, "D")
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '') + '-' + Date.now();
+    // Tên dự án: Ưu tiên 100% tên do người dùng nhập vào
+    const officialTitle = (customTitle && customTitle.trim()) || parsedResult.title || 'Dự Án Mới';
+    let slugCurrent = toSlug(officialTitle);
+
+    // Kiểm tra xem slug đã có trên Sanity chưa, nếu trùng mới thêm hậu tố ngắn
+    const existingSlug = await adminClient.fetch(`*[_type == "project" && slug.current == $slug][0]{ _id }`, {
+      slug: slugCurrent
+    });
+    if (existingSlug) {
+      slugCurrent = `${slugCurrent}-${Date.now().toString().slice(-4)}`;
+    }
 
     const doc: any = {
       _type: 'project',
-      _id: `drafts.project-${Date.now()}`,
-      title: parsedResult.title,
+      _id: `drafts.project-${slugCurrent}`,
+      title: officialTitle,
       slug: { _type: 'slug', current: slugCurrent },
       category: parsedResult.category || 'Căn hộ',
       price: parsedResult.price || '',
@@ -477,7 +503,13 @@ ${outputFormat}`;
       featuresContent: featuresBlocks,
       pricingContent: pricingBlocks,
       legalContent: legalBlocks,
+      investmentReasons: investmentBlocks,
       faqs: formattedFaqs,
+      seo: {
+        _type: 'seo',
+        seoTitle: parsedResult.seoTitle || `Dự Án ${officialTitle} - Bảng Giá & Tiến Độ Mới Nhất`,
+        seoDescription: parsedResult.seoDescription || parsedResult.excerpt || `Tìm hiểu thông tin chi tiết, bảng giá chính thức và tiến độ thi công dự án ${officialTitle}.`
+      }
     };
 
     if (galleryAssets.length > 0) {

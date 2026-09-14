@@ -30,6 +30,7 @@ export default function AiToolsPage() {
   const [formula, setFormula] = useState('auto');
   const [angle, setAngle] = useState('expert_analysis');
   const [developerNotes, setDeveloperNotes] = useState('');
+  const [projectTitle, setProjectTitle] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [projectSlug, setProjectSlug] = useState('');
   const [existingProjects, setExistingProjects] = useState<ProjectOption[]>([]);
@@ -184,7 +185,7 @@ export default function AiToolsPage() {
           throw new Error('Vui lòng dán ít nhất 1 đường link URL bắt đầu bằng http:// hoặc https://');
         }
 
-        payload = { action: 'create', urls: urlsArray };
+        payload = { action: 'create', urls: urlsArray, customTitle: projectTitle.trim() };
 
       } else if (mode === 'update_project') {
         endpoint = '/api/ai-project-writer';
@@ -262,7 +263,7 @@ export default function AiToolsPage() {
 
             <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button 
-                onClick={() => { setMode('project'); setInputValue(''); setResult(null); setError(''); }}
+                onClick={() => { setMode('project'); setInputValue(''); setProjectTitle(''); setResult(null); setError(''); }}
                 style={{ 
                   padding: '0.7rem 1.2rem', 
                   borderRadius: '30px', 
@@ -574,6 +575,24 @@ export default function AiToolsPage() {
                 )}
 
                 <div>
+                  {mode === 'project' && (
+                    <div style={{ marginBottom: '1.2rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Tên Dự Án (Title & URL cố định):
+                      </label>
+                      <input 
+                        type="text" 
+                        value={projectTitle}
+                        onChange={(e) => setProjectTitle(e.target.value)}
+                        placeholder="Ví dụ: Serena Riverside, The Privé, Eaton Park, Vinhomes Grand Park..."
+                        style={{ width: '100%', padding: '0.9rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--background)', color: 'var(--foreground)', fontSize: '1rem' }}
+                      />
+                      <p style={{ marginTop: '0.4rem', fontSize: '0.85rem', color: 'var(--color-primary)' }}>
+                        🎯 <strong>Quy chuẩn Title & URL:</strong> Tiêu đề dự án sẽ là <strong>{projectTitle.trim() || 'Tên bạn nhập'}</strong> và URL sẽ là <code>/du-an/{projectTitle.trim() ? projectTitle.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') : 'slug-du-an'}</code>. Tiêu đề SEO & Mô tả SEO sẽ được AI tối ưu chuẩn xác theo tên này!
+                      </p>
+                    </div>
+                  )}
+
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
                     {mode === 'project' && 'Dán các đường link nguồn về dự án (Mỗi link 1 dòng, tối đa 5 link):'}
                     {mode === 'update_project' && 'Dán các đường link bài báo mới về TIẾN ĐỘ / BẢNG GIÁ / CHÍNH SÁCH MỚI (Mỗi link 1 dòng):'}
