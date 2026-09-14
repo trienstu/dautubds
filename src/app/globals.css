@@ -417,12 +417,23 @@ button {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-.portable-text-p {
+/* Đồng bộ kích thước font chữ và khoảng cách dòng cho toàn bộ đoạn văn và danh sách */
+.portable-text-p,
+.portable-text-content p,
+article p,
+.project-content-section p {
+  font-size: 1.15rem !important;
+  line-height: 1.8 !important;
+  color: var(--color-text) !important;
+  margin-bottom: 0.8rem;
   text-align: justify;
 }
 
 @media (max-width: 768px) {
-  .portable-text-p {
+  .portable-text-p,
+  .portable-text-content p,
+  article p,
+  .project-content-section p {
     text-align: left !important;
   }
 }

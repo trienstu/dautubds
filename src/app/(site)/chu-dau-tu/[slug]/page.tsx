@@ -87,7 +87,28 @@ const portableTextComponents = {
     number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '1em' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '1em', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</p>,
+  },
+  marks: {
+    strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
+    link: ({ children, value }: any) => {
+      const isExternal = value?.href?.startsWith('http');
+      return (
+        <a 
+          href={value?.href} 
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "nofollow noopener noreferrer" : undefined}
+          style={{ color: 'var(--color-primary)', borderBottom: '1px solid var(--color-primary)', transition: 'all 0.3s' }}
+        >
+          {children}
+        </a>
+      );
+    },
+    textAlign: ({ children, value }: any) => (
+      <span style={{ display: 'block', textAlign: value?.align || 'left', width: '100%' }}>
+        {children}
+      </span>
+    ),
   },
 };
 
@@ -173,7 +194,7 @@ export default async function DeveloperDetail({ params }: { params: Promise<{ sl
         </div>
 
         {developer.description ? (
-          <div style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '4rem' }}>
+          <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)', marginBottom: '4rem' }}>
             <PortableText value={developer.description} components={portableTextComponents} />
           </div>
         ) : (

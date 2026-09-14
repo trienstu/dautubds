@@ -69,15 +69,16 @@ export default async function StaticPage({ params }: { params: Promise<{ slug: s
       h1: ({ children }: any) => <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', marginTop: '2rem', color: 'var(--color-primary)' }}>{children}</h1>,
       h2: ({ children }: any) => <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', marginTop: '2rem' }}>{children}</h2>,
       h3: ({ children }: any) => <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem', marginTop: '1.5rem' }}>{children}</h3>,
-      normal: ({ children }: any) => <p className="portable-text-p" style={{ fontSize: '1.1rem', lineHeight: '1.8', marginBottom: '1rem' }}>{children}</p>,
+      normal: ({ children }: any) => <p className="portable-text-p" style={{ fontSize: '1.15rem', lineHeight: '1.8', marginBottom: '1rem', color: 'var(--color-text)' }}>{children}</p>,
       blockquote: ({ children }: any) => <blockquote style={{ borderLeft: '4px solid var(--color-primary)', paddingLeft: '1rem', fontStyle: 'italic', margin: '1.5rem 0', background: 'rgba(255,255,255,0.05)', padding: '1rem' }}>{children}</blockquote>,
     },
     list: {
-      bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '2rem', marginBottom: '1.5rem', lineHeight: '1.8' }}>{children}</ul>,
-      number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '2rem', marginBottom: '1.5rem', lineHeight: '1.8' }}>{children}</ol>,
+      bullet: ({ children }: any) => <ul style={{ listStyleType: 'disc', paddingLeft: '1.4rem', marginBottom: '1.2rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</ul>,
+      number: ({ children }: any) => <ol style={{ listStyleType: 'decimal', paddingLeft: '1.4rem', marginBottom: '1.2rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</ol>,
     },
     listItem: {
-      bullet: ({ children }: any) => <li style={{ marginBottom: '0.5rem' }}>{children}</li>,
+      bullet: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
+      number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
     }
   };
 

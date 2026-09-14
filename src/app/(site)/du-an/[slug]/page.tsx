@@ -83,12 +83,13 @@ const portableTextComponents = {
     number: ({ children }: any) => <li style={{ marginBottom: '0.6rem', lineHeight: '1.8', fontSize: '1.15rem' }}>{children}</li>,
   },
   block: {
-    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem' }}>{children}</p>,
+    normal: ({ children }: any) => <p className="portable-text-p" style={{ marginBottom: '0.8rem', lineHeight: '1.8', fontSize: '1.15rem', color: 'var(--color-text)' }}>{children}</p>,
     h2: ({ children }: any) => <h2 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h2>,
     h3: ({ children }: any) => <h3 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h3>,
     h4: ({ children }: any) => <h4 style={{ marginTop: 0, marginBottom: '0.8rem', color: 'var(--foreground)', fontWeight: 700 }}>{children}</h4>,
   },
   marks: {
+    strong: ({ children }: any) => <strong style={{ color: 'var(--foreground)', fontWeight: 700 }}>{children}</strong>,
     link: ({ children, value }: any) => {
       const isExternal = value?.href?.startsWith('http');
       return (
@@ -415,7 +416,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
 
             <div id="tong-quan" className="project-content-section" style={{ marginTop: 0 }}>
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tổng quan dự án {project.title}</h2>
-              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+              <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                 {project.description ? (
                    <PortableText value={project.description} components={portableTextComponents} />
                 ) : (
@@ -432,7 +433,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   <div className="responsive-map-iframe" style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', marginBottom: '2rem' }} dangerouslySetInnerHTML={{ __html: project.mapHtml }} />
                 )}
                 {project.locationContent && (
-                  <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                  <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                     <PortableText value={project.locationContent} components={portableTextComponents} />
                   </div>
                 )}
@@ -443,7 +444,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             {project.pricingContent && (
               <div id="bang-gia" className="project-content-section">
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Bảng giá & Thanh toán dự án {project.title}</h2>
-                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+                <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                   <PortableText value={project.pricingContent} components={portableTextComponents} />
                 </div>
               </div>
@@ -455,7 +456,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tài liệu pháp lý dự án {project.title}</h2>
                 
                 {project.legalContent && (
-                  <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.legalDocuments && project.legalDocuments.length > 0) ? '2rem' : '0' }}>
+                  <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)', marginBottom: (project.legalDocuments && project.legalDocuments.length > 0) ? '2rem' : '0' }}>
                     <PortableText value={project.legalContent} components={portableTextComponents} />
                   </div>
                 )}
@@ -487,7 +488,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
             <div id="tien-ich" className="project-content-section">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tiện ích dự án {project.title}</h2>
               {project.featuresContent && (
-                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: '2rem' }}>
+                <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)', marginBottom: '2rem' }}>
                   <PortableText value={project.featuresContent} components={portableTextComponents} />
                 </div>
               )}
@@ -509,7 +510,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Mặt bằng dự án {project.title}</h2>
               
               {project.floorPlanContent && (
-                <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)', marginBottom: (project.floorPlans && project.floorPlans.length > 0) ? '2rem' : '0' }}>
+                <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)', marginBottom: (project.floorPlans && project.floorPlans.length > 0) ? '2rem' : '0' }}>
                   <PortableText value={project.floorPlanContent} components={portableTextComponents} />
                 </div>
               )}
@@ -524,7 +525,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.designContent && (
             <div id="thiet-ke" className="project-content-section">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Thiết kế dự án {project.title}</h2>
-              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+              <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                 <PortableText value={project.designContent} components={portableTextComponents} />
               </div>
             </div>
@@ -534,7 +535,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.showroomContent && (
             <div id="nha-mau" className="project-content-section">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Nhà mẫu dự án {project.title}</h2>
-              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+              <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                 <PortableText value={project.showroomContent} components={portableTextComponents} />
               </div>
             </div>
@@ -552,7 +553,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.progressContent && (
             <div id="tien-do" className="project-content-section">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tiến độ xây dựng dự án {project.title}</h2>
-              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+              <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                 <PortableText value={project.progressContent} components={portableTextComponents} />
               </div>
             </div>
@@ -562,7 +563,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
           {project.investmentReasons && (
             <div id="tai-sao-dau-tu" className="project-content-section">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 'bold' }}>Tại sao nên đầu tư dự án {project.title}?</h2>
-              <div style={{ fontSize: '1.05rem', lineHeight: '1.8', color: 'var(--color-text-muted)' }}>
+              <div style={{ fontSize: '1.15rem', lineHeight: '1.8', color: 'var(--color-text)' }}>
                 <PortableText value={project.investmentReasons} components={portableTextComponents} />
               </div>
             </div>
