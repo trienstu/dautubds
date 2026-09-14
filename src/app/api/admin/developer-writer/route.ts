@@ -74,6 +74,10 @@ Hãy tra cứu Internet và tạo một hồ sơ thương hiệu toàn diện, c
 TÊN CHỦ ĐẦU TƯ: ${developerName}
 ${customNotes ? `GHI CHÚ / YÊU CẦU BỔ SUNG TỪ NGƯỜI DÙNG: ${customNotes}` : ''}
 
+QUY TẮC ĐỊNH DANH BẮT BUỘC:
+- Tên chủ đầu tư hiển thị ĐÚNG CHÍNH XÁC LÀ: "${developerName}". Tuyệt đối không tự ý gắn thêm tiền tố "Công ty Cổ phần", "Tập đoàn", "Công ty TNHH" vào tên chính.
+- Trong nội dung bài viết và phần phân tích lịch sử, có thể đề cập tên pháp lý đầy đủ, nhưng thương hiệu trọng tâm và tiêu đề luôn là "${developerName}".
+
 QUY CHUẨN NỘI DUNG (NOTI CONTENT SKILL - BRAND STORYTELLING & AUTHORITY):
 1. Tính chính xác: Tra cứu thông tin chuẩn xác về năm thành lập, trụ sở chính, người sáng lập/lãnh đạo, mã cổ phiếu (nếu có).
 2. Hồ sơ năng lực & Dự án: Liệt kê các dự án tiêu biểu (tên dự án, vị trí, quy mô, tiến độ bàn giao, thực tế cấp sổ hồng). Đặc biệt chú ý các dự án được nhắc đến trong phần ghi chú nếu có.
@@ -213,7 +217,8 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
       }
     }
 
-    const officialName = (parsed.name && parsed.name.trim()) || developerName;
+    // Luôn giữ đúng tên chủ đầu tư và slug theo đúng input người dùng nhập vào
+    const officialName = developerName.trim();
     const slugCurrent = toSlug(officialName);
 
     // 4. Xử lý Logo (Fetch logo thực tế hoặc fallback sang SVG logo gradient sang trọng)
