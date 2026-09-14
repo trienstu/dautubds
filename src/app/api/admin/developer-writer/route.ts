@@ -297,7 +297,7 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
       if (jsonMatch) {
         try {
           // Thử làm sạch chuỗi JSON nếu có newline trong string
-          const cleaned = jsonMatch[0].replace(/[ -]+/g, ' ');
+          const cleaned = jsonMatch[0].replace(/[-]+/g, ' ');
           const rawParsed = JSON.parse(cleaned);
           parsed = rawParsed;
           if (rawParsed.content) {
