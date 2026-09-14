@@ -361,7 +361,7 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
       "location": "Vị trí địa lý hành chính cụ thể",
       "progressPercentage": 45,
       "excerpt": "Đoạn giới thiệu ngắn chuẩn SEO dưới 160 ký tự",
-      "descriptionHtml": "Tổng quan dự án dạng HTML (Dùng h3, p, ul, li, chèn thẻ <img>. KHÔNG DÙNG H2 Ở ĐẦU).",
+      "descriptionHtml": "Tổng quan dự án dạng HTML (Bắt đầu ngay bằng <p>, TUYỆT ĐỐI KHÔNG dùng thẻ heading ở đầu. Chỉ dùng <h3> ở giữa bài khi chia tiểu mục cụ thể như thông số kỹ thuật. Chèn thẻ <img>).",
       "featuresList": ["Tiện ích 1", "Tiện ích 2", "Tiện ích 3"],
       "featuresHtml": "Chi tiết hệ thống tiện ích đẳng cấp dạng HTML (kèm ảnh <img>).",
       "locationHtml": "Chi tiết vị trí và tiềm năng kết nối hạ tầng giao thông dạng HTML (kèm ảnh <img>).",
@@ -390,8 +390,10 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
     const prompt = `Bạn là Chuyên gia tư vấn đầu tư Bất Động Sản cao cấp.
 Tổng hợp nội dung từ ${successfulSources.length} nguồn bài viết dưới đây để tạo một bài viết dự án BĐS hoàn chỉnh, 100% Unique, chuẩn SEO/AEO/GEO.${titleRule}
 
-LƯU Ý QUAN TRỌNG VỀ HÌNH ẢNH & ĐỊNH DẠNG:
-1. Giao diện frontend ĐÃ CÓ thẻ <h2> cho từng tab. Các trường HTML TUYỆT ĐỐI KHÔNG DÙNG THẺ <h2> Ở ĐẦU! Chỉ dùng <h3> bên trong.
+QUY TẮC CẤU TRÚC TIÊU ĐỀ & HEADING CHO TỪNG PHẦN (RẤT QUAN TRỌNG):
+1. Giao diện frontend ĐÃ TỰ ĐỘNG CÓ thẻ <h2> cho tiêu đề của từng block (ví dụ: "Tổng quan dự án {Tên}", "Vị trí dự án {Tên}", "Bảng giá & Thanh toán...", "Tiện ích...", "Mặt bằng...").
+2. TUYỆT ĐỐI KHÔNG mở đầu nội dung bằng bất kỳ thẻ <h2> hoặc <h3> nào lặp lại tên của block đó (CẤM: '<h3>Tổng quan dự án...</h3>', '<h3>Vị trí kim cương...</h3>' ở ngay đầu). Hãy luôn bắt đầu nội dung bằng đoạn văn mở đầu (<p>).
+3. CHỈ sử dụng thẻ <h3> khi cần chia nhỏ nội dung bên trong thành các tiểu mục con có ý nghĩa cụ thể (Ví dụ trong mục Vị trí: <h3>1. Hạ tầng giao thông kết nối</h3>, <h3>2. Liên kết vùng thực tế</h3>; trong mục Tổng quan: <h3>Thông số kỹ thuật dự án</h3>). Nội dung thẻ <h3> phải là con của H2 và có nội dung rõ ràng, cấm đặt H3 chung chung lặp lại tên block.
 2. BẮT BUỘC chèn ảnh vào TẤT CẢ các mục: Trong mỗi trường HTML (descriptionHtml, featuresHtml, locationHtml, pricingHtml, legalHtml, floorPlanHtml, designHtml, showroomHtml, progressHtml), hãy chủ động chọn từ danh sách ảnh bên dưới và chèn các thẻ \`<img src="URL_CHÍNH_XÁC" alt="Mô tả chuẩn SEO" />\` vào giữa các đoạn văn để bài viết sinh động trực quan.
 3. Chọn các URL ảnh mặt bằng / layout căn hộ đưa vào mảng \`floorPlanImages\`.
 

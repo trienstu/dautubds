@@ -430,11 +430,55 @@ article p,
 }
 
 @media (max-width: 768px) {
+  /* Tối ưu typography cho di động: Nhỏ gọn, thanh thoát, dễ đọc như báo VnExpress */
   .portable-text-p,
   .portable-text-content p,
   article p,
-  .project-content-section p {
+  .project-content-section p,
+  .portable-text-content ul,
+  .portable-text-content ol,
+  article ul,
+  article ol,
+  .project-content-section ul,
+  .project-content-section ol,
+  .portable-text-content li,
+  article li,
+  .project-content-section li {
+    font-size: 1.03rem !important; /* ~16.5px, chuẩn đọc di động như VnExpress */
+    line-height: 1.65 !important;
     text-align: left !important;
+  }
+
+  .portable-text-content ul,
+  .portable-text-content ol,
+  article ul,
+  article ol,
+  .project-content-section ul,
+  .project-content-section ol {
+    padding-left: 1.25rem !important;
+    margin-bottom: 0.9rem !important;
+  }
+
+  .portable-text-content li,
+  article li,
+  .project-content-section li {
+    margin-bottom: 0.45rem !important;
+  }
+
+  /* Đảm bảo tiêu đề H2 và H3 trên di động có thứ bậc rõ ràng */
+  .project-content-section h2,
+  .project-block-title {
+    font-size: 1.35rem !important;
+    line-height: 1.3 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .project-content-section h3,
+  .portable-text-content h3 {
+    font-size: 1.15rem !important;
+    line-height: 1.4 !important;
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
   }
 }
 
