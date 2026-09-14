@@ -473,21 +473,25 @@ ${outputFormat}`;
         }))
       : [];
 
-    // Tên dự án: Ưu tiên 100% tên do người dùng nhập vào
+    // Tên dự án: Ưu tiên 100% tên do người dùng nhập vào, slug chuẩn không bị thêm hậu tố số
     const officialTitle = (customTitle && customTitle.trim()) || parsedResult.title || 'Dự Án Mới';
-    let slugCurrent = toSlug(officialTitle);
+    const slugCurrent = toSlug(officialTitle);
 
-    // Kiểm tra xem slug đã có trên Sanity chưa, nếu trùng mới thêm hậu tố ngắn
-    const existingSlug = await adminClient.fetch(`*[_type == "project" && slug.current == $slug][0]{ _id }`, {
-      slug: slugCurrent
-    });
-    if (existingSlug) {
-      slugCurrent = `${slugCurrent}-${Date.now().toString().slice(-4)}`;
-    }
+    // Kiểm tra xem dự án đã có trên Sanity chưa (kể cả draft hay published) để ghi đè cập nhật vào chính docId đó
+    const existingProject = await adminClient.fetch(
+      `*[_type == "project" && (slug.current == $slug || _id == $draftId || _id == $pubId)][0]{ _id }`,
+      {
+        slug: slugCurrent,
+        draftId: `drafts.project-${slugCurrent}`,
+        pubId: `project-${slugCurrent}`
+      }
+    );
+
+    const docId = existingProject?._id || `drafts.project-${slugCurrent}`;
 
     const doc: any = {
       _type: 'project',
-      _id: `drafts.project-${slugCurrent}`,
+      _id: docId,
       title: officialTitle,
       slug: { _type: 'slug', current: slugCurrent },
       category: parsedResult.category || 'Căn hộ',
@@ -496,7 +500,7 @@ ${outputFormat}`;
       status: parsedResult.status || 'Đang mở bán',
       location: parsedResult.location || '',
       progressPercentage: parsedResult.progressPercentage,
-      excerpt: parsedResult.excerpt || '',
+      // Lưu ý: Không gán trường excerpt vì schema project không có trường này (chỉ có trong seoDescription)
       description: descriptionBlocks,
       locationContent: locationBlocks,
       features: Array.isArray(parsedResult.featuresList) ? parsedResult.featuresList : [],
@@ -517,7 +521,7 @@ ${outputFormat}`;
       doc.gallery = galleryAssets;
     }
 
-    const createdDoc = await adminClient.create(doc);
+    const createdDoc = await adminClient.createOrReplace(doc);
 
     return NextResponse.json({
       success: true,
