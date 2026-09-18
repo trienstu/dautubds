@@ -203,11 +203,27 @@ ${outputFormat}`;
       config.responseMimeType = 'application/json';
     }
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: config
-    });
+    let response: any;
+    try {
+      response = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents: prompt,
+        config: config
+      });
+    } catch (apiErr: any) {
+      if (config.tools) {
+        console.warn("Google Search Grounding không khả dụng hoặc hết quota, fallback sang direct generation:", apiErr?.message);
+        const fallbackConfig = { ...config };
+        delete fallbackConfig.tools;
+        response = await ai.models.generateContent({
+          model: 'gemini-3.6-flash',
+          contents: prompt,
+          config: fallbackConfig
+        });
+      } else {
+        throw apiErr;
+      }
+    }
 
     const aiText = response.text || '';
     if (!aiText.trim()) throw new Error('AI returned empty response');

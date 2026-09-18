@@ -90,7 +90,7 @@ export async function POST(req: Request) {
 
     // 4. Connect to Gemini
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.6-flash',
       systemInstruction: systemInstruction 
     });
 

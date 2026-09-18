@@ -244,15 +244,24 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
 <p>Nhận định khách quan về năng lực tài chính, pháp lý và tiến độ thi công...</p>
 <<<END_CONTENT>>>`;
 
-    // 2. Gọi Gemini 2.5 Flash kèm Google Search
+    // 2. Gọi Gemini Flash (kèm fallback nếu tài khoản chưa có quota search grounding)
     const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-      }
-    });
+    let response: any;
+    try {
+      response = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents: prompt,
+        config: {
+          tools: [{ googleSearch: {} }],
+        }
+      });
+    } catch (searchErr: any) {
+      console.warn("Google Search Grounding không khả dụng hoặc hết quota, chuyển sang direct model:", searchErr?.message || searchErr);
+      response = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents: prompt
+      });
+    }
 
     const aiText = response.text || '';
     if (!aiText.trim()) throw new Error('AI không trả về kết quả');
