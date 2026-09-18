@@ -196,33 +196,46 @@ ${outputFormat}`;
     // 3. Generate with Gemini
     const ai = new GoogleGenAI({ apiKey });
     
-    const config: any = {};
+    let config: any = {};
     if (tools) {
       config.tools = tools;
     } else {
       config.responseMimeType = 'application/json';
     }
 
+    const candidateModels = [
+      'gemini-3.5-flash-lite',
+      'gemini-flash-lite-latest',
+      'gemini-flash-latest',
+      'gemini-3.5-flash',
+      'gemini-3.6-flash'
+    ];
+
     let response: any;
-    try {
-      response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: config
-      });
-    } catch (apiErr: any) {
-      if (config.tools) {
-        console.warn("Google Search Grounding không khả dụng hoặc hết quota, fallback sang direct generation:", apiErr?.message);
-        const fallbackConfig = { ...config };
-        delete fallbackConfig.tools;
+    let lastError: any;
+
+    for (const model of candidateModels) {
+      try {
         response = await ai.models.generateContent({
-          model: 'gemini-3.6-flash',
+          model,
           contents: prompt,
-          config: fallbackConfig
+          config
         });
-      } else {
-        throw apiErr;
+        if (response?.text) break;
+      } catch (err: any) {
+        lastError = err;
+        const status = err.status || err?.error?.code;
+        if (config?.tools && (status === 429 || String(err?.message).includes("quota"))) {
+          console.warn("Google Search Grounding không khả dụng, chuyển sang chế độ direct generation...");
+          const noToolConfig = { ...config };
+          delete noToolConfig.tools;
+          config = noToolConfig;
+        }
       }
+    }
+
+    if (!response?.text) {
+      throw lastError || new Error("Không thể kết nối đến máy chủ AI");
     }
 
     const aiText = response.text || '';

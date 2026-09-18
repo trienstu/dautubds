@@ -244,23 +244,55 @@ YÊU CẦU ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC TRẢ VỀ THEO ĐÚNG 2 PHẦ
 <p>Nhận định khách quan về năng lực tài chính, pháp lý và tiến độ thi công...</p>
 <<<END_CONTENT>>>`;
 
-    // 2. Gọi Gemini Flash (kèm fallback nếu tài khoản chưa có quota search grounding)
+    // 2. Gọi Gemini với Multi-Model Fallback Pool để chống 503 (quá tải) & 429 (hạn mức search)
     const ai = new GoogleGenAI({ apiKey });
+    const candidateModels = [
+      'gemini-3.5-flash-lite',
+      'gemini-flash-lite-latest',
+      'gemini-flash-latest',
+      'gemini-3.5-flash',
+      'gemini-3.6-flash'
+    ];
+
     let response: any;
-    try {
-      response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          tools: [{ googleSearch: {} }],
+    let lastError: any;
+
+    // Ưu tiên thử Google Search Grounding trước
+    for (const model of candidateModels) {
+      try {
+        response = await ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            tools: [{ googleSearch: {} }],
+          }
+        });
+        if (response?.text) break;
+      } catch (err: any) {
+        lastError = err;
+        // Nếu lỗi do hạn mức search (429) hoặc model không hỗ trợ, chuyển sang chế độ direct knowledge
+        break;
+      }
+    }
+
+    // Nếu search không thành công hoặc lỗi quota/503, tự động chuyển sang kho tri thức sâu của model pool
+    if (!response?.text) {
+      for (const model of candidateModels) {
+        try {
+          response = await ai.models.generateContent({
+            model,
+            contents: prompt
+          });
+          if (response?.text) break;
+        } catch (err: any) {
+          lastError = err;
+          console.warn(`Model ${model} gặp sự cố (${err?.status || err?.message}), tự động thử model tiếp theo...`);
         }
-      });
-    } catch (searchErr: any) {
-      console.warn("Google Search Grounding không khả dụng hoặc hết quota, chuyển sang direct model:", searchErr?.message || searchErr);
-      response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt
-      });
+      }
+    }
+
+    if (!response?.text) {
+      throw lastError || new Error("Không thể kết nối đến máy chủ AI");
     }
 
     const aiText = response.text || '';

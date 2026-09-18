@@ -267,7 +267,7 @@ YÊU CẦU ĐẦU RA (JSON duy nhất):
 }`;
 
       const aiUpdateResp = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
+        model: 'gemini-3.5-flash-lite',
         contents: updatePrompt,
         config: { responseMimeType: 'application/json' }
       });
@@ -406,7 +406,7 @@ ${combinedContent}
 ${outputFormat}`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.6-flash',
+      model: 'gemini-3.5-flash-lite',
       contents: prompt,
       config: { responseMimeType: 'application/json' }
     });
